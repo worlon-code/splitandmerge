@@ -31,7 +31,10 @@ class ProcessFfmpegEngine @Inject constructor() : FfmpegEngine {
         val token = UUID.randomUUID().toString()
         trySend(EngineEvent.Started(token))
 
-        val cmd = args.joinToString(" ")
+        // Properly quote arguments that have spaces, since we are joining them into a string
+        val cmd = args.joinToString(" ") { arg ->
+            if (arg.contains(" ") && !arg.startsWith("\"")) "\"$arg\"" else arg
+        }
         Timber.tag("ENGINE").d("start token=%s args=%s", token, cmd)
 
         val session = FFmpegKit.executeAsync(

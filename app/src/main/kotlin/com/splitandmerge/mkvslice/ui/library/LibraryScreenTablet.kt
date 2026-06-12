@@ -41,6 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.FloatingActionButton
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.provider.OpenableColumns
+import androidx.compose.ui.platform.LocalContext
 import com.splitandmerge.mkvslice.domain.model.Job
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -51,12 +56,28 @@ import java.util.Locale
 fun LibraryScreenTablet(
     viewModel: LibraryViewModel,
     onNavigateToSettings: () -> Unit,
-    onStartSplitFlow: () -> Unit,
+    onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
     onNavigateToJobDetail: (String) -> Unit
 ) {
     val jobs by viewModel.jobs.collectAsState()
     var selectedJob by remember { mutableStateOf<Job?>(null) }
+    val context = LocalContext.current
+
+    val splitFilePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            var filename = "Unknown"
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (cursor.moveToFirst() && nameIndex >= 0) {
+                    filename = cursor.getString(nameIndex)
+                }
+            }
+            onStartSplitFlow(uri.toString(), filename)
+        }
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         NavigationRail(
@@ -86,6 +107,31 @@ fun LibraryScreenTablet(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 )
+            },
+            floatingActionButton = {
+                Column(horizontalAlignment = Alignment.End) {
+                    FloatingActionButton(
+                        onClick = onStartMergeFlow,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.CallMerge, contentDescription = "New Merge")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Merge")
+                        }
+                    }
+                    FloatingActionButton(
+                        onClick = { splitFilePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*")) },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.CallSplit, contentDescription = "New Split")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Split")
+                        }
+                    }
+                }
             }
         ) { padding ->
             Row(
@@ -112,7 +158,7 @@ fun LibraryScreenTablet(
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.weight(1f)
                         )
-                        IconButton(onClick = onStartSplitFlow) {
+                        IconButton(onClick = { splitFilePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*")) }) {
                             Icon(Icons.Default.CallSplit, contentDescription = "Split")
                         }
                         IconButton(onClick = onStartMergeFlow) {

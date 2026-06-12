@@ -161,11 +161,19 @@ fun SplitConfigScreenTablet(
                         Icon(Icons.Default.Folder, contentDescription = "Folder")
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = state.outputFolder,
+                            text = state.outputFolder.ifEmpty { "Select Output Folder" },
                             fontSize = 14.sp,
+                            color = if (state.outputFolder.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
-                        IconButton(onClick = {}) {
+                        val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+                            contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
+                        ) { uri ->
+                            if (uri != null) {
+                                viewModel.updateOutputFolder(uri.toString())
+                            }
+                        }
+                        IconButton(onClick = { folderPicker.launch(null) }) {
                             Icon(Icons.Default.Folder, contentDescription = "Change")
                         }
                     }

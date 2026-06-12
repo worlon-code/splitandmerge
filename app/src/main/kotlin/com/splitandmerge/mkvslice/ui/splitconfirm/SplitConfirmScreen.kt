@@ -45,7 +45,7 @@ import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigViewModel
 fun SplitConfirmScreen(
     viewModel: SplitConfigViewModel,
     onBack: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: (jobId: String) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
@@ -194,8 +194,12 @@ fun SplitConfirmScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val context = androidx.compose.ui.platform.LocalContext.current
             Button(
-                onClick = onConfirm,
+                onClick = { 
+                    val jobId = viewModel.startSplitJob(context)
+                    onConfirm(jobId)
+                },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()

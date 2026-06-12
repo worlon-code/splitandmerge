@@ -5,6 +5,24 @@
 
 ---
 
+## [0.0.5] — 2026-06-12
+
+🚀 NEW FEATURES
+- Real-time engine progress reporting including ETA and MB/s metrics during splitting.
+- Implemented Phase 6: Merge engine using FFmpeg `concat` demuxer and connected it to the MergeConfig UI.
+- Integrated automatic file subfolder grouping logic based on title prefixes.
+
+🔧 BUG FIXES
+- Corrected the `totalParts` miscalculation bug when using Size Cap only mode.
+
+⚡ IMPROVEMENTS
+- Added powerful regex-based filename Title Cleaner to automatically normalize messy release names (e.g. stripping codec, resolution, and release group markers).
+
+📦 TECHNICAL
+- Version bump to 0.0.5, versionCode 5.
+- Deployed `deploy_release.ps1` fallback to avoid failing when GitHub CLI (`gh`) is not installed.
+- Database Schema migrated from version 1 to 2 to support real-time metrics storage on JobEntity.
+
 ## [0.0.4] — 2026-06-12
 
 🚀 NEW FEATURES

@@ -47,16 +47,38 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.provider.OpenableColumns
+import androidx.compose.ui.platform.LocalContext
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     viewModel: LibraryViewModel,
     onNavigateToSettings: () -> Unit,
-    onStartSplitFlow: () -> Unit,
+    onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
     onNavigateToJobDetail: (String) -> Unit
 ) {
     val jobs by viewModel.jobs.collectAsState()
+    val context = LocalContext.current
+
+    val splitFilePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            // Get filename from URI
+            var filename = "Unknown"
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (cursor.moveToFirst() && nameIndex >= 0) {
+                    filename = cursor.getString(nameIndex)
+                }
+            }
+            onStartSplitFlow(uri.toString(), filename)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -86,7 +108,7 @@ fun LibraryScreen(
                     }
                 }
                 FloatingActionButton(
-                    onClick = onStartSplitFlow,
+                    onClick = { splitFilePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*")) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
                     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {

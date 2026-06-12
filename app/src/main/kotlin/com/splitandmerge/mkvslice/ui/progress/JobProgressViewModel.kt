@@ -1,10 +1,11 @@
 package com.splitandmerge.mkvslice.ui.progress
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.domain.model.JobStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,49 +14,55 @@ import javax.inject.Inject
 
 data class ProgressState(
     val jobId: String = "",
-    val fileName: String = "Baahubali The Epic 2025.mkv",
-    val status: JobStatus = JobStatus.RUNNING,
+    val fileName: String = "Loading...",
+    val status: JobStatus = JobStatus.QUEUED,
     val progress: Float = 0.0f,
     val currentPart: Int = 1,
-    val totalParts: Int = 3,
-    val speedMbs: Float = 85.0f,
-    val etaSeconds: Int = 120
+    val totalParts: Int = 1,
+    val speedMbs: Float = 0.0f,
+    val etaSeconds: Int = 0
 )
 
 @HiltViewModel
-class JobProgressViewModel @Inject constructor() : ViewModel() {
+class JobProgressViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val jobDao: JobDao
+) : ViewModel() {
     private val _state = MutableStateFlow(ProgressState())
     val state: StateFlow<ProgressState> = _state.asStateFlow()
+    
+    private val jobId: String = checkNotNull(savedStateHandle.get<String>("jobId"))
 
     init {
-        simulateProgress()
+        observeJob()
     }
 
-    private fun simulateProgress() {
+    private fun observeJob() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(jobId = "2")
-            var currentProgress = 0.0f
-            while (currentProgress < 1.0f) {
-                delay(1000)
-                currentProgress += 0.05f
-                val progressVal = Math.min(1.0f, currentProgress)
-                val part = when {
-                    progressVal < 0.33f -> 1
-                    progressVal < 0.66f -> 2
-                    else -> 3
+            jobDao.observeById(jobId).collect { jobEntity ->
+                if (jobEntity != null) {
+                    val actualTotalParts = jobEntity.totalParts ?: (jobEntity.requestedParts ?: 1)
+                    
+                    _state.value = _state.value.copy(
+                        jobId = jobEntity.id,
+                        fileName = jobEntity.outputBaseName,
+                        status = jobEntity.status,
+                        progress = jobEntity.progressPct / 100f,
+                        totalParts = actualTotalParts,
+                        speedMbs = (jobEntity.speedMbs ?: 0.0).toFloat(),
+                        etaSeconds = jobEntity.etaSeconds ?: 0,
+                        currentPart = ((jobEntity.progressPct / 100f) * actualTotalParts).toInt().coerceIn(1, actualTotalParts)
+                    )
                 }
-                val remainingSeconds = ((1.0f - progressVal) * 120).toInt()
-                _state.value = _state.value.copy(
-                    progress = progressVal,
-                    currentPart = part,
-                    etaSeconds = remainingSeconds
-                )
             }
-            _state.value = _state.value.copy(status = JobStatus.DONE, progress = 1.0f)
         }
     }
 
     fun cancelJob() {
-        _state.value = _state.value.copy(status = JobStatus.CANCELLED)
+        viewModelScope.launch {
+            _state.value = _state.value.copy(status = JobStatus.CANCELLED)
+            jobDao.updateProgress(jobId, JobStatus.CANCELLED, _state.value.progress.toInt() * 100, null, null, null, System.currentTimeMillis())
+            // Note: JobService handles listening for CANCELLED via intent.
+        }
     }
 }

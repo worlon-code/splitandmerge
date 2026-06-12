@@ -2,7 +2,7 @@ package com.splitandmerge.mkvslice.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -56,12 +56,12 @@ fun AppNav() {
         }
 
         composable(Routes.LIBRARY) {
-            val libraryViewModel: LibraryViewModel = viewModel()
+            val libraryViewModel: LibraryViewModel = hiltViewModel()
             if (isTablet) {
                 LibraryScreenTablet(
                     viewModel = libraryViewModel,
                     onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
-                    onStartSplitFlow = { navController.navigate(Routes.FILE_DETAILS) },
+                    onStartSplitFlow = { uri, filename -> navController.navigate(Routes.fileDetails(uri, filename)) },
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
@@ -71,7 +71,7 @@ fun AppNav() {
                 LibraryScreen(
                     viewModel = libraryViewModel,
                     onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
-                    onStartSplitFlow = { navController.navigate(Routes.FILE_DETAILS) },
+                    onStartSplitFlow = { uri, filename -> navController.navigate(Routes.fileDetails(uri, filename)) },
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
@@ -80,17 +80,44 @@ fun AppNav() {
             }
         }
 
-        composable(Routes.FILE_DETAILS) {
-            val fileDetailsViewModel: FileDetailsViewModel = viewModel()
+        composable(
+            route = Routes.FILE_DETAILS,
+            arguments = listOf(
+                navArgument("uri") { type = NavType.StringType },
+                navArgument("filename") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val uri = backStackEntry.arguments?.getString("uri") ?: ""
+            val filename = backStackEntry.arguments?.getString("filename") ?: ""
+            val fileDetailsViewModel: FileDetailsViewModel = hiltViewModel()
+            
+            androidx.compose.runtime.LaunchedEffect(uri) {
+                if (uri.isNotEmpty()) {
+                    fileDetailsViewModel.probeFile(uri, filename)
+                }
+            }
+
             FileDetailsScreen(
                 viewModel = fileDetailsViewModel,
                 onBack = { navController.popBackStack() },
-                onContinue = { navController.navigate(Routes.SPLIT_CONFIG) }
+                onContinue = { 
+                    val size = fileDetailsViewModel.fileDetails.value?.sizeBytes ?: 0L
+                    val dur = fileDetailsViewModel.fileDetails.value?.durationSec ?: 0.0
+                    navController.navigate(Routes.splitConfig(uri, filename, size, dur)) 
+                }
             )
         }
 
-        composable(Routes.SPLIT_CONFIG) {
-            val splitConfigViewModel: SplitConfigViewModel = viewModel()
+        composable(
+            route = Routes.SPLIT_CONFIG,
+            arguments = listOf(
+                navArgument("uri") { type = NavType.StringType },
+                navArgument("filename") { type = NavType.StringType },
+                navArgument("sizeBytes") { type = NavType.StringType },
+                navArgument("durationSec") { type = NavType.StringType }
+            )
+        ) {
+            val splitConfigViewModel: SplitConfigViewModel = hiltViewModel()
             if (isTablet) {
                 SplitConfigScreenTablet(
                     viewModel = splitConfigViewModel,
@@ -108,12 +135,18 @@ fun AppNav() {
 
         composable(Routes.SPLIT_CONFIRM) {
             // Sharing ViewModel to show preview details in confirmation
-            val splitConfigViewModel: SplitConfigViewModel = viewModel()
+            val parentEntry = navController.previousBackStackEntry
+            val splitConfigViewModel: SplitConfigViewModel = if (parentEntry != null) {
+                hiltViewModel(parentEntry)
+            } else {
+                hiltViewModel()
+            }
+            
             SplitConfirmScreen(
                 viewModel = splitConfigViewModel,
                 onBack = { navController.popBackStack() },
-                onConfirm = {
-                    navController.navigate(Routes.jobProgress("job-1")) {
+                onConfirm = { generatedJobId ->
+                    navController.navigate(Routes.jobProgress(generatedJobId)) {
                         popUpTo(Routes.LIBRARY) { inclusive = false }
                     }
                 }
@@ -125,7 +158,7 @@ fun AppNav() {
             arguments = listOf(navArgument("jobId") { type = NavType.StringType })
         ) { backStackEntry ->
             val jobId = backStackEntry.arguments?.getString("jobId") ?: "1"
-            val progressViewModel: JobProgressViewModel = viewModel()
+            val progressViewModel: JobProgressViewModel = hiltViewModel()
             JobProgressScreen(
                 viewModel = progressViewModel,
                 jobId = jobId,
@@ -157,19 +190,30 @@ fun AppNav() {
         }
 
         composable(Routes.MERGE_ORDER) {
-            val mergeOrderViewModel: MergeOrderViewModel = viewModel()
-            MergeOrderScreen(
+            val mergeOrderViewModel: com.splitandmerge.mkvslice.ui.mergeorder.MergeOrderViewModel = hiltViewModel()
+            com.splitandmerge.mkvslice.ui.mergeorder.MergeOrderScreen(
                 viewModel = mergeOrderViewModel,
                 onBack = { navController.popBackStack() },
-                onContinue = { navController.navigate(Routes.MERGE_CONFIG) }
+                onContinue = { navController.navigate(Routes.mergeConfig(mergeOrderViewModel.getPartsUris())) }
             )
         }
 
-        composable(Routes.MERGE_CONFIG) {
-            MergeConfigScreen(
+        composable(
+            route = Routes.MERGE_CONFIG,
+            arguments = listOf(navArgument("uris") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val uris = backStackEntry.arguments?.getString("uris") ?: ""
+            val mergeConfigViewModel: com.splitandmerge.mkvslice.ui.mergeconfig.MergeConfigViewModel = hiltViewModel()
+            
+            androidx.compose.runtime.LaunchedEffect(uris) {
+                mergeConfigViewModel.initMock(uris)
+            }
+            
+            com.splitandmerge.mkvslice.ui.mergeconfig.MergeConfigScreen(
+                viewModel = mergeConfigViewModel,
                 onBack = { navController.popBackStack() },
-                onConfirm = {
-                    navController.navigate(Routes.jobProgress("job-2")) {
+                onConfirm = { jobId ->
+                    navController.navigate(Routes.jobProgress(jobId)) {
                         popUpTo(Routes.LIBRARY) { inclusive = false }
                     }
                 }
@@ -188,7 +232,7 @@ fun AppNav() {
         }
 
         composable(Routes.SETTINGS) {
-            val settingsViewModel: SettingsViewModel = viewModel()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 viewModel = settingsViewModel,
                 onBack = { navController.popBackStack() },
@@ -198,7 +242,7 @@ fun AppNav() {
         }
 
         composable(Routes.CLEANUP_PATTERNS) {
-            val cleanupViewModel: CleanupPatternsViewModel = viewModel()
+            val cleanupViewModel: CleanupPatternsViewModel = hiltViewModel()
             if (isTablet) {
                 CleanupPatternsScreenTablet(
                     viewModel = cleanupViewModel,

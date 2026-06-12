@@ -1,10 +1,14 @@
 package com.splitandmerge.mkvslice.ui.filedetails
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.splitandmerge.mkvslice.engine.FfprobeEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 data class MediaStream(
@@ -16,6 +20,7 @@ data class MediaStream(
 )
 
 data class FileDetails(
+    val uri: String,
     val name: String,
     val sizeBytes: Long,
     val durationSec: Double,
@@ -25,28 +30,52 @@ data class FileDetails(
 )
 
 @HiltViewModel
-class FileDetailsViewModel @Inject constructor() : ViewModel() {
+class FileDetailsViewModel @Inject constructor(
+    private val ffprobeEngine: FfprobeEngine
+) : ViewModel() {
     private val _fileDetails = MutableStateFlow<FileDetails?>(null)
     val fileDetails: StateFlow<FileDetails?> = _fileDetails.asStateFlow()
 
-    init {
-        loadMockDetails()
-    }
+    fun probeFile(uri: String, filename: String) {
+        viewModelScope.launch {
+            try {
+                _fileDetails.value = null // reset while loading
+                val result = ffprobeEngine.probe(uri)
+                
+                // Determine main resolution from first video stream
+                val videoStream = result.streams.firstOrNull { it.codecType == "video" }
+                val resolution = if (videoStream != null && videoStream.width != null && videoStream.height != null) {
+                    "${videoStream.width}x${videoStream.height}"
+                } else {
+                    "Unknown"
+                }
 
-    private fun loadMockDetails() {
-        _fileDetails.value = FileDetails(
-            name = "Baahubali The Epic 2025 2160p NEWEB-DL DUAL DTS HD MA DDP5.1 H.265.mkv",
-            sizeBytes = 28485939200, // 26.5 GB
-            durationSec = 9642.0, // 2h 40m 42s
-            resolution = "3840x2160 (4K UHD)",
-            container = "Matroska (MKV)",
-            streams = listOf(
-                MediaStream(0, "Video", "hevc (Main 10)", "3840x2160, 23.976 fps, HDR10"),
-                MediaStream(1, "Audio", "dts", "DTS-HD Master Audio, 6 channels, 48kHz", "Telugu"),
-                MediaStream(2, "Audio", "eac3", "Dolby Digital Plus, 6 channels, 48kHz", "Hindi"),
-                MediaStream(3, "Subtitle", "ass", "Advanced SubStation Alpha", "English"),
-                MediaStream(4, "Subtitle", "ass", "Advanced SubStation Alpha", "Telugu")
-            )
-        )
+                _fileDetails.value = FileDetails(
+                    uri = uri,
+                    name = filename,
+                    sizeBytes = result.format.sizeBytes,
+                    durationSec = result.format.durationSeconds,
+                    resolution = resolution,
+                    container = result.format.formatName,
+                    streams = result.streams.map { s ->
+                        val type = s.codecType.replaceFirstChar { it.uppercase() }
+                        var details = "${s.codecName.uppercase()}"
+                        if (s.channels != null) details += ", ${s.channels} channels"
+                        if (s.profile != null) details += " (${s.profile})"
+                        
+                        MediaStream(
+                            index = s.index,
+                            type = type,
+                            codec = s.codecName,
+                            details = details,
+                            language = s.language
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to probe file: $uri")
+                // TODO: handle error state
+            }
+        }
     }
 }

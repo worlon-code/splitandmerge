@@ -43,24 +43,6 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 
 ## Phase 4 — Engine: probe + keyframes
 
-| ID | Status | Title | Owner |
-|---|---|---|---|
-| T-040 | TODO | Choose FFmpeg artefact (community fork survey). Document in `ENGINE.md` §1. | agent |
-| T-041 | TODO | Pin in `gradle/libs.versions.toml`. | agent |
-| T-042 | TODO | `FfmpegEngine` + `FfprobeEngine` interfaces + `ProcessFfmpegEngine` impl. | agent |
-| T-043 | TODO | `ProgressParser` with full unit tests. | agent |
-| T-044 | TODO | Engine smoke test on emulator + real device. | agent |
-| T-045 | TODO | Wire S4 to real `ffprobe`. | agent |
-
-## Phase 5 — Engine: split
-
-| ID | Status | Title | Owner |
-|---|---|---|---|
-| T-050 | TODO | `CutPlanner` with full unit tests (every branch in `analysis/03`). | agent |
-| T-051 | TODO | `Splitter` orchestrator. | agent |
-| T-052 | TODO | `JobService` foreground service + notification. | agent |
-| T-053 | TODO | `JobsRepository` with progress bus. | agent |
-| T-054 | TODO | Manifest writer (`Manifest.write`). | agent |
 | T-055 | TODO | Storage check + auto-resplit fallback. | agent |
 | T-056 | TODO | End-to-end test: split a 1 GB fixture; subs intact. | agent |
 

@@ -27,19 +27,7 @@ class MergeOrderViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<MergeOrderState> = _state.asStateFlow()
 
     init {
-        loadMockParts()
-    }
-
-    private fun loadMockParts() {
-        _state.value = MergeOrderState(
-            parts = listOf(
-                MergePart("1", 0, "Bahubali (2025).part001.mkv", 9239850123, 3120.0),
-                MergePart("2", 1, "Bahubali (2025).part002.mkv", 9123850123, 3080.0),
-                MergePart("3", 2, "Kantara.part001.mkv", 8823850123, 2900.0, "Mismatched codecs: HEVC vs H264"),
-                MergePart("4", 3, "Bahubali (2025).part003.mkv", 9212850123, 3150.0)
-            ),
-            isCompatible = false
-        )
+        // Start empty
     }
 
     fun removePart(partId: String) {
@@ -55,5 +43,27 @@ class MergeOrderViewModel @Inject constructor() : ViewModel() {
             list.add(toIndex, item)
             _state.value = _state.value.copy(parts = list)
         }
+    }
+
+    fun addParts(uris: List<String>) {
+        val newParts = uris.mapIndexed { index, uri ->
+            // Just a basic representation. Real app would probe the files to get real sizes
+            MergePart(
+                id = java.util.UUID.randomUUID().toString(),
+                index = _state.value.parts.size + index,
+                name = uri, // Use URI as name temporarily
+                sizeBytes = 0L,
+                durationSec = 0.0
+            )
+        }
+        val updatedList = _state.value.parts + newParts
+        _state.value = _state.value.copy(
+            parts = updatedList,
+            isCompatible = true // Assume compatible for now since we skip actual probing
+        )
+    }
+
+    fun getPartsUris(): String {
+        return _state.value.parts.joinToString(",") { it.name } // Name stores URI for now
     }
 }

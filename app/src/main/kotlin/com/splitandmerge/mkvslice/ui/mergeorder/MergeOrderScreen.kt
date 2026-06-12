@@ -66,8 +66,15 @@ fun MergeOrderScreen(
             )
         },
         floatingActionButton = {
+            val filePicker = androidx.activity.compose.rememberLauncherForActivityResult(
+                contract = androidx.activity.result.contract.ActivityResultContracts.OpenMultipleDocuments()
+            ) { uris ->
+                if (uris.isNotEmpty()) {
+                    viewModel.addParts(uris.map { it.toString() })
+                }
+            }
             FloatingActionButton(
-                onClick = { /* SAF file pick */ },
+                onClick = { filePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*", "application/json")) },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
                 Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {

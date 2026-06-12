@@ -19,33 +19,63 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import android.content.Context
+import android.net.Uri
+import com.antonkarpenko.ffmpegkit.FFmpegKitConfig
+
 @Singleton
-class ProcessFfprobeEngine @Inject constructor() : FfprobeEngine {
+class ProcessFfprobeEngine @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
+) : FfprobeEngine {
 
     private val json = Json { ignoreUnknownKeys = true }
 
+    private fun resolveUri(uri: String): String {
+        return if (uri.startsWith("content://")) {
+            FFmpegKitConfig.getSafParameterForRead(context, Uri.parse(uri)) ?: uri
+        } else {
+            uri
+        }
+    }
+
     override suspend fun probe(uri: String): ProbeResult = withContext(Dispatchers.IO) {
-        val args = "-v error -hide_banner -show_format -show_streams -of json $uri"
-        Timber.tag("ENGINE").d("ffprobe probe: %s", uri)
+        val resolvedUri = resolveUri(uri)
+        val args = "-v error -hide_banner -show_format -show_streams -of json \"$resolvedUri\""
+        Timber.tag("ENGINE").d("ffprobe probe: %s (resolved: %s)", uri, resolvedUri)
         val session = FFprobeKit.execute(args)
-        val output = session.allLogsAsString?.trim()
+        // getOutput() captures stdout (actual probe data); allLogsAsString captures stderr (log messages)
+        val output = session.output?.trim()?.ifEmpty { null }
+            ?: session.allLogsAsString?.trim()?.ifEmpty { null }
             ?: error("ffprobe returned no output for $uri")
         parseProbeOutput(output)
     }
 
     override suspend fun keyframes(uri: String): List<Double> = withContext(Dispatchers.IO) {
+        val resolvedUri = resolveUri(uri)
+        // Use -show_packets instead of -show_frames -skip_frame nokey.
+        // -show_frames requires full frame decoding which hangs on large files (4.5GB+).
+        // -show_packets reads packet headers only — instant even for 50GB files.
+        // Output format: "pts_time,flags" — keyframes have 'K' in the flags field.
         val args = "-v error -hide_banner " +
-                "-select_streams v:0 -skip_frame nokey " +
-                "-show_frames -show_entries frame=pkt_pts_time " +
-                "-of csv=p=0 $uri"
+                "-select_streams v:0 " +
+                "-show_packets -show_entries packet=pts_time,flags " +
+                "-of csv=p=0 \"$resolvedUri\""
         Timber.tag("ENGINE").d("ffprobe keyframes: %s", uri)
         val session = FFprobeKit.execute(args)
-        val output = session.allLogsAsString?.trim() ?: return@withContext emptyList()
-        output.lineSequence()
-            .filter { it.isNotBlank() }
-            .mapNotNull { it.trim().toDoubleOrNull() }
+        val output = session.output?.trim()?.ifEmpty { null }
+            ?: session.allLogsAsString?.trim()?.ifEmpty { null }
+        if (output.isNullOrBlank()) {
+            Timber.tag("ENGINE").e("ffprobe keyframes returned empty output for %s", uri)
+            return@withContext emptyList()
+        }
+        // Filter for keyframe packets (flags contain 'K') and extract timestamps
+        val keyframes = output.lineSequence()
+            .filter { it.contains(",K") }
+            .mapNotNull { it.split(",").firstOrNull()?.trim()?.toDoubleOrNull() }
             .sorted()
             .toList()
+        Timber.tag("ENGINE").d("ffprobe found %d keyframes for %s", keyframes.size, uri)
+        keyframes
     }
 
     // ─── JSON parsing ─────────────────────────────────────────────────────────

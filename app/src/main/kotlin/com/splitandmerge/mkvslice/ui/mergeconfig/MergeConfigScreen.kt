@@ -1,53 +1,30 @@
 package com.splitandmerge.mkvslice.ui.mergeconfig
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MergeConfigScreen(
+    viewModel: MergeConfigViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: (String) -> Unit
 ) {
-    var baseName by remember { mutableStateOf("Bahubali (2025)_merged") }
-    var outputFolder by remember { mutableStateOf("/storage/emulated/0/Movies") }
-    val scrollState = rememberScrollState()
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -69,21 +46,19 @@ fun MergeConfigScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(scrollState)
+                modifier = Modifier.weight(1f)
             ) {
                 OutlinedTextField(
-                    value = baseName,
-                    onValueChange = { baseName = it },
-                    label = { Text("Output File Name") },
+                    value = state.outputBaseName,
+                    onValueChange = { viewModel.updateBaseName(it) },
+                    label = { Text("Output Base Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text("Output Folder", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -98,78 +73,38 @@ fun MergeConfigScreen(
                         Icon(Icons.Default.Folder, contentDescription = "Folder")
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = outputFolder,
+                            text = state.outputFolder.ifEmpty { "Select Output Folder" },
                             fontSize = 14.sp,
+                            color = if (state.outputFolder.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
-                        IconButton(onClick = {}) {
+                        val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+                            contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
+                        ) { uri ->
+                            if (uri != null) {
+                                viewModel.updateOutputFolder(uri.toString())
+                            }
+                        }
+                        IconButton(onClick = { folderPicker.launch(null) }) {
                             Icon(Icons.Default.Folder, contentDescription = "Change")
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            text = "Merge Summary",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 16.sp
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = "This will join 3 video parts into a single video file named \"$baseName.mkv\".",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 14.sp,
-                            lineHeight = 20.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Estimated output size: ~25.54 GB",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Info, contentDescription = "Lossless Warning", tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "Merging is a 100% lossless copy operation. Codec parameters are preserved exactly without any quality reduction.",
-                            fontSize = 12.sp,
-                            lineHeight = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(
-                onClick = onConfirm,
+                onClick = { 
+                    viewModel.submitMergeJob { jobId ->
+                        onConfirm(jobId)
+                    }
+                },
+                enabled = state.outputFolder.isNotEmpty() && state.outputBaseName.isNotEmpty(),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text("Start Lossless Merge", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Start Merge", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
         }
     }
