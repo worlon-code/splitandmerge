@@ -42,7 +42,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-ffmpeg-kit-video = { group = "com.antonkarpenko", name = "ffmpeg-kit-video", version.ref = "ffmpegKit" }
+ffmpeg-kit = { group = "com.antonkarpenko", name = "ffmpeg-kit-min", version.ref = "ffmpegKit" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

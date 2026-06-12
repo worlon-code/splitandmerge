@@ -5,6 +5,20 @@
 
 ---
 
+## [0.0.4] — 2026-06-12
+
+🚀 NEW FEATURES
+- Integrated com.antonkarpenko:ffmpeg-kit-min:2.1.0 (LGPL 3.0 only) for native FFmpeg command execution.
+- Implemented core engine wrappers for metadata extraction (FFprobe) and video manipulation (FFmpeg).
+- Created a pure Kotlin `CutPlanner` to calculate split points based on keyframes and target caps.
+
+📦 TECHNICAL
+- Version bump to 0.0.4, versionCode 4.
+- Added dependency injection bindings for Engine components.
+- Added comprehensive unit and instrumented smoke tests for the Engine implementations.
+
+---
+
 ## [0.0.3] — 2026-06-12
 
 🚀 NEW FEATURES

@@ -15,8 +15,8 @@ android {
         applicationId = "com.splitandmerge.mkvslice"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.0.3"
+        versionCode = 4
+        versionName = "0.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -114,8 +114,8 @@ dependencies {
     // Logging
     implementation(libs.timber)
 
-    // FFmpeg Engine (Jitpack/tanersener fork)
-    implementation(libs.ffmpeg.kit.video)
+    // FFmpeg Engine — com.antonkarpenko:ffmpeg-kit-min:2.1.0 (LGPL 3.0 only)
+    implementation(libs.ffmpeg.kit)
 
     // Testing
     testImplementation(libs.junit)
