@@ -5,7 +5,24 @@
 
 ---
 
-## [Unreleased]
+## [0.0.3] — 2026-06-12
+
+🚀 NEW FEATURES
+- Release build for version 0.0.3 (APK ready).
+
+🔧 BUG FIXES
+- (none)
+
+⚡ IMPROVEMENTS
+- (none)
+
+📦 TECHNICAL
+- Version bump to 0.0.3, versionCode 3.
+- Updated changelog.
+
+---
+
+## [0.0.2] — 2026-06-12
 
 🚀 NEW FEATURES
 - (none yet — Phase 1 scaffold pending)

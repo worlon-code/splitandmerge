@@ -10,6 +10,7 @@ Format: `YYYY-MM-DD · phase · short title · ref(s)`.
 
 ## 2026-06-12 — Pre-scaffold (specs)
 
+- 2026-06-12 · 3 · Release build v0.0.3 successfully compiled, signed, and GitHub release package prepared. · ref: `app/build.gradle.kts`, `AI/CHANGELOG.md`, `logs/release_20260612_194100.log`.
 - 2026-06-12 · 2 · Existing lint blockers fixed; `run-tests.ps1` hardened for local execution; debug APK built, tested, and installed on device. · ref: `app/src/main/AndroidManifest.xml`, `app/src/main/res/xml/data_extraction_rules.xml`, `run-tests.ps1`, `logs/`.
 - 2026-06-12 · 2 · Phase 2 Stitch audit completed; canonical screen mapping published in `AI/DESIGN_INDEX.md` and S10 light export reconciled. · ref: `AI/DESIGN_INDEX.md`, `AI/SCREENS.md`, `AI/tasks.md`.
 
