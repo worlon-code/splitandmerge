@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OSS Notices - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#3e4946",
+                    "on-background": "#e0e3e1",
+                    "outline": "#889390",
+                    "background": "#101413",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#20005f",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2d3130",
+                    "tertiary-container": "#8f4c36",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "surface-container": "#1c201f",
+                    "error-container": "#93000a",
+                    "surface-container-highest": "#313634",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "inverse-surface": "#e0e3e1",
+                    "secondary": "#cdbdff",
+                    "on-secondary": "#370492",
+                    "inverse-primary": "#006b5f",
+                    "primary-container": "#006b5f",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-lowest": "#0b0f0e",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-dim": "#101413",
+                    "surface": "#101413",
+                    "on-secondary-container": "#bda8ff",
+                    "surface-tint": "#83d5c6",
+                    "primary": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "tertiary": "#ffb59e",
+                    "on-tertiary-fixed": "#390b00",
+                    "on-tertiary-container": "#ffcebf",
+                    "on-primary-container": "#95e8d9",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "secondary-container": "#4e2ca9",
+                    "error": "#ffb4ab",
+                    "secondary-fixed": "#e8deff",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-fixed-variant": "#005047",
+                    "primary-fixed-dim": "#83d5c6",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-variant": "#313634",
+                    "surface-bright": "#363a39",
+                    "surface-container-high": "#272b2a",
+                    "tertiary-fixed": "#ffdbd0",
+                    "surface-container-low": "#181c1b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8px",
+                    "tablet_margin": "24px",
+                    "touch_target_min": "48px",
+                    "phone_margin": "16px",
+                    "list_padding": "12px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "display-lg": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .oss-card-shadow {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        /* Custom scrollbar for technical readouts */
+        .oss-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .oss-content::-webkit-scrollbar-track {
+            background: #0b0f0e;
+        }
+        .oss-content::-webkit-scrollbar-thumb {
+            background: #3e4946;
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="bg-surface-container flex justify-between items-center px-phone_margin h-touch_target_min w-full sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors duration-200 text-on-surface" onclick="history.back()">
+                arrow_back
+            </button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">OSS Notices</h1>
+</div>
+<div class="flex items-center gap-1">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors duration-200 text-on-surface">
+                search
+            </button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors duration-200 text-on-surface">
+                help
+            </button>
+</div>
+</header>
+<main class="flex-grow px-phone_margin py-6 pb-24 md:px-tablet_margin max-w-4xl mx-auto w-full">
+<div class="mb-8">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                This software is built upon open-source foundations. We acknowledge and thank the contributors of the following libraries for their invaluable technical contributions to high-performance video processing.
+            </p>
+</div>
+<!-- OSS Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Library 1: FFmpeg (The Core) -->
+<div class="bg-surface-container-high rounded-xl p-5 oss-card-shadow border border-outline-variant/30 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">FFmpeg</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">v6.0.1 (Heaviside)</span>
+</div>
+<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                        LGPL 2.1
+                    </div>
+</div>
+<p class="text-on-surface-variant font-body-md opacity-80">
+                    Cross-platform solution to record, convert and stream audio and video. Used for lossless video segmenting and codec transcoding.
+                </p>
+<div class="mt-auto pt-4 border-t border-outline-variant/20">
+<button class="flex items-center gap-2 text-primary hover:underline text-label-md font-label-md transition-all">
+                        VIEW FULL LICENSE
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Library 2: MediaPipe -->
+<div class="bg-surface-container-high rounded-xl p-5 oss-card-shadow border border-outline-variant/30 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">MediaPipe</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">v0.10.0</span>
+</div>
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                        Apache 2.0
+                    </div>
+</div>
+<p class="text-on-surface-variant font-body-md opacity-80">
+                    Cross-platform ML solutions for live and streaming media. Utilized for intelligent frame-accurate scene detection.
+                </p>
+<div class="mt-auto pt-4 border-t border-outline-variant/20">
+<button class="flex items-center gap-2 text-primary hover:underline text-label-md font-label-md transition-all">
+                        VIEW FULL LICENSE
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Library 3: Exoplayer -->
+<div class="bg-surface-container-high rounded-xl p-5 oss-card-shadow border border-outline-variant/30 md:col-span-2 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-primary">video_library</span>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">ExoPlayer</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">androidx.media3</span>
+</div>
+</div>
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                        Apache 2.0
+                    </div>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-4 mt-2">
+<code class="font-label-md text-label-md text-on-surface-variant oss-content block max-h-32 overflow-y-auto">
+                        Copyright 2024 The Android Open Source Project<br/><br/>
+                        Licensed under the Apache License, Version 2.0 (the "License");
+                        you may not use this file except in compliance with the License.<br/><br/>
+                        Unless required by applicable law or agreed to in writing, software
+                        distributed under the License is distributed on an "AS IS" BASIS,
+                        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                    </code>
+</div>
+</div>
+<!-- Library 4: Kotlin Coroutines -->
+<div class="bg-surface-container-high rounded-xl p-5 oss-card-shadow border border-outline-variant/30 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">Kotlin Coroutines</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">v1.7.3</span>
+</div>
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                        Apache 2.0
+                    </div>
+</div>
+<p class="text-on-surface-variant font-body-md opacity-80">
+                    Asynchronous programming with Kotlin. Powers the multi-threaded file queue and background processing engine.
+                </p>
+<div class="mt-auto pt-4 border-t border-outline-variant/20">
+<button class="flex items-center gap-2 text-primary hover:underline text-label-md font-label-md transition-all">
+                        VIEW FULL LICENSE
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Library 5: Material Design -->
+<div class="bg-surface-container-high rounded-xl p-5 oss-card-shadow border border-outline-variant/30 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">Material Components</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">M3 Design System</span>
+</div>
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                        Apache 2.0
+                    </div>
+</div>
+<p class="text-on-surface-variant font-body-md opacity-80">
+                    Modular and customizable UI components for Android. Providing the structural foundation for this interface.
+                </p>
+<div class="mt-auto pt-4 border-t border-outline-variant/20">
+<button class="flex items-center gap-2 text-primary hover:underline text-label-md font-label-md transition-all">
+                        VIEW FULL LICENSE
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-12 mb-24 text-center">
+<p class="font-label-md text-label-md text-outline">
+                Version 2.4.0-Stable<br/>
+                Build kinetic-logic-2024-alpha
+            </p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform duration-100">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform duration-100">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform duration-100">format_list_bulleted</span>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</a>
+<!-- ACTIVE: Settings -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-100 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<!-- Interactive Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.bg-surface-container-high').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = 'rgba(131, 213, 198, 0.4)'; // primary with opacity
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = 'rgba(62, 73, 70, 0.3)'; // outline-variant with opacity
+            });
+        });
+
+        // Simple ripples for the buttons
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+            circle.classList.add("ripple");
+
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) { ripple.remove(); }
+            button.appendChild(circle);
+        }
+
+        const buttons = document.getElementsByTagName("button");
+        for (const button of buttons) {
+            button.addEventListener("click", createRipple);
+        }
+    </script>
+<style>
+        span.ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 600ms linear;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</body></html>

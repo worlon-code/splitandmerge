@@ -1,0 +1,23 @@
+# Built-in Gradle/Android Studio ignores
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+/app/build
+/app/release/
+
+# Project-specific exclusions (AGENTS.md Section 14)
+/logs/*.log
+!/logs/.gitkeep
+/AI/plans/*.draft.md
+/keystore.properties
+*.jks

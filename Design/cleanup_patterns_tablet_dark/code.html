@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter - Title Cleanup Patterns</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#e0e3e1",
+                        "outline": "#889390",
+                        "background": "#000000",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2d3130",
+                        "tertiary-container": "#8f4c36",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#0A0A0A",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#313634",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "inverse-surface": "#e0e3e1",
+                        "secondary": "#cdbdff",
+                        "on-secondary": "#370492",
+                        "inverse-primary": "#006b5f",
+                        "primary-container": "#006b5f",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#050505",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#101413",
+                        "surface": "#101413",
+                        "on-secondary-container": "#bda8ff",
+                        "surface-tint": "#83d5c6",
+                        "primary": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "tertiary": "#ffb59e",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#ffcebf",
+                        "on-primary-container": "#95e8d9",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#4e2ca9",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#313634",
+                        "surface-bright": "#363a39",
+                        "surface-container-high": "#151515",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#080808"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "4px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3e4946;
+            border-radius: 10px;
+        }
+        .monospaced-technical {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- Navigation Drawer (Tablet Mode) -->
+<aside class="hidden md:flex flex-col h-full w-80 bg-surface-container-low border-r border-outline-variant py-6">
+<div class="px-6 mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">movie_edit</span>
+<h1 class="font-title-lg text-title-lg text-on-surface">Lossless Tools</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full flex items-center gap-3 cursor-pointer transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-lg text-body-lg">Dashboard</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full flex items-center gap-3 cursor-pointer transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-body-lg text-body-lg">Processing Queue</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full flex items-center gap-3 cursor-pointer transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">video_library</span>
+<span class="font-body-lg text-body-lg">Library</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full flex items-center gap-3 cursor-pointer transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">storage</span>
+<span class="font-body-lg text-body-lg">Disk Usage</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container font-medium mx-3 rounded-full px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full flex items-center gap-3 cursor-pointer transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-lg text-body-lg">Help</span>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant/30">
+<div class="flex justify-between items-center mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Engine Status</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="monospaced-technical text-[10px] text-primary/70 leading-tight">
+                    FFMPEG_v6.1_LOSSLESS_READY<br/>
+                    BUFF_SIZE: 512MB<br/>
+                    THREAD_COUNT: 16
+                </div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative">
+<!-- Top App Bar -->
+<header class="h-16 flex items-center justify-between px-tablet_margin sticky top-0 z-30 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 hover:bg-surface-container-high rounded-full transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h2 class="font-title-lg text-title-lg text-primary">Title Cleanup Patterns</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full text-primary transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined">save</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<section class="flex-1 overflow-y-auto p-tablet_margin custom-scrollbar">
+<div class="max-w-5xl mx-auto space-y-8">
+<!-- Introduction Card -->
+<div class="p-6 bg-surface-container rounded-2xl border border-outline-variant/50 relative overflow-hidden group">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+<div class="relative z-10">
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-4 max-w-2xl">
+                            Configure regular expression patterns to automatically sanitize video filenames during the split and export process. These rules are applied sequentially to ensure consistent technical nomenclature across your library.
+                        </p>
+<div class="flex gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-highest rounded-full border border-outline-variant/30 text-label-md font-label-md text-primary">
+<span class="material-symbols-outlined text-sm">auto_fix_high</span> Active Engine
+                            </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-highest rounded-full border border-outline-variant/30 text-label-md font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">history_edu</span> 14 Rules Applied
+                            </span>
+</div>
+</div>
+</div>
+<!-- Pattern Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Main Regex Editor (Large) -->
+<div class="md:col-span-8 space-y-6">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-headline-md text-headline-md text-on-surface">Active Patterns</h3>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-full font-label-md text-label-md transition-all active:scale-[0.97] hover:shadow-lg hover:shadow-primary/20">
+<span class="material-symbols-outlined">add_circle</span> New Pattern
+                            </button>
+</div>
+<!-- Pattern List Container -->
+<div class="space-y-3">
+<!-- Rule 1 -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-xl border border-outline-variant/40 hover:border-primary/50 transition-colors">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-title-lg text-title-lg text-[16px]">Remove Resolution Tags</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded border border-primary/20 uppercase font-bold tracking-tighter">Regex</span>
+</div>
+<div class="monospaced-technical text-primary text-[13px] opacity-80">/(\[?\d{3,4}p\]?)|(\d{3,4}x\d{3,4})/gi</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-error-container text-error rounded-lg transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</div>
+<!-- Rule 2 -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-xl border border-outline-variant/40 hover:border-primary/50 transition-colors">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-title-lg text-title-lg text-[16px]">Strip Scene Metadata</span>
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary text-[10px] rounded border border-tertiary/20 uppercase font-bold tracking-tighter">Wildcard</span>
+</div>
+<div class="monospaced-technical text-tertiary text-[13px] opacity-80">*[REPACK]* | *[INTERNAL]*</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-error-container text-error rounded-lg transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</div>
+<!-- Rule 3 -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-xl border border-outline-variant/40 hover:border-primary/50 transition-colors">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-title-lg text-title-lg text-[16px]">Format Spacing</span>
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded border border-secondary/20 uppercase font-bold tracking-tighter">Global</span>
+</div>
+<div class="monospaced-technical text-secondary text-[13px] opacity-80">s/[\._]/ /g</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-error-container text-error rounded-lg transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Stats & Quick Tools -->
+<div class="md:col-span-4 space-y-6">
+<div class="p-6 bg-surface-container-high rounded-2xl border border-outline-variant/40">
+<h4 class="font-title-lg text-title-lg text-on-surface mb-4">Real-time Preview</h4>
+<div class="space-y-4">
+<div class="p-3 bg-background rounded-lg border border-outline-variant/20">
+<div class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase">Source</div>
+<div class="monospaced-technical text-[12px] break-all leading-relaxed">
+                                        Travel.Vlog.2024.4K.HEVC.x265.[1080p].INTERNAL-LOGIC.mkv
+                                    </div>
+</div>
+<div class="flex justify-center">
+<span class="material-symbols-outlined text-primary rotate-90 md:rotate-0">keyboard_double_arrow_down</span>
+</div>
+<div class="p-3 bg-primary/5 rounded-lg border border-primary/30">
+<div class="text-label-sm font-label-sm text-primary mb-1 uppercase">Result</div>
+<div class="monospaced-technical text-[12px] text-primary break-all leading-relaxed font-bold">
+                                        Travel Vlog 2024.mkv
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Presets Card -->
+<div class="p-6 bg-surface-container rounded-2xl border border-outline-variant/40">
+<h4 class="font-title-lg text-title-lg text-on-surface mb-4">Utility Packs</h4>
+<div class="space-y-2">
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-highest text-left transition-colors border border-transparent hover:border-outline-variant/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">cloud_download</span>
+<span class="font-body-md text-body-md">Media Library Standard</span>
+</div>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-highest text-left transition-colors border border-transparent hover:border-outline-variant/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">history_edu</span>
+<span class="font-body-md text-body-md">Production Clean Room</span>
+</div>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-highest text-left transition-colors border border-transparent hover:border-outline-variant/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">terminal</span>
+<span class="font-body-md text-body-md">Unix Safe Naming</span>
+</div>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Section with Advanced Toggle -->
+<div class="flex flex-col md:flex-row items-center justify-between p-6 bg-surface-container rounded-2xl border border-outline-variant/40 gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<div class="font-title-lg text-[18px]">Recursive Sanitization</div>
+<div class="text-body-md text-on-surface-variant">Apply to all sub-directories and output containers</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Subtle Interactive Layer -->
+<div class="absolute bottom-4 right-4 pointer-events-none opacity-20">
+
+</div>
+</main>
+<!-- Contextual FAB (Mobile Only) -->
+<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<script>
+        // Simple micro-interaction for pattern removal
+        document.querySelectorAll('button .material-symbols-outlined').forEach(icon => {
+            if (icon.innerText === 'delete') {
+                icon.parentElement.addEventListener('click', function() {
+                    const row = this.closest('.flex.items-center.gap-4');
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(20px)';
+                    row.style.transition = 'all 0.3s ease-out';
+                    setTimeout(() => row.remove(), 300);
+                });
+            }
+        });
+
+        // Hover animation for cards
+        document.querySelectorAll('.bg-surface-container').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

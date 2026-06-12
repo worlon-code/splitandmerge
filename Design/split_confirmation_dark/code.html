@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8f4c36",
+                    "secondary-fixed": "#e8deff",
+                    "primary-container": "#006b5f",
+                    "on-background": "#e0e3e1",
+                    "on-tertiary-container": "#ffcebf",
+                    "surface-container": "#1c201f",
+                    "surface-dim": "#101413",
+                    "background": "#000000",
+                    "surface-container-high": "#272b2a",
+                    "on-error": "#690005",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-bright": "#363a39",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-container-low": "#181c1b",
+                    "on-tertiary-fixed": "#390b00",
+                    "surface-container-highest": "#313634",
+                    "on-primary-fixed": "#00201c",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "on-secondary-container": "#bda8ff",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#cdbdff",
+                    "surface-tint": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "inverse-surface": "#e0e3e1",
+                    "outline": "#889390",
+                    "surface-variant": "#313634",
+                    "inverse-on-surface": "#2d3130",
+                    "on-surface-variant": "#bec9c5",
+                    "surface-container-lowest": "#0b0f0e",
+                    "primary": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "inverse-primary": "#006b5f",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "on-secondary-fixed": "#20005f",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "outline-variant": "#3e4946",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#83d5c6",
+                    "secondary-container": "#4e2ca9",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#101413",
+                    "on-primary-container": "#95e8d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8dp",
+                    "tablet_margin": "24dp",
+                    "phone_margin": "16dp",
+                    "list_padding": "12dp",
+                    "touch_target_min": "48dp"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        body {
+            background-color: #000000;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-4 h-[48px] w-full bg-surface-container fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-phone_margin py-16 md:px-tablet_margin">
+<!-- Full-bleed centered ElevatedCard -->
+<section class="w-full max-w-lg bg-surface-container-high rounded-xl p-8 shadow-sm border border-outline-variant/30 flex flex-col items-center">
+<!-- Icon Section -->
+<div class="mb-6 flex justify-center items-center h-16 w-16 rounded-full bg-primary-container text-on-primary-container">
+<span class="material-symbols-outlined" style="font-size: 48px;">task_alt</span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-md text-headline-md text-on-surface text-center mb-2">Ready to split</h1>
+<!-- Body Text -->
+<p class="font-body-lg text-body-lg text-on-surface-variant text-center mb-10">
+                We'll create 7 parts from the selected high-resolution source file using lossless codec parameters.
+            </p>
+<!-- Technical Table / Metadata Grid -->
+<div class="w-full bg-surface-container-lowest rounded-lg border border-outline-variant mb-10 overflow-hidden">
+<div class="flex flex-col divide-y divide-outline-variant/50">
+<!-- Row 1 -->
+<div class="flex justify-between items-center p-4">
+<span class="font-label-md text-label-md text-on-surface-variant">Source size</span>
+<span class="font-label-md text-label-md text-primary font-mono tracking-tighter">47.2 GB</span>
+</div>
+<!-- Row 2 -->
+<div class="flex justify-between items-center p-4">
+<span class="font-label-md text-label-md text-on-surface-variant">Free space</span>
+<span class="font-label-md text-label-md text-tertiary font-mono tracking-tighter">243 GB</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-3 sm:flex-row sm:justify-end">
+<button class="flex items-center justify-center px-6 py-3 rounded-full border border-outline text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors duration-200">
+                    Back
+                </button>
+<button class="flex items-center justify-center px-6 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all duration-100 gap-2">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                    Start split
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Hidden on desktop, shown as part of the shell logic) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low rounded-t-xl shadow-sm border-t border-outline-variant md:hidden">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<!-- Visual Enhancements: Gradient backdrop for AMOLED contrast -->
+<div class="fixed inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_50%_50%,#006b5f_0%,transparent_70%)] z-[-1]"></div>
+</body></html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Jobs History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .amoled-gradient {
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(16, 20, 19, 1) 100%);
+        }
+        .technical-border {
+            border: 0.5px solid #3e4946;
+        }
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .processing-pulse {
+            animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#e0e3e1",
+                        "outline": "#889390",
+                        "background": "#101413",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2d3130",
+                        "tertiary-container": "#8f4c36",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#1c201f",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#313634",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "inverse-surface": "#e0e3e1",
+                        "secondary": "#cdbdff",
+                        "on-secondary": "#370492",
+                        "inverse-primary": "#006b5f",
+                        "primary-container": "#006b5f",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#0b0f0e",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#101413",
+                        "surface": "#101413",
+                        "on-secondary-container": "#bda8ff",
+                        "surface-tint": "#83d5c6",
+                        "primary": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "tertiary": "#ffb59e",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#ffcebf",
+                        "on-primary-container": "#95e8d9",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#4e2ca9",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#313634",
+                        "surface-bright": "#363a39",
+                        "surface-container-high": "#272b2a",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#181c1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8dp",
+                        "tablet_margin": "24dp",
+                        "touch_target_min": "48dp",
+                        "phone_margin": "16dp",
+                        "list_padding": "12dp"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-black min-h-screen flex flex-col font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface-container docked full-width top-0 z-50 flex justify-between items-center px-4 h-touch_target_min w-full">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-4 pb-24 px-4 overflow-y-auto">
+<!-- Search and Filter Header -->
+<div class="mb-6">
+<div class="flex items-center justify-between mb-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Queue</h1>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm bg-primary-container text-on-primary-container px-2 py-1 rounded">2 RUNNING</span>
+<span class="font-label-sm text-label-sm bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded">14 TOTAL</span>
+</div>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex items-center gap-1 px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="all_inclusive">all_inclusive</span>
+                    All
+                </button>
+<button class="flex items-center gap-1 px-4 py-2 border border-outline text-on-surface-variant rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="pending">pending</span>
+                    Active
+                </button>
+<button class="flex items-center gap-1 px-4 py-2 border border-outline text-on-surface-variant rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+                    Done
+                </button>
+<button class="flex items-center gap-1 px-4 py-2 border border-outline text-on-surface-variant rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="error">error</span>
+                    Failed
+                </button>
+</div>
+</div>
+<!-- Jobs List -->
+<div class="space-y-4">
+<!-- Active Job Item -->
+<div class="bg-surface-container rounded-xl p-4 technical-border relative overflow-hidden">
+<div class="absolute top-0 left-0 h-1 bg-primary processing-pulse" style="width: 64%;"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-primary overflow-hidden">
+<img class="object-cover w-full h-full opacity-60" data-alt="A macro close-up of high-speed digital data streams and fiber optic cables pulsing with a vibrant cyan glow against a deep black background. The cinematic lighting emphasizes the sleek, technical textures of the hardware. The overall atmosphere is futuristic, precise, and utilitarian, echoing a high-performance video processing environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsJUeYtFU0E8X6_h_m9TFvT7DEkh8FqS32drC2et3FApXzY6VCvIHZSLLvMpMfSBspadW-9GQlkAtO3eJ10TAuj_7Hw4TlRzdZ_reTJ1dG5Cdt3hKUBusbhUR5ong1xsdChBN9Gki9hetK78e9DRcijhwD9iM-uXpiEmgpQmqtd00rT4LlrmmmNKeRVUYk4JV4r2Lc7bT-1QripELkU5lpgTES03mVk7VYUkDshsS4v3OtRuqiwg5LaR-IKHJlnMmyr9bPYUqzF1BI"/>
+</div>
+<div>
+<p class="font-title-lg text-body-lg text-on-surface font-bold">VLOG_2024_01.mp4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">ACTION: SPLIT • 4K HEVC • 1.2 GB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary processing-pulse" data-icon="sync">sync</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex-grow mr-4">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-label-sm text-primary">SPLITTING SEGMENT 4/12</span>
+<span class="font-label-sm text-label-sm text-primary">64%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full">
+<div class="h-full bg-primary rounded-full" style="width: 64%;"></div>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-error-container text-on-error-container">
+<span class="material-symbols-outlined" data-icon="stop">stop</span>
+</button>
+</div>
+</div>
+<!-- Active Job Item 2 -->
+<div class="bg-surface-container rounded-xl p-4 technical-border relative overflow-hidden">
+<div class="absolute top-0 left-0 h-1 bg-primary processing-pulse" style="width: 12%;"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-primary overflow-hidden">
+<img class="object-cover w-full h-full opacity-60" data-alt="A detailed digital rendering of an abstract server farm array with blinking blue and green LED status indicators. The environment is clean and clinical, with a dark industrial aesthetic and sharp, angular lines. High-contrast lighting highlights the metallic surfaces, creating a mood of professional reliability and heavy-duty data processing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkK6dN1on0Yqcc04xeB0inih_rq5z7eQ9Tz4Ttf8P4AulrOrMXL7ij8eNit_g4ya3ckwXcw9D42hPfiNbqFDI662LJftViCnFFmgTTjGWjjYXYsXS6Mi9az-ZgdMjM7z0KzN6aYh3syG-tOkkmAMvDqQPj2Fw7KbxEVUxHKRhLuc0YN6CSZxB0eFuccEg6QHlC5ZDZw2wfBwtUTkA1DAHlnuBoGhbsbowpvro76Aomak0WTxKZmK-Vh37P8FOiKQUj61pgOIFPPRt6"/>
+</div>
+<div>
+<p class="font-title-lg text-body-lg text-on-surface font-bold">CINEMA_SHOT_REDO.mov</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">ACTION: MERGE • 1080P PRORES • 4.5 GB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary processing-pulse" data-icon="sync">sync</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex-grow mr-4">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-label-sm text-primary">INITIALIZING WORKER</span>
+<span class="font-label-sm text-label-sm text-primary">12%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full">
+<div class="h-full bg-primary rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-error-container text-on-error-container">
+<span class="material-symbols-outlined" data-icon="stop">stop</span>
+</button>
+</div>
+</div>
+<!-- Completed Job -->
+<div class="bg-surface-container-low rounded-xl p-4 technical-border opacity-80">
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface-variant overflow-hidden">
+<img class="object-cover w-full h-full grayscale opacity-40" data-alt="A minimalist architectural shot of a sleek, dark concrete wall with a single vertical line of light cutting through the shadows. The lighting is low-key and dramatic, using a monochrome palette of deep grays and blacks. The image evokes a sense of completion, order, and refined technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGihg6DwE5XdjV94ISu58OgCsxUBIcv67eJEe0b6UzayCyk98qyrabbUJavpvv0sU_jVhp3fcP2fnlkwFQLxlFnVF7sYmj8BtyoaIEfVQgEc1BMrfCkkGUChuCjLP6JLZTBJvS2EasGRAfdv03sKqGaBYcCVjDi1q_5acz3NOejkb3fW7-b6xUZqc7dFQ4Iy9jXh3ePWz-3hPF6VqCqfV81znyM4kkLzhTRGmxNU2JuZJwtMLS8f5hyFqG4e7kJWNbi466CNdckC7a"/>
+</div>
+<div>
+<p class="font-title-lg text-body-lg text-on-surface-variant font-bold">WEDDING_TEASER_EXT.mp4</p>
+<p class="font-label-sm text-label-sm text-outline">SUCCESS • 4K • 12:45 PM TODAY</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="px-3 py-1.5 bg-surface-container-highest text-on-surface rounded-lg font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="folder_open">folder_open</span>
+                        Show File
+                    </button>
+<button class="px-3 py-1.5 border border-outline text-on-surface-variant rounded-lg font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+                        Restart
+                    </button>
+</div>
+</div>
+<!-- Completed Job 2 -->
+<div class="bg-surface-container-low rounded-xl p-4 technical-border opacity-80">
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-on-surface-variant overflow-hidden">
+<img class="object-cover w-full h-full grayscale opacity-40" data-alt="An abstract macro image of liquid cooling tubes inside a high-end computer, glowing with a soft, diffused light against a dark background. The style is industrial and clean, with a focus on functional design and technical excellence. The cool color palette emphasizes a state of efficiency and stability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBb8VE0AnbKwR0_Nsbx-yM9JFvXCZ8s_z2nxk9jVniVfcNn3fqaXoMTeEFG1zo_wKlnLr9NZ2oTXP_ufKxg-Ffpa4lbirD0W1cvNRpm1uf_hP08P77dcTO2nTzXZL8roJcSWSyzJVZLJUzVjGl585KtBgHv5A7gler0WMffAx3GTpZqoASwW9Vy3djcJVgrnW_blniRunvDcs2LAvhEz9onsNEAHuxjeSsaplOtf_O0qrD5K4gZokGJexjeCzo4M2eFGdffBTxER28"/>
+</div>
+<div>
+<p class="font-title-lg text-body-lg text-on-surface-variant font-bold">CLIENT_FEEDBACK_FIX.mp4</p>
+<p class="font-label-sm text-label-sm text-outline">SUCCESS • 1080P • 10:12 AM TODAY</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Failed Job -->
+<div class="bg-surface-container-low rounded-xl p-4 technical-border">
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-error overflow-hidden">
+<img class="object-cover w-full h-full grayscale opacity-20" data-alt="A dark, moody shot of a broken circuit board with red emergency warning lights reflecting off the fractured surfaces. The lighting is high-contrast and atmospheric, creating a sense of urgency and technical failure. The aesthetic is industrial and gritty, emphasizing a hardware error or interruption." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9SQn3ixn2fuY1utIfNBADnsXD-AlGMw8MGwmQwZMsLjhbpdwhitquNj2aZwKdE8s_n2QBntZkj07UBPTSs8qngwqic9xmM6tm-IoIeKI2jeaoAvvm-oEH_BS3bZNemI0o-SZuE7UlzsFQa7uF6-Z2M3SLt-xJhhE6o1lZmOcb7zcZiP1QBaLuxdkfY7wyiRbKr0o_MSFz94_RzHo4r7MLohkvl2teuUq7nRkec_7JOgtYfhz4prgJRCcXzgxDCmKzbXwlgsEiiTW6"/>
+</div>
+<div>
+<p class="font-title-lg text-body-lg text-on-error-container font-bold">CORRUPT_CARD_RECOVER.mp4</p>
+<p class="font-label-sm text-label-sm text-error">FAILED • DISK_WRITE_ERROR • 09:05 AM</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-error" data-icon="error">error</span>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="px-3 py-1.5 bg-error-container text-on-error-container rounded-lg font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+                        Retry Job
+                    </button>
+<button class="px-3 py-1.5 border border-outline text-on-surface-variant rounded-lg font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+                        Dismiss
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="content_cut">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="merge">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="format_list_bulleted" style="font-variation-settings: 'FILL' 1;">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for job cards
+        document.querySelectorAll('.bg-surface-container').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s ease';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Dynamic progress update simulation for the first job
+        let progress = 64;
+        const progressBar = document.querySelector('.bg-primary.processing-pulse');
+        const progressText = document.querySelector('.text-primary.font-label-sm.text-label-sm:last-child');
+        
+        setInterval(() => {
+            if (progress < 100) {
+                progress += Math.random() * 0.5;
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.textContent = `${Math.floor(progress)}%`;
+            }
+        }, 3000);
+    </script>
+</body></html>

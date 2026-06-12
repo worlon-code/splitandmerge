@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Split Result - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            font-family: 'Roboto Flex', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .success-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400;
+            color: #83d5c6; /* Using primary color for success as per system tokens */
+            font-size: 64px;
+        }
+        .glass-card {
+            background: rgba(28, 32, 31, 0.6);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(136, 147, 144, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#8f4c36",
+                      "secondary-fixed": "#e8deff",
+                      "primary-container": "#006b5f",
+                      "on-background": "#e0e3e1",
+                      "on-tertiary-container": "#ffcebf",
+                      "surface-container": "#1c201f",
+                      "surface-dim": "#101413",
+                      "background": "#101413",
+                      "surface-container-high": "#272b2a",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "primary-fixed": "#9ff2e2",
+                      "surface-bright": "#363a39",
+                      "tertiary-fixed-dim": "#ffb59e",
+                      "surface-container-low": "#181c1b",
+                      "on-tertiary-fixed": "#390b00",
+                      "surface-container-highest": "#313634",
+                      "on-primary-fixed": "#00201c",
+                      "tertiary-fixed": "#ffdbd0",
+                      "on-secondary-fixed-variant": "#4e2ca9",
+                      "on-secondary-container": "#bda8ff",
+                      "on-error-container": "#ffdad6",
+                      "secondary": "#cdbdff",
+                      "surface-tint": "#83d5c6",
+                      "on-tertiary": "#55200d",
+                      "inverse-surface": "#e0e3e1",
+                      "outline": "#889390",
+                      "surface-variant": "#313634",
+                      "inverse-on-surface": "#2d3130",
+                      "on-surface-variant": "#bec9c5",
+                      "surface-container-lowest": "#0b0f0e",
+                      "primary": "#83d5c6",
+                      "on-tertiary-fixed-variant": "#723521",
+                      "inverse-primary": "#006b5f",
+                      "on-primary": "#003731",
+                      "on-surface": "#e0e3e1",
+                      "tertiary": "#ffb59e",
+                      "on-secondary-fixed": "#20005f",
+                      "secondary-fixed-dim": "#cdbdff",
+                      "outline-variant": "#3e4946",
+                      "error-container": "#93000a",
+                      "primary-fixed-dim": "#83d5c6",
+                      "secondary-container": "#4e2ca9",
+                      "on-primary-fixed-variant": "#005047",
+                      "surface": "#101413",
+                      "on-primary-container": "#95e8d9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "8dp",
+                      "tablet_margin": "24dp",
+                      "phone_margin": "16dp",
+                      "list_padding": "12dp",
+                      "touch_target_min": "48dp"
+              },
+              "fontFamily": {
+                      "display-lg": ["Roboto Flex"],
+                      "title-lg": ["Roboto Flex"],
+                      "body-md": ["Roboto Flex"],
+                      "headline-lg": ["Roboto Flex"],
+                      "body-lg": ["Roboto Flex"],
+                      "label-sm": ["JetBrains Mono"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-md": ["Roboto Flex"]
+              },
+              "fontSize": {
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-4 h-touch_target_min w-full fixed top-0 z-50 bg-surface-container/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">help</span>
+<span class="material-symbols-outlined text-on-surface-variant w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">settings</span>
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 max-w-4xl mx-auto">
+<!-- Success Hero -->
+<section class="flex flex-col items-center text-center mt-8 mb-12">
+<div class="mb-4">
+<span class="material-symbols-outlined success-icon" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">All 7 parts saved</h2>
+<a class="inline-flex items-center gap-2 text-primary hover:underline group" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_open</span>
+<span class="font-body-md text-body-md">/Movies/Splits/Project_Final_4K</span>
+<span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">chevron_right</span>
+</a>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10">
+<div class="glass-card rounded-xl p-4 flex flex-col justify-center items-center text-center">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Size</span>
+<span class="font-title-lg text-title-lg text-primary font-mono">1.42 GB</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col justify-center items-center text-center">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Avg Size</span>
+<span class="font-title-lg text-title-lg text-primary font-mono">204.3 MB</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col justify-center items-center text-center">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Time</span>
+<span class="font-title-lg text-title-lg text-primary font-mono">42.8s</span>
+</div>
+</div>
+<!-- Parts List -->
+<div class="space-y-1">
+<div class="px-2 py-3 flex items-center justify-between border-b border-outline-variant/30">
+<h3 class="font-label-md text-label-md text-on-surface-variant">GENERATED PARTS</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">7 FILES</span>
+</div>
+<!-- List Item Loop -->
+<div class="space-y-1 mt-2">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 px-4 py-3 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-xl group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">movie</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-lg text-body-lg text-on-surface truncate">Part_001.mp4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant font-mono">00:00:00 - 00:05:00 • 204.5 MB</p>
+</div>
+<div class="flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors" title="Share">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors" title="Open">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 px-4 py-3 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-xl group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">movie</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-lg text-body-lg text-on-surface truncate">Part_002.mp4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant font-mono">00:05:00 - 00:10:00 • 203.1 MB</p>
+</div>
+<div class="flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center gap-4 px-4 py-3 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-xl group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">movie</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-lg text-body-lg text-on-surface truncate">Part_003.mp4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant font-mono">00:10:00 - 00:15:00 • 208.9 MB</p>
+</div>
+<div class="flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Item 4 (Visual Placeholder for more) -->
+<div class="flex items-center gap-4 px-4 py-3 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-xl group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">movie</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-lg text-body-lg text-on-surface truncate">Part_004.mp4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant font-mono">00:15:00 - 00:20:00 • 201.2 MB</p>
+</div>
+<div class="flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Bar -->
+<footer class="fixed bottom-0 left-0 right-0 p-4 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant/20 flex flex-col md:flex-row gap-3 z-50">
+<button class="flex-1 h-touch_target_min rounded-full border border-outline text-primary font-title-lg flex items-center justify-center gap-2 hover:bg-primary/5 transition-all active:scale-95">
+<span class="material-symbols-outlined">folder_open</span>
+            Open folder
+        </button>
+<button class="flex-1 h-touch_target_min rounded-full bg-primary text-on-primary font-title-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/20 hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">merge</span>
+            Make merge job
+        </button>
+</footer>
+<!-- Animated Subtle Background (Ambient Effect) -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
+<div class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-secondary-container/20 rounded-full blur-[100px] opacity-10"></div>
+</div>
+</body></html>

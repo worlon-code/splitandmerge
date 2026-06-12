@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Merge Configuration - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#101413",
+                        "outline": "#889390",
+                        "background": "#fbfdfa",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#410002",
+                        "inverse-on-surface": "#f0f1ef",
+                        "tertiary-container": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#eceeeb",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e1",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1b",
+                        "inverse-surface": "#2d3130",
+                        "secondary": "#614bc1",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#83d5c6",
+                        "primary-container": "#006b5f",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#d9dbd8",
+                        "surface": "#fbfdfa",
+                        "on-secondary-container": "#1e0061",
+                        "surface-tint": "#006b5f",
+                        "primary": "#006b5f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#8f4c36",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#390b00",
+                        "on-primary-container": "#ffffff",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#e8deff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#3f4946",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#dae5e1",
+                        "surface-bright": "#fbfdfa",
+                        "surface-container-high": "#e6e9e6",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#f1f4f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbfdfa;
+            color: #191c1b;
+            font-family: 'Roboto Flex', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="bg-surface-container text-on-surface flex justify-between items-center px-phone_margin h-touch_target_min w-full sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg">Configure merge</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto px-phone_margin py-4 space-y-4 pb-40">
+<!-- CARD A: Source -->
+<section class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">playlist_play</span>
+<h2 class="font-title-lg text-title-lg">Source</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">7 parts · 53.0 GB total · all checks passed</p>
+<div id="parts-container">
+<button class="text-primary font-label-md flex items-center gap-1 py-2 hover:bg-primary-container/10 rounded-lg transition-colors" onclick="document.getElementById('parts-list').classList.toggle('hidden'); this.querySelector('.chevron').innerText = document.getElementById('parts-list').classList.contains('hidden') ? 'expand_more' : 'expand_less'">
+                    Show parts
+                    <span class="material-symbols-outlined chevron text-[18px]">expand_more</span>
+</button>
+<div class="hidden mt-2 bg-surface-variant/30 rounded-lg p-3 space-y-1" id="parts-list">
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P1.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P2.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P3.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P4.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P5.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P6.mkv</div>
+<div class="font-label-sm text-label-sm font-mono opacity-80">Baahubali_Epic_P7.mkv</div>
+</div>
+</div>
+</section>
+<!-- CARD B: Output -->
+<section class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">save</span>
+<h2 class="font-title-lg text-title-lg">Output</h2>
+</div>
+<div class="space-y-4">
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 ml-1">Output filename</label>
+<div class="flex items-center border border-outline rounded-lg px-3 py-3 bg-surface-container-lowest focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<input class="flex-1 bg-transparent border-none p-0 focus:ring-0 font-body-md text-body-md" type="text" value="Baahubali The Epic (2025).merged"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded ml-2">.mkv</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface-container-lowest active:bg-surface-variant transition-colors cursor-pointer">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Destination folder</span>
+<span class="font-body-md text-body-md text-on-surface truncate max-w-[240px]">/storage/emulated/0/Movies</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">folder_open</span>
+</div>
+</div>
+</section>
+<!-- CARD C: Summary -->
+<section class="bg-primary-container text-on-primary-container rounded-xl p-6 shadow-md border border-primary/20">
+<div class="flex flex-col items-center text-center mb-4">
+<h3 class="font-display-lg text-display-lg leading-tight">1</h3>
+<span class="font-label-md text-label-md uppercase tracking-widest opacity-90">merged file</span>
+</div>
+<div class="grid grid-cols-3 gap-2 py-4 border-y border-white/10 mb-4">
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-label-sm opacity-70">Size</span>
+<span class="font-title-lg text-title-lg">53.0 GB</span>
+</div>
+<div class="flex flex-col items-center border-x border-white/10 px-2">
+<span class="font-label-sm text-label-sm opacity-70">Duration</span>
+<span class="font-title-lg text-title-lg text-center">2h 13m</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-label-sm opacity-70">ETA</span>
+<span class="font-title-lg text-title-lg">~6 min</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[20px] mt-0.5">check_circle</span>
+<p class="font-body-sm text-body-md leading-relaxed opacity-90">
+                    Lossless. All 8 audio tracks and 2 subtitle tracks preserved.
+                </p>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-40 flex flex-col bg-background/90 backdrop-blur-md pb-[80px]">
+<div class="flex gap-4 p-phone_margin w-full">
+<button class="flex-1 h-touch_target_min border border-outline text-primary font-body-md text-body-md rounded-full hover:bg-surface-variant active:scale-95 transition-all">
+                Cancel
+            </button>
+<button class="flex-[2] h-touch_target_min bg-primary text-on-primary flex items-center justify-center gap-2 font-body-md text-body-md rounded-full shadow-lg hover:bg-primary-fixed-dim active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                Start merge
+            </button>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors rounded-lg p-1 px-3" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md font-mono mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">merge</span>
+<span class="font-label-md text-label-md font-mono mt-0.5">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors rounded-lg p-1 px-3" href="#">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md font-mono mt-1">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors rounded-lg p-1 px-3" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md font-mono mt-1">Settings</span>
+</a>
+</nav>
+<!-- Visual Polish: Linear Progress Placeholder -->
+<div class="fixed top-[48px] w-full h-[2px] bg-outline-variant/20 overflow-hidden z-[51]">
+<div class="w-full h-full bg-primary origin-left scale-x-0"></div>
+</div>
+</body></html>

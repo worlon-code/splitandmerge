@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter - Title Cleanup Patterns</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#101413",
+                        "outline": "#889390",
+                        "background": "#f4f9f7",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#410002",
+                        "inverse-on-surface": "#f0f1ef",
+                        "tertiary-container": "#ffcebf",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#e9edeb",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#dee3e1",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1b",
+                        "inverse-surface": "#2d3130",
+                        "secondary": "#6342d2",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#83d5c6",
+                        "primary-container": "#005047",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#d7dbd9",
+                        "surface": "#f4f9f7",
+                        "on-secondary-container": "#1d0061",
+                        "surface-tint": "#006b5f",
+                        "primary": "#006b5f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#a43e20",
+                        "on-tertiary-fixed": "#3d0700",
+                        "on-tertiary-container": "#3d0700",
+                        "on-primary-container": "#9ff2e2",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#e8deff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#822d12",
+                        "on-surface-variant": "#3f4946",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#dae5e1",
+                        "surface-bright": "#f4f9f7",
+                        "surface-container-high": "#e3e9e7",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#edf2f0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f4f9f7;
+            font-family: 'Roboto Flex', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-on-background h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky bg-surface-container border-b border-outline-variant flex items-center justify-between px-phone_margin h-16 w-full z-10">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95 duration-100">menu</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Video Splitter</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-on-surface hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95 duration-100">settings</button>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Navigation Rail (Left Pane) -->
+<nav class="h-full w-24 bg-surface-container-low flex flex-col items-center py-6 gap-6 border-r border-outline-variant flex-shrink-0">
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all px-4 py-2">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all px-4 py-2">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all px-4 py-2">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md mt-1">Jobs</span>
+</div>
+</div>
+<!-- Active State: Settings -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-medium">Settings</span>
+</div>
+</nav>
+<!-- Patterns List (Middle Pane: 380dp) -->
+<section class="w-[380px] bg-surface flex flex-col border-r border-outline-variant flex-shrink-0">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2">Cleanup Patterns</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Global regex and string rules for filename sanitization.</p>
+</div>
+<div class="flex-1 overflow-y-auto hide-scrollbar p-2 space-y-1">
+<!-- Pattern Item -->
+<div class="bg-surface-container-high rounded-xl p-list_padding border border-primary/20 flex items-start gap-4 cursor-pointer hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-primary uppercase">Regex</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active</span>
+</div>
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Release Tags</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container p-1 rounded mt-1 overflow-hidden text-ellipsis whitespace-nowrap">/\[.*?\]|\(.*?\)/g</p>
+</div>
+</div>
+<div class="bg-surface hover:bg-surface-container-high rounded-xl p-list_padding border border-transparent flex items-start gap-4 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">drag_indicator</span>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">String</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active</span>
+</div>
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Web Rip Suffixes</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container p-1 rounded mt-1 overflow-hidden text-ellipsis whitespace-nowrap">.WEB-DL, .h264, .x265</p>
+</div>
+</div>
+<div class="bg-surface hover:bg-surface-container-high rounded-xl p-list_padding border border-transparent flex items-start gap-4 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">drag_indicator</span>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Regex</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active</span>
+</div>
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Quality Tags</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container p-1 rounded mt-1 overflow-hidden text-ellipsis whitespace-nowrap">/\d{3,4}p|BluRay|HDR/gi</p>
+</div>
+</div>
+<div class="bg-surface hover:bg-surface-container-high rounded-xl p-list_padding border border-transparent flex items-start gap-4 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">drag_indicator</span>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">String</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active</span>
+</div>
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Common Separators</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container p-1 rounded mt-1 overflow-hidden text-ellipsis whitespace-nowrap">., _, -, +</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low border-t border-outline-variant">
+<button class="w-full flex items-center justify-center gap-2 bg-secondary-container text-on-secondary-container py-3 rounded-full font-label-md text-label-md hover:bg-surface-container-highest transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+                    New Pattern
+                </button>
+</div>
+</section>
+<!-- Live Preview Pane (Right Pane: flex) -->
+<section class="flex-1 bg-background p-tablet_margin flex flex-col gap-6 relative overflow-y-auto">
+<div class="max-w-4xl w-full mx-auto space-y-6">
+<!-- Test Input -->
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Test Filename Input</label>
+<div class="relative group">
+<input class="w-full bg-surface-container border border-outline px-6 py-4 rounded-xl font-label-md text-label-md text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" type="text" value="[Group]_Awesome_Video_2023.1080p.WEBRip.x264-FLUX.mkv"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">edit</span>
+</div>
+</div>
+<!-- Cleaned Result Card -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant p-6 shadow-sm">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-md text-label-md text-primary font-bold px-3 py-1 bg-primary/10 rounded-full">CLEANED RESULT</span>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface">content_copy</span>
+</div>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface break-all">
+                        Awesome Video 2023.mkv
+                    </div>
+</div>
+<!-- Trace Panel -->
+<div class="flex flex-col gap-3">
+<h3 class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">list_alt</span>
+                        EXECUTION TRACE
+                    </h3>
+<div class="space-y-1">
+<!-- Trace Step -->
+<div class="bg-surface-container-low rounded-lg p-3 border-l-4 border-primary flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-primary text-on-primary w-5 h-5 flex items-center justify-center rounded-full">1</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Release Tags</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">- [Group]</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-3 border-l-4 border-primary flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-primary text-on-primary w-5 h-5 flex items-center justify-center rounded-full">2</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Common Separators</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">_ → Space</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-3 border-l-4 border-primary flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-primary text-on-primary w-5 h-5 flex items-center justify-center rounded-full">3</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Quality Tags</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">- 1080p, WEBRip</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-3 border-l-4 border-primary flex items-center justify-between opacity-50">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-surface-container-highest text-on-surface-variant w-5 h-5 flex items-center justify-center rounded-full">4</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Web Rip Suffixes</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">No Match</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom-Right Action Bar -->
+<div class="fixed bottom-8 right-8 flex items-center gap-3 z-50">
+<button class="px-8 py-3 rounded-full border border-outline text-on-surface font-label-md text-label-md bg-surface hover:bg-surface-container-high transition-all active:scale-95">
+                    Discard
+                </button>
+<button class="px-10 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-lg shadow-primary/20 hover:brightness-110 transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                    Save Changes
+                </button>
+</div>
+</section>
+</main>
+<!-- Visual Polish: Technical HUD Overlay Elements -->
+<div class="fixed top-20 right-8 pointer-events-none opacity-20 hidden lg:block">
+<div class="text-[10px] font-label-sm text-primary uppercase space-y-1">
+<p>LATENCY: 0.12ms</p>
+<p>PATTERN_MATCH_ENGINE: V2.4.1</p>
+<p>BUFF_STATUS: OPTIMAL</p>
+</div>
+</div>
+<script>
+        // Simple micro-interaction for list item selection
+        const listItems = document.querySelectorAll('section:nth-of-type(1) .cursor-pointer');
+        listItems.forEach(item => {
+            item.addEventListener('click', () => {
+                listItems.forEach(i => {
+                    i.classList.remove('bg-surface-container-high', 'border-primary/20');
+                    i.classList.add('bg-surface', 'border-transparent');
+                    const icon = i.querySelector('.material-symbols-outlined');
+                    if (icon && icon.innerText === 'check_circle') {
+                        icon.innerText = 'drag_indicator';
+                        icon.classList.remove('text-primary');
+                        icon.classList.add('text-on-surface-variant');
+                    }
+                    const textPrimary = i.querySelector('.font-label-md');
+                    if(textPrimary) textPrimary.classList.replace('text-primary', 'text-on-surface-variant');
+                });
+                item.classList.add('bg-surface-container-high', 'border-primary/20');
+                item.classList.remove('bg-surface', 'border-transparent');
+                const icon = item.querySelector('.material-symbols-outlined');
+                if (icon) {
+                    icon.innerText = 'check_circle';
+                    icon.classList.add('text-primary');
+                    icon.classList.remove('text-on-surface-variant');
+                }
+                const textPrimary = item.querySelector('.font-label-md');
+                if(textPrimary) textPrimary.classList.replace('text-on-surface-variant', 'text-primary');
+            });
+        });
+
+        // Hover animation for buttons
+        const actionButtons = document.querySelectorAll('button');
+        actionButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.boxShadow = '0 10px 15px -3px rgba(0, 107, 95, 0.1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.boxShadow = '';
+            });
+        });
+    </script>
+</body></html>

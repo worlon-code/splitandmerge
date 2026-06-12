@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Processing Confirmation</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "outline-variant": "#3e4946",
+                "on-background": "#101413",
+                "outline": "#889390",
+                "background": "#fbfdfa",
+                "on-error": "#ffffff",
+                "on-secondary-fixed": "#20005f",
+                "on-error-container": "#410002",
+                "inverse-on-surface": "#eff1ee",
+                "tertiary-container": "#ffdbd0",
+                "on-secondary-fixed-variant": "#4e2ca9",
+                "surface-container": "#e9ebe8",
+                "error-container": "#ffdad6",
+                "surface-container-highest": "#e0e3e1",
+                "on-primary": "#ffffff",
+                "on-surface": "#101413",
+                "inverse-surface": "#2d3130",
+                "secondary": "#624ec1",
+                "on-secondary": "#ffffff",
+                "inverse-primary": "#83d5c6",
+                "primary-container": "#9ff2e2",
+                "on-primary-fixed": "#00201c",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed": "#9ff2e2",
+                "surface-dim": "#d7dad8",
+                "surface": "#fbfdfa",
+                "on-secondary-container": "#1d0061",
+                "surface-tint": "#006b5f",
+                "primary": "#006b5f",
+                "on-tertiary": "#ffffff",
+                "tertiary": "#904b36",
+                "on-tertiary-fixed": "#390b00",
+                "on-tertiary-container": "#3a0a00",
+                "on-primary-container": "#00201c",
+                "secondary-fixed-dim": "#cdbdff",
+                "secondary-container": "#e8deff",
+                "error": "#ba1a1a",
+                "secondary-fixed": "#e8deff",
+                "on-tertiary-fixed-variant": "#723521",
+                "on-surface-variant": "#3f4946",
+                "on-primary-fixed-variant": "#005047",
+                "primary-fixed-dim": "#83d5c6",
+                "tertiary-fixed-dim": "#ffb59e",
+                "surface-variant": "#dbe5e1",
+                "surface-bright": "#fbfdfa",
+                "surface-container-high": "#f0f2ef",
+                "tertiary-fixed": "#ffdbd0",
+                "surface-container-low": "#f5f7f4"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "2xl": "1rem",
+                "3xl": "1.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "gutter": "8dp",
+                "tablet_margin": "24dp",
+                "touch_target_min": "48dp",
+                "phone_margin": "16dp",
+                "list_padding": "12dp"
+        },
+        "fontFamily": {
+                "headline-md": ["Roboto Flex"],
+                "label-sm": ["JetBrains Mono"],
+                "title-lg": ["Roboto Flex"],
+                "body-lg": ["Roboto Flex"],
+                "label-md": ["JetBrains Mono"],
+                "display-lg": ["Roboto Flex"],
+                "headline-lg": ["Roboto Flex"],
+                "body-md": ["Roboto Flex"]
+        },
+        "fontSize": {
+                "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+        }
+      },
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fbfdfa;
+            overflow-x: hidden;
+        }
+        .modal-sheet {
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            transition: transform 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+        }
+        .kinetic-scrim {
+            background: rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Top App Bar -->
+<header class="bg-surface-container dark:bg-surface-container text-primary dark:text-primary docked full-width top-0 z-10">
+<div class="flex justify-between items-center px-phone_margin h-touch_target_min w-full">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</h1>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-phone_margin pt-6 pb-24 max-w-4xl mx-auto">
+<!-- Under-layer content (Locked State) -->
+<div class="opacity-40 pointer-events-none transition-opacity duration-500">
+<section class="mb-8">
+<h2 class="font-title-lg text-title-lg mb-4 text-on-surface-variant">Processing Queue</h2>
+<div class="space-y-3">
+<!-- Dummy Items -->
+<div class="flex items-center p-list_padding bg-surface-container-low rounded-xl border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary mr-4" data-icon="movie">movie</span>
+<div class="flex-grow">
+<p class="font-body-lg text-body-lg">drone_shot_sunset_4k.mp4</p>
+<p class="font-label-md text-label-md opacity-70">3.2 GB • 00:12:45</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Modal Scrim -->
+<div class="fixed inset-0 kinetic-scrim z-20"></div>
+<!-- Stacked Modal Sheets Container -->
+<div class="fixed inset-x-0 bottom-0 z-30 flex flex-col justify-end items-center">
+<!-- D3: Container Promotion (Deepest) -->
+<div class="modal-sheet w-full max-w-2xl bg-surface-container-lowest shadow-2xl relative translate-y-12 scale-[0.94] opacity-50 border-t border-outline-variant/10">
+<div class="h-1 w-8 bg-outline/20 rounded-full mx-auto my-3"></div>
+<div class="px-6 py-4 pb-20">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="upgrade">upgrade</span>
+<h3 class="font-title-lg text-title-lg">Container Promotion</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Upgrade target MKV containers to professional MOV wrappers for better editor compatibility?</p>
+</div>
+</div>
+<!-- D2: Folder Collision (Middle) -->
+<div class="modal-sheet w-full max-w-2xl bg-surface-container-low shadow-2xl relative -mt-16 translate-y-6 scale-[0.97] opacity-80 border-t border-outline-variant/20">
+<div class="h-1 w-8 bg-outline/20 rounded-full mx-auto my-3"></div>
+<div class="px-6 py-4 pb-20">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="folder_zip">folder_zip</span>
+<h3 class="font-title-lg text-title-lg">Folder Collision</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">"Outputs/2023" already exists. Create a timestamped subfolder or merge contents?</p>
+</div>
+</div>
+<!-- D1: Cleanup Preview (Active / Top) -->
+<div class="modal-sheet w-full max-w-2xl bg-white shadow-2xl relative -mt-16 border-t border-outline-variant/30">
+<div class="h-1.5 w-12 bg-outline/30 rounded-full mx-auto my-4"></div>
+<div class="px-6 py-4 overflow-y-auto max-h-[618px]">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="cleaning_services">cleaning_services</span>
+<h3 class="font-title-lg text-title-lg">Cleanup Preview</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">The following source fragments will be permanently deleted after successful transcoding to save 12.4 GB of storage.</p>
+<!-- Preview Grid / Bento-ish -->
+<div class="grid grid-cols-2 gap-3 mb-8">
+<div class="aspect-video relative rounded-2xl overflow-hidden bg-black group border border-outline-variant/10">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700" data-alt="A cinematic wide shot of a misty pine forest at dawn, with soft morning light filtering through the trees, rendered in a crisp professional cinematography style with cool blue and deep green tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdw84XXVjgT-JArwc-7S48XXYlQyvI_Q9eMkIYDyQlmHrJBvtGRpHhrCQC2rSTTOeh1xL_35qG9jczRzS8iUE_1PJKWWvQvwuldJ7IQLSv7IcJy4Ag9Lu8-6FhlUd7MY0IYOlCt7hvZen2L6HodQ9vb4Rm4GXlFoO6petH_EzC0kdJreJiK33XsLAcULX6Rh2gt4t05eDM7gYwJnO4yk1TpW7dGgoJCwY_i9YVQAuTOjxjQU1kymt-RuLMjXJTJEU6WHfz9KW8kNtJ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm" data-icon="delete_forever">delete_forever</span>
+<span class="font-label-sm text-label-sm text-white">chunk_01.mp4</span>
+</div>
+</div>
+<div class="aspect-video relative rounded-2xl overflow-hidden bg-black group border border-outline-variant/10">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700" data-alt="A close-up shot of neon city lights reflected in a rainy asphalt street at night, capturing vibrant pink and cyan hues with a shallow depth of field, giving it a modern cyberpunk aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgygC-ApllZNloYuIPWuSyxqBms78kTzD04z2ji4Wp8c7NX9gpNAjWrJqBWHg8m9D3hI5EONzq0udnxn77IvJsHY_oi9hh84G23XWCi1Sh8COlKVc9vHXNuKkRaG60l0xR7tCOOT8A3slCW6Ul5AIIv7Zm9gGULV1kiWrgupuUAlsQRaMkQiQcXJpA6rx9w3zEXi-jEUo1ZeEUtKU9dgnGCw-QrzxfeebiYiCaXGHDkDDeVxCzds6_kH-Dvoi_uXnwyCmF-coSIitZ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm" data-icon="delete_forever">delete_forever</span>
+<span class="font-label-sm text-label-sm text-white">chunk_02.mp4</span>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex justify-between items-center p-4 bg-primary-container/30 rounded-2xl border border-primary/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="auto_delete">auto_delete</span>
+<div>
+<p class="font-label-md text-label-md text-on-primary-container">Smart Cleanup</p>
+<p class="font-body-md text-body-md text-primary">Automated post-split removal</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Modal Buttons -->
+<div class="flex justify-end gap-3 pb-6">
+<button class="px-6 h-touch_target_min rounded-full font-label-md text-label-md text-primary hover:bg-primary/5 transition-colors duration-200">
+                        Review Later
+                    </button>
+<button class="px-8 h-touch_target_min rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 active:scale-95">
+                        Confirm &amp; Start
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple parallax effect for the sheets on scroll or drag (mocked)
+            const sheets = document.querySelectorAll('.modal-sheet');
+            
+            // Interaction logic for buttons
+            const primaryBtn = document.querySelector('button.bg-primary');
+            primaryBtn.addEventListener('click', () => {
+                primaryBtn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span>';
+                setTimeout(() => {
+                    alert('Video Processing Initiated');
+                    primaryBtn.textContent = 'Confirm & Start';
+                }, 1500);
+            });
+        });
+    </script>
+</body></html>

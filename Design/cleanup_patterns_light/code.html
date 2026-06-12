@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Title Cleanup Patterns</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#101413",
+                        "outline": "#889390",
+                        "background": "#fbfdfa",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#410002",
+                        "inverse-on-surface": "#f0f1ef",
+                        "tertiary-container": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#ecf0ee",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e1",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1b",
+                        "inverse-surface": "#2d3130",
+                        "secondary": "#6347b4",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#83d5c6",
+                        "primary-container": "#9ff2e2",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#d8dbd9",
+                        "surface": "#fbfdfa",
+                        "on-secondary-container": "#1d0061",
+                        "surface-tint": "#006b5f",
+                        "primary": "#006b5f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#8f4c36",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#3a0b00",
+                        "on-primary-container": "#00201c",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#e8deff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#3f4946",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#dae5e1",
+                        "surface-bright": "#fbfdfa",
+                        "surface-container-high": "#e6e9e7",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#f2f5f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background-color: #fbfdfa;
+            color: #191c1b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #889390;
+            border-radius: 10px;
+        }
+        .kinetic-bg {
+            background: linear-gradient(135deg, #f2f5f2 0%, #ffffff 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface-container sticky top-0 z-[60] w-full flex justify-between items-center px-phone_margin h-touch_target_min transition-colors duration-200">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Title cleanup patterns</h1>
+</div>
+<div class="flex items-center">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">restart_alt</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col pb-40">
+<!-- Sticky Preview Block -->
+<div class="sticky top-[48px] z-50 px-phone_margin py-4 bg-background/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="bg-surface-container-high rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Preview Result</span>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</div>
+<div class="space-y-2">
+<div class="flex flex-col">
+<span class="text-xs text-outline font-medium">Original</span>
+<code class="font-label-md text-label-md bg-surface-container-lowest px-2 py-1 rounded border border-outline-variant/30 text-on-surface-variant truncate">
+                            [2023] Project_Alpha_v2_Final-Edit.mp4
+                        </code>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-primary font-bold">Cleaned</span>
+<code class="font-label-md text-label-md bg-primary-container px-2 py-1 rounded border border-primary/20 text-on-primary-container truncate font-bold">
+                            Project Alpha
+                        </code>
+</div>
+</div>
+</div>
+</div>
+<!-- Patterns List -->
+<div class="px-phone_margin mt-4 space-y-6">
+<!-- Section: Built-in Patterns -->
+<section>
+<div class="flex items-center gap-2 mb-3 px-2">
+<span class="material-symbols-outlined text-secondary text-sm">inventory_2</span>
+<h2 class="font-title-lg text-body-lg font-bold text-on-surface uppercase tracking-widest text-[13px]">Built-in Rules</h2>
+</div>
+<div class="space-y-2">
+<!-- Rule Item -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<div class="flex flex-col gap-1">
+<span class="font-body-lg text-on-surface">Remove file extension</span>
+<code class="font-label-sm text-label-sm text-outline">\.[^/.]+$</code>
+</div>
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<div class="flex flex-col gap-1">
+<span class="font-body-lg text-on-surface">Convert snake_case</span>
+<code class="font-label-sm text-label-sm text-outline">_ → (space)</code>
+</div>
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<div class="flex flex-col gap-1">
+<span class="font-body-lg text-on-surface">Strip versioning tags</span>
+<code class="font-label-sm text-label-sm text-outline">v\d+|final</code>
+</div>
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+</section>
+<!-- Section: Custom Regex Patterns -->
+<section>
+<div class="flex items-center justify-between mb-3 px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm">code</span>
+<h2 class="font-title-lg text-body-lg font-bold text-on-surface uppercase tracking-widest text-[13px]">Custom Patterns</h2>
+</div>
+<button class="flex items-center gap-1 text-primary text-xs font-bold bg-primary-container px-3 py-1.5 rounded-full hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                        NEW
+                    </button>
+</div>
+<div class="space-y-3">
+<!-- Custom Pattern Card -->
+<div class="p-4 bg-surface-container-high rounded-2xl border-l-4 border-primary shadow-sm">
+<div class="flex justify-between items-start mb-3">
+<div class="flex flex-col">
+<span class="font-body-lg font-bold text-on-surface">Square Bracket Stripper</span>
+<span class="text-xs text-on-surface-variant">Global replacement</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1 text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded border border-outline-variant/20 font-label-md text-label-md text-primary overflow-x-auto whitespace-nowrap custom-scrollbar">
+                            \[[^\]]*\]
+                        </div>
+</div>
+<!-- Custom Pattern Card (Inactive) -->
+<div class="p-4 bg-surface-container-low rounded-2xl border-l-4 border-outline shadow-sm opacity-60">
+<div class="flex justify-between items-start mb-3">
+<div class="flex flex-col">
+<span class="font-body-lg font-bold text-on-surface">Date Prefix Cleaner</span>
+<span class="text-xs text-on-surface-variant">Start of string only</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1 text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded border border-outline-variant/20 font-label-md text-label-md text-outline overflow-x-auto whitespace-nowrap custom-scrollbar">
+                            ^\d{4}-\d{2}-\d{2}
+                        </div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-[80px] left-0 w-full px-phone_margin pb-4 z-40">
+<div class="bg-surface-container-highest/90 backdrop-blur-xl p-3 rounded-full flex gap-3 shadow-lg border border-white/20">
+<button class="flex-1 h-touch_target_min rounded-full border border-outline font-body-lg text-on-surface-variant flex items-center justify-center hover:bg-surface-variant transition-colors">
+                Discard
+            </button>
+<button class="flex-[2] h-touch_target_min rounded-full bg-primary font-body-lg font-bold text-on-primary flex items-center justify-center shadow-md hover:opacity-90 active:scale-95 transition-all">
+                Save Patterns
+            </button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl h-[80px]">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant px-5 py-1 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant px-5 py-1 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant px-5 py-1 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</button>
+<!-- ACTIVE: Settings -->
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<script>
+        // Simple micro-interaction for checkboxes to update preview simulation
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const previewText = document.querySelector('code.bg-primary-container');
+                if (this.checked) {
+                    previewText.style.opacity = '1';
+                    previewText.parentElement.parentElement.classList.add('animate-pulse');
+                    setTimeout(() => previewText.parentElement.parentElement.classList.remove('animate-pulse'), 1000);
+                } else {
+                    previewText.style.opacity = '0.7';
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #fafdff; /* Light mode surface */
+            font-family: 'Roboto Flex', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#8f4c36",
+                      "secondary-fixed": "#e8deff",
+                      "primary-container": "#006b5f",
+                      "on-background": "#191c1b",
+                      "on-tertiary-container": "#ffcebf",
+                      "surface-container": "#f0f1f0",
+                      "surface-dim": "#d9dbda",
+                      "background": "#fafdff",
+                      "surface-container-high": "#e8e9e8",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#9ff2e2",
+                      "surface-bright": "#fafdff",
+                      "tertiary-fixed-dim": "#ffb59e",
+                      "surface-container-low": "#f6f7f6",
+                      "on-tertiary-fixed": "#390b00",
+                      "surface-container-highest": "#e2e3e2",
+                      "on-primary-fixed": "#00201c",
+                      "tertiary-fixed": "#ffdbd0",
+                      "on-secondary-fixed-variant": "#4e2ca9",
+                      "on-secondary-container": "#1d0061",
+                      "secondary": "#6251a6",
+                      "surface-tint": "#006b5f",
+                      "on-tertiary": "#ffffff",
+                      "inverse-surface": "#2e3130",
+                      "outline": "#6f7977",
+                      "surface-variant": "#dae5e1",
+                      "inverse-on-surface": "#eff1f0",
+                      "on-surface-variant": "#3f4947",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#006b5f",
+                      "on-tertiary-fixed-variant": "#723521",
+                      "inverse-primary": "#83d5c6",
+                      "on-primary": "#ffffff",
+                      "on-surface": "#191c1b",
+                      "tertiary": "#8f4c36",
+                      "on-secondary-fixed": "#1d0061",
+                      "secondary-fixed-dim": "#cdbdff",
+                      "outline-variant": "#bec9c5",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#83d5c6",
+                      "secondary-container": "#e8deff",
+                      "on-primary-fixed-variant": "#005047",
+                      "surface": "#fafdff",
+                      "on-primary-container": "#00201c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "8px",
+                      "tablet_margin": "24px",
+                      "phone_margin": "16px",
+                      "list_padding": "12px",
+                      "touch_target_min": "48px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Roboto Flex"],
+                      "title-lg": ["Roboto Flex"],
+                      "body-md": ["Roboto Flex"],
+                      "headline-lg": ["Roboto Flex"],
+                      "body-lg": ["Roboto Flex"],
+                      "label-sm": ["JetBrains Mono"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-md": ["Roboto Flex"]
+              },
+              "fontSize": {
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- Top App Bar (From Shared Components Guide) -->
+<header class="bg-surface-container text-on-surface font-title-lg text-title-lg flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors">arrow_back</button>
+<span class="font-headline-md text-headline-md font-bold">Video Utility</span>
+</div>
+<div class="flex gap-2">
+<span class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">settings</span>
+<span class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">help</span>
+</div>
+</header>
+<main class="pt-20 pb-32 px-phone_margin max-w-screen-md mx-auto">
+<!-- Success Header Section -->
+<section class="flex flex-col items-center text-center mt-8 mb-10">
+<div class="mb-4">
+<span class="material-symbols-outlined text-[64px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">All 7 parts saved</h1>
+<button class="flex items-center gap-2 text-primary font-body-md hover:underline">
+<span class="material-symbols-outlined text-[18px]">folder_open</span>
+                /Internal/Movies/Split_20231024
+            </button>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<section class="grid grid-cols-3 gap-3 mb-8">
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col items-center justify-center border border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase mb-1">Total size</span>
+<span class="font-title-lg text-title-lg text-on-surface mono">4.2 GB</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col items-center justify-center border border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase mb-1">Avg size</span>
+<span class="font-title-lg text-title-lg text-on-surface mono">614 MB</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col items-center justify-center border border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase mb-1">Time</span>
+<span class="font-title-lg text-title-lg text-on-surface mono">12.4s</span>
+</div>
+</section>
+<!-- Parts List -->
+<section class="space-y-2">
+<h2 class="font-title-lg text-title-lg px-2 mb-4">Exported Parts</h2>
+<!-- List Items -->
+<div class="space-y-1">
+<!-- Template Item Loop (Simulated) -->
+<script>
+                    const parts = [
+                        { name: "part_01_intro.mp4", size: "842 MB", resolution: "4K" },
+                        { name: "part_02_action.mp4", size: "720 MB", resolution: "4K" },
+                        { name: "part_03_climax.mp4", size: "910 MB", resolution: "4K" },
+                        { name: "part_04_ending.mp4", size: "430 MB", resolution: "4K" },
+                        { name: "part_05_credits.mp4", size: "120 MB", resolution: "4K" },
+                        { name: "part_06_bonus.mp4", size: "650 MB", resolution: "4K" },
+                        { name: "part_07_bts.mp4", size: "530 MB", resolution: "4K" }
+                    ];
+
+                    document.write(parts.map((part, index) => `
+                        <div class="flex items-center gap-4 bg-surface-container-lowest p-list_padding rounded-xl hover:bg-surface-variant transition-colors border border-transparent hover:border-outline-variant group">
+                            <div class="w-12 h-12 bg-secondary-container text-on-secondary-container rounded-lg flex items-center justify-center">
+                                <span class="material-symbols-outlined">movie</span>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <p class="font-body-lg text-body-lg text-on-surface truncate">${part.name}</p>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="font-label-sm text-label-sm px-1.5 py-0.5 bg-surface-variant text-on-surface-variant rounded">HEVC</span>
+                                    <span class="font-label-sm text-label-sm text-on-surface-variant mono">${part.size} • ${part.resolution}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1">
+                                <button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-primary transition-colors">share</button>
+                                <button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-primary transition-colors">open_in_new</button>
+                            </div>
+                        </div>
+                    `).join(''));
+                </script>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar (Floating Deck Style) -->
+<div class="fixed bottom-0 left-0 w-full p-4 pointer-events-none">
+<div class="max-w-screen-md mx-auto flex gap-3 pointer-events-auto bg-surface-container-high p-4 rounded-2xl shadow-lg border border-outline-variant">
+<button class="flex-1 h-touch_target_min rounded-full border border-outline text-primary font-title-lg flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined">folder_open</span>
+                Open folder
+            </button>
+<button class="flex-1 h-touch_target_min rounded-full bg-primary text-on-primary font-title-lg flex items-center justify-center gap-2 hover:shadow-md active:scale-95 transition-all">
+<span class="material-symbols-outlined">merge</span>
+                Make merge job
+            </button>
+</div>
+</div>
+<!-- Micro-interaction script -->
+<script>
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+<style>
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+        button { position: relative; overflow: hidden; }
+    </style>
+</body></html>

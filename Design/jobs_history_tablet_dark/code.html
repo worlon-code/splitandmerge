@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter - Jobs History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#e0e3e1",
+                        "outline": "#889390",
+                        "background": "#000000",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2d3130",
+                        "tertiary-container": "#8f4c36",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#0A0A0A",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#313634",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "inverse-surface": "#e0e3e1",
+                        "secondary": "#cdbdff",
+                        "on-secondary": "#370492",
+                        "inverse-primary": "#006b5f",
+                        "primary-container": "#006b5f",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#000000",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#101413",
+                        "surface": "#000000",
+                        "on-secondary-container": "#bda8ff",
+                        "surface-tint": "#83d5c6",
+                        "primary": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "tertiary": "#ffb59e",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#ffcebf",
+                        "on-primary-container": "#95e8d9",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#4e2ca9",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#313634",
+                        "surface-bright": "#363a39",
+                        "surface-container-high": "#272b2a",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#181c1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            font-family: 'Roboto Flex', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for AMOLED aesthetic */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313634;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #83d5c6;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- Navigation Drawer (Permanent for Tablet) -->
+<aside class="w-80 h-full bg-surface-container-low flex flex-col py-6 border-r border-outline-variant/30 shrink-0">
+<div class="px-6 mb-8">
+<h1 class="font-title-lg text-title-lg text-on-surface">Lossless Tools</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full cursor-pointer flex items-center gap-3 transition-colors">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-lg text-body-lg">Dashboard</span>
+</div>
+<!-- ACTIVE: Processing Queue (Maps to Jobs) -->
+<div class="bg-secondary-container text-on-secondary-container font-medium mx-3 rounded-full px-4 py-3 flex items-center gap-3 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+<span class="font-body-lg text-body-lg">Processing Queue</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full cursor-pointer flex items-center gap-3 transition-colors">
+<span class="material-symbols-outlined">video_library</span>
+<span class="font-body-lg text-body-lg">Library</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full cursor-pointer flex items-center gap-3 transition-colors">
+<span class="material-symbols-outlined">storage</span>
+<span class="font-body-lg text-body-lg">Disk Usage</span>
+</div>
+<div class="text-on-surface-variant mx-3 px-4 py-3 hover:bg-surface-container-high rounded-full cursor-pointer flex items-center gap-3 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-lg text-body-lg">Help</span>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<div class="p-4 bg-surface-container rounded-xl border border-outline-variant/20">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Worker Active</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary mb-1">Splitter-Node-04</div>
+<div class="w-full bg-surface-variant h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-2/3"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col relative overflow-hidden bg-background">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface-container border-b border-outline-variant flex items-center justify-between px-tablet_margin h-16 z-10">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95">menu</button>
+<h2 class="font-title-lg text-title-lg text-on-surface">Jobs History</h2>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden md:flex items-center bg-surface-container-highest px-3 py-1.5 rounded-full mr-4 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[18px] mr-2 text-primary">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface" placeholder="Search jobs..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95">filter_list</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95">settings</button>
+</div>
+</header>
+<!-- Content Area: Bento Grid Layout for Jobs -->
+<div class="flex-1 overflow-y-auto p-tablet_margin">
+<!-- Summary Stats -->
+<div class="grid grid-cols-12 gap-6 mb-8">
+<div class="col-span-12 lg:col-span-4 bg-surface-container p-6 rounded-xl border border-outline-variant/20 flex flex-col justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Total Processed</p>
+<h3 class="font-display-lg text-[42px] leading-tight text-primary">1,248</h3>
+</div>
+<div class="mt-4 flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="font-label-sm text-label-sm">+12% from last week</span>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-surface-container p-6 rounded-xl border border-outline-variant/20 flex flex-col justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Storage Optimized</p>
+<h3 class="font-display-lg text-[42px] leading-tight text-secondary">4.2<span class="text-2xl"> TB</span></h3>
+</div>
+<div class="mt-4 flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">database</span>
+<span class="font-label-sm text-label-sm">Lossless HEVC conversion</span>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-surface-container p-6 rounded-xl border border-outline-variant/20 flex flex-col justify-between overflow-hidden relative">
+<div class="z-10">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Queue Health</p>
+<h3 class="font-display-lg text-[42px] leading-tight text-on-surface">99.8%</h3>
+</div>
+<div class="mt-4 flex items-center gap-2 text-on-surface-variant z-10">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="font-label-sm text-label-sm">No failed tasks in 24h</span>
+</div>
+<!-- Background Visual Subtle -->
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+</div>
+</div>
+<!-- Main Queue Section -->
+<div class="space-y-4">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-title-lg text-title-lg text-on-surface">Active Tasks</h4>
+<span class="bg-primary-container text-on-primary-container font-label-md text-label-md px-3 py-1 rounded-full">2 Running</span>
+</div>
+<!-- Job Item 1: Active -->
+<div class="bg-surface-container p-4 rounded-xl border border-outline-variant/40 flex items-center gap-6 group hover:border-primary/50 transition-all duration-300">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden shrink-0">
+<img class="w-full h-full object-cover opacity-80" data-alt="A close up cinematic shot of a professional camera lens reflecting a digital neon cityscape. The lighting is cold blue with sharp orange highlights, representing high-end video production and technical precision. The image is crisp, detailed, and adheres to a modern dark-mode aesthetic with deep blacks and vibrant primary color accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANFJJHfqTivXERQbhQlhBaopmAweoWoggfEyB27PVxgUKWYn4wvRYnNawra0Lb9d-tSj6Y9Bv-5jo0ELGd5iXxP8iWv1Wkxw6LhpcsT9qG0bbaTXGAipaUHYdnBXDOLy1_mpDvPckI5oSqiJJoxaFhUVfK0EIN34pfeqDILLk7-DFGUsYF7GjOW0uvPXQPh1tnlZHLpy6QPxcPVMtmoqtS8tgWof9nfzh72okf95VbdC4Ma2K7OGirFyGVxFroVGll6tcRhndY3Qpa"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<h5 class="font-body-lg text-body-lg font-medium text-on-surface truncate">raw_4k_cinematic_split_v02.mp4</h5>
+<span class="font-label-md text-label-md text-primary font-medium">68%</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant mb-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span class="font-label-sm text-label-sm">Est: 4m 12s</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">settings_ethernet</span>
+<span class="font-label-sm text-label-sm">Lossless HEVC</span>
+</div>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[68%] transition-all duration-1000 ease-in-out"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-full transition-colors">pause</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-full transition-colors">more_vert</button>
+</div>
+</div>
+<!-- Job Item 2: Pending -->
+<div class="bg-surface-container p-4 rounded-xl border border-outline-variant/20 flex items-center gap-6 opacity-70 hover:opacity-100 transition-opacity">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-outline text-[32px]">schedule</span>
+</div>
+<div class="flex-1 min-w-0">
+<h5 class="font-body-lg text-body-lg font-medium text-on-surface truncate">archival_footage_batch_34.mov</h5>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">view_agenda</span>
+<span class="font-label-sm text-label-sm">Queued: #1</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">description</span>
+<span class="font-label-sm text-label-sm">1.2 GB</span>
+</div>
+</div>
+</div>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors">close</button>
+</div>
+<!-- Completed Section Header -->
+<div class="pt-8 mb-2 flex items-center justify-between">
+<h4 class="font-title-lg text-title-lg text-on-surface-variant">Completed Recently</h4>
+<button class="text-primary font-label-md text-label-md hover:underline">View All</button>
+</div>
+<!-- Table Style for Completed -->
+<div class="bg-surface-container rounded-xl border border-outline-variant/20 overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30">
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">File Name</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Format</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Time</th>
+<th class="px-6 py-4 font-label-md text-label-md text-outline uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface">vlog_tokyo_night_01.mp4</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded">Success</span>
+</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-outline-variant">HEVC Main10</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant">2m 45s</td>
+<td class="px-6 py-4">
+<div class="flex gap-2">
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary">folder_open</button>
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-secondary">share</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface">interview_master_final.prores</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded">Success</span>
+</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-outline-variant">Apple ProRes 422</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant">14m 12s</td>
+<td class="px-6 py-4">
+<div class="flex gap-2">
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary">folder_open</button>
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-secondary">share</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface">wedding_highlight_cut.mkv</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded">Success</span>
+</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-outline-variant">H.264 High</td>
+<td class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant">8m 52s</td>
+<td class="px-6 py-4">
+<div class="flex gap-2">
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary">folder_open</button>
+<button class="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-secondary">share</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- FAB: Only for relevant context - Start New Job -->
+<button class="fixed bottom-10 right-10 flex items-center gap-3 bg-primary text-on-primary px-6 py-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all z-20 group">
+<span class="material-symbols-outlined font-bold">add</span>
+<span class="font-label-md text-label-md uppercase tracking-widest group-hover:block">New Process</span>
+</button>
+</main>
+<!-- Micro-interaction script -->
+<script>
+        document.querySelectorAll('.active\\:scale-95').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

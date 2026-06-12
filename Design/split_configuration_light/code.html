@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght,GRAD@8..144,25..150,100..1000,-50..100&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-container": "#8f4c36",
+            "secondary-fixed": "#e8deff",
+            "primary-container": "#006b5f",
+            "on-background": "#e0e3e1",
+            "on-tertiary-container": "#ffcebf",
+            "surface-container": "#1c201f",
+            "surface-dim": "#101413",
+            "background": "#101413",
+            "surface-container-high": "#272b2a",
+            "on-error": "#690005",
+            "on-secondary": "#370492",
+            "error": "#ffb4ab",
+            "primary-fixed": "#9ff2e2",
+            "surface-bright": "#363a39",
+            "tertiary-fixed-dim": "#ffb59e",
+            "surface-container-low": "#181c1b",
+            "on-tertiary-fixed": "#390b00",
+            "surface-container-highest": "#313634",
+            "on-primary-fixed": "#00201c",
+            "tertiary-fixed": "#ffdbd0",
+            "on-secondary-fixed-variant": "#4e2ca9",
+            "on-secondary-container": "#bda8ff",
+            "on-error-container": "#ffdad6",
+            "secondary": "#cdbdff",
+            "surface-tint": "#83d5c6",
+            "on-tertiary": "#55200d",
+            "inverse-surface": "#e0e3e1",
+            "outline": "#889390",
+            "surface-variant": "#313634",
+            "inverse-on-surface": "#2d3130",
+            "on-surface-variant": "#bec9c5",
+            "surface-container-lowest": "#0b0f0e",
+            "primary": "#83d5c6",
+            "on-primary-fixed-variant": "#005047",
+            "on-primary": "#003731",
+            "on-surface": "#e0e3e1",
+            "tertiary": "#ffb59e",
+            "on-secondary-fixed": "#20005f",
+            "secondary-fixed-dim": "#cdbdff",
+            "outline-variant": "#3e4946",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#83d5c6",
+            "secondary-container": "#4e2ca9",
+            "on-primary-fixed-variant": "#005047",
+            "surface": "#101413",
+            "on-primary-container": "#95e8d9"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "8px",
+            "tablet_margin": "24px",
+            "phone_margin": "16px",
+            "list_padding": "12px",
+            "touch_target_min": "48px"
+          },
+          "fontFamily": {
+            "display-lg": ["Roboto Flex"],
+            "title-lg": ["Roboto Flex"],
+            "body-md": ["Roboto Flex"],
+            "headline-lg": ["Roboto Flex"],
+            "body-lg": ["Roboto Flex"],
+            "label-sm": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "headline-md": ["Roboto Flex"]
+          },
+          "fontSize": {
+            "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+            "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+            "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+            "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+            "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #101413;
+      color: #e0e3e1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container flex items-center justify-between px-phone_margin h-touch_target_min w-full">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-on-surface text-center flex-1">Configure split</h1>
+<div class="flex gap-2">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">help</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-phone_margin max-w-2xl mx-auto space-y-6">
+<!-- Title Card -->
+<section class="bg-surface-container-low rounded-xl p-4 border border-outline-variant">
+<label class="block mb-2 font-label-md text-on-surface-variant">Project Title</label>
+<div class="relative w-full group">
+<input class="w-full bg-transparent border border-outline rounded-lg px-4 py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-lg text-body-lg" placeholder="Enter title..." type="text" value="Baahubali: The Conclusion - Final 4K"/>
+<div class="absolute -top-2 left-3 px-1 bg-surface-container-low text-label-sm text-primary font-label-sm">Filename Pattern</div>
+</div>
+</section>
+<!-- Mode Configuration Card -->
+<section class="bg-surface-container-low rounded-xl p-4 border border-outline-variant space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Split Mode</h2>
+</div>
+<!-- Segmented Button -->
+<div class="flex w-full border border-outline-variant rounded-full overflow-hidden h-12">
+<button class="flex-1 bg-secondary-container text-on-secondary-container font-label-md transition-all flex items-center justify-center gap-2" id="btn-parts" onclick="setMode('parts')">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+          Exact parts
+        </button>
+<button class="flex-1 text-on-surface-variant hover:bg-surface-variant font-label-md border-x border-outline-variant transition-all" id="btn-size" onclick="setMode('size')">Size cap</button>
+<button class="flex-1 text-on-surface-variant hover:bg-surface-variant font-label-md transition-all" id="btn-both" onclick="setMode('both')">Both</button>
+</div>
+<!-- Numeric Stepper (Parts) -->
+<div class="space-y-3" id="parts-config">
+<label class="font-label-md text-on-surface-variant">Total segments</label>
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="flex-1 text-center py-3 bg-surface-container-highest rounded-lg font-display-lg text-headline-md text-primary">7</div>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Size Input (Hidden by default or toggled) -->
+<div class="space-y-3 opacity-50 grayscale pointer-events-none" id="size-config">
+<label class="font-label-md text-on-surface-variant">Maximum size per part</label>
+<div class="relative flex items-center">
+<input class="w-full bg-transparent border border-outline rounded-lg px-4 py-3 text-on-surface-variant outline-none font-label-md" readonly="" type="number" value="4.7"/>
+<div class="absolute right-3 px-3 py-1 bg-surface-container-highest rounded text-on-surface-variant font-label-sm">GB</div>
+</div>
+</div>
+</section>
+<!-- Output Card -->
+<section class="bg-surface-container-low rounded-xl p-4 border border-outline-variant space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Output Destination</h2>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-highest rounded-lg cursor-pointer hover:bg-surface-variant transition-colors">
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">/Storage/Videos/Exports/</span>
+<span class="font-label-sm text-on-surface-variant">Available: 124.5 GB</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">edit</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span class="font-label-md">MKV Container</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-variant text-on-surface-variant px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span class="font-label-md">Lossless</span>
+</div>
+</div>
+</section>
+<!-- Summary Section -->
+<section class="space-y-4">
+<div class="text-center py-6">
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider">Estimated Output</p>
+<h3 class="font-display-lg text-display-lg text-primary mt-2">7 parts</h3>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-high p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-on-surface-variant">Total Duration</span>
+<span class="font-label-md text-on-surface">02:47:12.44</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-on-surface-variant">Avg. Part Size</span>
+<span class="font-label-md text-on-surface">3.24 GB</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-on-surface-variant">Source Format</span>
+<span class="font-label-md text-on-surface">HEVC Main 10</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-on-surface-variant">Efficiency</span>
+<span class="font-label-md text-primary">100% Lossless</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-low border-t border-outline-variant px-4 py-4 md:px-tablet_margin flex gap-3">
+<button class="flex-1 h-touch_target_min rounded-full border border-outline text-primary font-label-md hover:bg-primary/10 transition-colors flex items-center justify-center">
+      Cancel
+    </button>
+<button class="flex-[2] h-touch_target_min rounded-full bg-primary text-on-primary font-label-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+      Continue
+    </button>
+</footer>
+<script>
+    function setMode(mode) {
+      const partsBtn = document.getElementById('btn-parts');
+      const sizeBtn = document.getElementById('btn-size');
+      const bothBtn = document.getElementById('btn-both');
+      const partsConfig = document.getElementById('parts-config');
+      const sizeConfig = document.getElementById('size-config');
+
+      // Reset all
+      [partsBtn, sizeBtn, bothBtn].forEach(btn => {
+        btn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        btn.classList.add('text-on-surface-variant', 'hover:bg-surface-variant');
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) icon.remove();
+      });
+
+      // Set active
+      const activeBtn = document.getElementById(`btn-${mode}`);
+      activeBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+      activeBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant');
+      activeBtn.insertAdjacentHTML('afterbegin', `<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>`);
+
+      // Toggle configs
+      if (mode === 'parts') {
+        partsConfig.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+        sizeConfig.classList.add('opacity-50', 'grayscale', 'pointer-events-none');
+      } else if (mode === 'size') {
+        partsConfig.classList.add('opacity-50', 'grayscale', 'pointer-events-none');
+        sizeConfig.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+      } else {
+        partsConfig.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+        sizeConfig.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+      }
+    }
+  </script>
+</body></html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Queue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#101413",
+                        "outline": "#889390",
+                        "background": "#fbfdfc",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#410002",
+                        "inverse-on-surface": "#eff1f0",
+                        "tertiary-container": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#f0f1f0",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#101413",
+                        "inverse-surface": "#2d3130",
+                        "secondary": "#634dbf",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#83d5c6",
+                        "primary-container": "#005047",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#d9dbda",
+                        "surface": "#fbfdfc",
+                        "on-secondary-container": "#1d0061",
+                        "surface-tint": "#006b5f",
+                        "primary": "#006b5f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#8f4c36",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#3a0b00",
+                        "on-primary-container": "#ffffff",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#e8deff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#3f4946",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#dbe5e2",
+                        "surface-bright": "#fbfdfc",
+                        "surface-container-high": "#e5e8e7",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#f5f7f6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbfdfc;
+            color: #101413;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .swipe-container {
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-30 bg-surface-container flex justify-between items-center px-phone_margin h-touch_target_min">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface hover:bg-surface-variant p-2 rounded-full transition-colors">menu</button>
+<h1 class="font-title-lg text-title-lg text-on-surface">Queue</h1>
+</div>
+<div class="flex gap-1">
+<button class="material-symbols-outlined text-on-surface p-2 rounded-full transition-colors hover:bg-surface-variant">settings</button>
+<button class="material-symbols-outlined text-on-surface p-2 rounded-full transition-colors hover:bg-surface-variant">help</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="pt-[48px] pb-[80px] h-screen overflow-y-auto bg-surface">
+<!-- Filter Chips Row -->
+<div class="flex overflow-x-auto gap-2 px-phone_margin py-4 hide-scrollbar">
+<button class="flex items-center justify-center px-4 py-1.5 rounded-lg bg-secondary-container text-on-secondary-container font-label-md text-label-md border border-secondary-container">
+                All
+            </button>
+<button class="flex items-center justify-center px-4 py-1.5 rounded-lg border border-outline text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+                Running
+            </button>
+<button class="flex items-center justify-center px-4 py-1.5 rounded-lg border border-outline text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+                Queued
+            </button>
+<button class="flex items-center justify-center px-4 py-1.5 rounded-lg border border-outline text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+                Done
+            </button>
+<button class="flex items-center justify-center px-4 py-1.5 rounded-lg border border-outline text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+                Failed
+            </button>
+</div>
+<!-- Job List -->
+<div class="flex flex-col">
+<!-- Job Item: Running -->
+<div class="relative overflow-hidden bg-surface">
+<div class="swipe-container flex items-center px-phone_margin py-list_padding bg-surface border-b border-outline-variant relative z-10">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary-container text-on-primary-container mr-4">
+<span class="material-symbols-outlined">content_cut</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline-md text-[16px] text-on-surface truncate">VLOG_2024_NYC_FINAL.mp4</h3>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[10px] font-label-sm uppercase tracking-wider">Running</span>
+<span class="text-on-surface-variant text-[11px] font-label-sm">4K • 60fps • 1.2GB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-2">chevron_right</span>
+</div>
+</div>
+<!-- Job Item: Swiped (Mockup state) -->
+<div class="relative overflow-hidden bg-surface">
+<!-- Action Background -->
+<div class="absolute inset-0 flex justify-end">
+<button class="w-[80px] h-full bg-error text-on-error flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined">delete</span>
+<span class="text-[10px] font-label-sm uppercase">Delete</span>
+</button>
+</div>
+<!-- Swiped Layer -->
+<div class="swipe-container flex items-center px-phone_margin py-list_padding bg-surface border-b border-outline-variant relative z-10 translate-x-[-80px]">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-secondary-container text-on-secondary-container mr-4">
+<span class="material-symbols-outlined">merge_type</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline-md text-[16px] text-on-surface truncate">Wedding_B-Roll_Combo</h3>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-label-sm uppercase tracking-wider">Queued</span>
+<span class="text-on-surface-variant text-[11px] font-label-sm">1080p • 24fps • 450MB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-2">chevron_right</span>
+</div>
+</div>
+<!-- Job Item: Done -->
+<div class="relative overflow-hidden bg-surface">
+<div class="swipe-container flex items-center px-phone_margin py-list_padding bg-surface border-b border-outline-variant relative z-10">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary-container text-on-primary-container mr-4 opacity-70">
+<span class="material-symbols-outlined">content_cut</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline-md text-[16px] text-on-surface truncate opacity-70">Interview_Split_Part_1.mov</h3>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="px-2 py-0.5 rounded-full bg-surface-variant text-on-surface-variant text-[10px] font-label-sm uppercase tracking-wider">Done</span>
+<span class="text-on-surface-variant text-[11px] font-label-sm">HEVC • 5min 23s</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-2">chevron_right</span>
+</div>
+</div>
+<!-- Job Item: Failed -->
+<div class="relative overflow-hidden bg-surface">
+<div class="swipe-container flex items-center px-phone_margin py-list_padding bg-surface border-b border-outline-variant relative z-10">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-error-container text-on-error-container mr-4">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline-md text-[16px] text-on-surface truncate">Raw_Footage_001.r3d</h3>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container text-[10px] font-label-sm uppercase tracking-wider">Failed</span>
+<span class="text-error text-[11px] font-label-sm">Codec mismatch</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-2">chevron_right</span>
+</div>
+</div>
+<!-- More Samples -->
+<div class="relative overflow-hidden bg-surface">
+<div class="swipe-container flex items-center px-phone_margin py-list_padding bg-surface border-b border-outline-variant relative z-10">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-secondary-container text-on-secondary-container mr-4">
+<span class="material-symbols-outlined">merge_type</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline-md text-[16px] text-on-surface truncate">TikTok_Compilation_V2</h3>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-label-sm uppercase tracking-wider">Queued</span>
+<span class="text-on-surface-variant text-[11px] font-label-sm">9:16 • 1080p • 12 Files</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-2">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- FAB for Background Info (Contextual) -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">format_list_bulleted</span>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple swipe interactivity mockup logic
+        document.querySelectorAll('.swipe-container').forEach(item => {
+            let startX = 0;
+            let currentX = 0;
+            let isSwiping = false;
+
+            item.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                isSwiping = true;
+            });
+
+            item.addEventListener('touchmove', e => {
+                if (!isSwiping) return;
+                currentX = e.touches[0].clientX - startX;
+                // Only allow swiping left
+                if (currentX < 0 && currentX > -120) {
+                    item.style.transform = `translateX(${currentX}px)`;
+                }
+            });
+
+            item.addEventListener('touchend', () => {
+                isSwiping = false;
+                if (currentX < -40) {
+                    item.style.transform = 'translateX(-80px)';
+                } else {
+                    item.style.transform = 'translateX(0px)';
+                }
+            });
+        });
+    </script>
+</body></html>

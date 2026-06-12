@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&family=JetBrains+Mono:wght@100..800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Material+Symbols+Rounded:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#2d3130",
+            "inverse-surface": "#e0e3e1",
+            "surface-dim": "#f5fbf9",
+            "tertiary-fixed": "#ffdbd0",
+            "on-tertiary-fixed": "#390b00",
+            "primary-fixed": "#9ff2e2",
+            "on-secondary-container": "#160067",
+            "surface-container-high": "#e6ebe9",
+            "outline": "#6f7976",
+            "on-primary-container": "#00201c",
+            "on-tertiary-container": "#390b00",
+            "secondary-fixed-dim": "#cdbdff",
+            "secondary": "#5f44b9",
+            "error-container": "#f9dedc",
+            "tertiary-fixed-dim": "#ffb59e",
+            "primary": "#006b5f",
+            "surface-tint": "#006b5f",
+            "surface-container-low": "#f0f5f3",
+            "on-error": "#ffffff",
+            "surface-bright": "#f5fbf9",
+            "on-surface-variant": "#3f4946",
+            "on-secondary-fixed": "#160067",
+            "on-primary-fixed": "#00201c",
+            "on-primary-fixed-variant": "#005047",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-surface": "#191c1b",
+            "tertiary": "#8f4c36",
+            "secondary-container": "#e8deff",
+            "primary-container": "#9ff2e2",
+            "surface": "#f5fbf9",
+            "error": "#b3261e",
+            "inverse-primary": "#83d5c6",
+            "surface-container-highest": "#e0e3e1",
+            "primary-fixed-dim": "#83d5c6",
+            "on-tertiary-fixed-variant": "#723521",
+            "on-background": "#191c1b",
+            "on-error-container": "#410002",
+            "surface-container": "#edf2f0",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#ffdbd0",
+            "outline-variant": "#bec9c5",
+            "surface-variant": "#dae5e1",
+            "background": "#f5fbf9",
+            "secondary-fixed": "#e8deff",
+            "on-secondary-fixed-variant": "#4e2ca9"
+          },
+          "borderRadius": {
+            "DEFAULT": "4px",
+            "lg": "8px",
+            "xl": "12px",
+            "2xl": "16px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "list_padding": "12px",
+            "tablet_margin": "24px",
+            "gutter": "8px",
+            "touch_target_min": "48px",
+            "phone_margin": "16px"
+          },
+          "fontFamily": {
+            "body-lg": ["Roboto Flex"],
+            "headline-md": ["Roboto Flex"],
+            "display-lg": ["Roboto Flex"],
+            "label-sm": ["JetBrains Mono"],
+            "title-lg": ["Roboto Flex"],
+            "body-md": ["Roboto Flex"],
+            "headline-lg": ["Roboto Flex"],
+            "label-md": ["JetBrains Mono"],
+            "display-sm": ["Roboto Flex"],
+            "title-medium": ["Roboto Flex"],
+            "body-small": ["Roboto Flex"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+            "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+            "body-small": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+            "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+            "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+            "display-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+            "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+            "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+            "title-medium": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #f5fbf9;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .material-symbols-rounded {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-rounded.fill {
+      font-variation-settings: 'FILL' 1;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased text-on-surface font-body-lg">
+<!-- Main Canvas -->
+<main class="min-h-screen flex flex-col items-center px-phone_margin max-w-md mx-auto relative overflow-hidden">
+<!-- Top safe area padding -->
+<div class="h-16 w-full"></div>
+<!-- Icon Section -->
+<div class="relative flex items-center justify-center animate-in fade-in zoom-in duration-700">
+<div class="w-[160px] h-[160px] rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-rounded text-primary text-[96px]">movie_filter</span>
+</div>
+<!-- Subtle technical decorative elements (CSS patterns) -->
+<div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle, #006b5f 1px, transparent 1px); background-size: 20px 20px;"></div>
+</div>
+<!-- Gap 32dp -->
+<div class="h-8"></div>
+<!-- Headline Section -->
+<div class="text-center">
+<h1 class="font-display-sm text-display-sm text-on-surface max-w-[280px] mx-auto leading-tight">
+        Split big videos.<br/>Merge them back.
+      </h1>
+</div>
+<!-- Gap 12dp -->
+<div class="h-3"></div>
+<!-- Sub-headline Section -->
+<div class="text-center">
+<p class="font-body-lg text-body-lg text-on-surface-variant whitespace-nowrap overflow-hidden text-ellipsis">
+        Lossless. Subtitles preserved. 4K untouched.
+      </p>
+</div>
+<!-- Flexible Spacer -->
+<div class="flex-grow"></div>
+<!-- Settings Card -->
+<section class="w-full bg-surface border border-outline-variant rounded-2xl p-4 flex flex-col gap-4 animate-in slide-in-from-bottom duration-500">
+<div class="flex items-start gap-4">
+<span class="material-symbols-rounded text-on-surface-variant text-[24px] mt-1">folder_open</span>
+<div class="flex flex-col">
+<span class="font-title-medium text-title-medium text-on-surface">Pick a folder for your splits</span>
+<span class="font-body-small text-body-small text-on-surface-variant mt-1 leading-normal">
+            We'll save parts here. You can change this later in Settings.
+          </span>
+</div>
+</div>
+</section>
+<!-- Gap 24dp -->
+<div class="h-6"></div>
+<!-- Primary Action Button -->
+<button class="w-full h-14 bg-primary text-on-primary rounded-full flex items-center justify-center gap-2 px-4 font-title-medium shadow-sm active:scale-95 transition-transform duration-100">
+<span class="material-symbols-rounded text-[18px]">folder_open</span>
+<span>Pick output folder</span>
+</button>
+<!-- Gap 12dp -->
+<div class="h-3"></div>
+<!-- Secondary Action Button -->
+<button class="w-full h-12 flex items-center justify-center font-title-medium text-primary active:bg-primary-container/20 rounded-full transition-colors">
+      Skip for now
+    </button>
+<!-- Bottom safe area padding 24dp -->
+<div class="h-6"></div>
+</main>
+<!-- Interactive Logic for visual feedback -->
+<script>
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('touchstart', () => {
+        button.classList.add('opacity-80');
+      });
+      button.addEventListener('touchend', () => {
+        button.classList.remove('opacity-80');
+      });
+    });
+  </script>
+</body></html>

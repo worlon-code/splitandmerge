@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Split Configuration</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&amp;family=Roboto+Flex:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8f4c36",
+                    "secondary-fixed": "#e8deff",
+                    "primary-container": "#006b5f",
+                    "on-background": "#e0e3e1",
+                    "on-tertiary-container": "#ffcebf",
+                    "surface-container": "#1c201f",
+                    "surface-dim": "#101413",
+                    "background": "#000000",
+                    "surface-container-high": "#272b2a",
+                    "on-error": "#690005",
+                    "on-secondary": "#370492",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-bright": "#363a39",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-container-low": "#181c1b",
+                    "on-tertiary-fixed": "#390b00",
+                    "surface-container-highest": "#313634",
+                    "on-primary-fixed": "#00201c",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "on-secondary-container": "#bda8ff",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#cdbdff",
+                    "surface-tint": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "inverse-surface": "#e0e3e1",
+                    "outline": "#889390",
+                    "surface-variant": "#313634",
+                    "inverse-on-surface": "#2d3130",
+                    "on-surface-variant": "#bec9c5",
+                    "surface-container-lowest": "#0b0f0e",
+                    "primary": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "inverse-primary": "#006b5f",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "on-secondary-fixed": "#20005f",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "outline-variant": "#3e4946",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#83d5c6",
+                    "secondary-container": "#4e2ca9",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#101413",
+                    "on-primary-container": "#95e8d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8px",
+                    "tablet_margin": "24px",
+                    "phone_margin": "16px",
+                    "list_padding": "12px",
+                    "touch_target_min": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #000000;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3e4946;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-on-surface font-body-md overflow-hidden">
+<!-- Top App Bar -->
+<header class="bg-surface-container dark:bg-surface-container text-primary dark:text-primary flex justify-between items-center px-tablet_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer text-on-surface-variant">arrow_back</span>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">Video Utility</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-touch_target_min pb-24 h-screen overflow-y-auto px-tablet_margin flex flex-col items-center">
+<!-- Layout Grid -->
+<div class="max-w-6xl w-full grid grid-cols-12 gap-6 mt-8">
+<!-- Left Column: Title and Mode -->
+<div class="col-span-12 lg:col-span-7 space-y-6">
+<!-- Title Card -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">content_cut</span>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-primary">Split Configuration</h2>
+<p class="text-on-surface-variant font-body-md mt-1">Configure how your 4K master file will be fragmented for distribution.</p>
+</div>
+</div>
+<div class="mt-8">
+<label class="block font-label-md text-label-md text-primary mb-2">INPUT FILE</label>
+<div class="flex items-center gap-3 bg-surface-container-highest p-4 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-tertiary">movie</span>
+<div class="flex-1 overflow-hidden">
+<p class="truncate font-label-md text-label-md">master_render_final_v04_prores.mov</p>
+<p class="text-on-surface-variant text-[10px] font-label-sm">42.4 GB • 3840x2160 • 59.94 FPS</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</div>
+</div>
+</section>
+<!-- Mode Selection Card -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6">
+<h3 class="font-label-md text-label-md text-primary mb-6">SPLITTING LOGIC</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Mode Option: Equal Parts -->
+<div class="cursor-pointer border-2 border-primary bg-primary-container/10 p-4 rounded-xl transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+<div class="w-5 h-5 rounded-full border-4 border-primary bg-on-primary"></div>
+</div>
+<p class="font-title-lg text-title-lg text-on-surface">Equal Segments</p>
+<p class="text-on-surface-variant text-sm">Split by fixed duration intervals.</p>
+</div>
+<!-- Mode Option: Scene Detect -->
+<div class="cursor-pointer border border-outline-variant p-4 rounded-xl hover:bg-surface-variant/30 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant">auto_awesome</span>
+<div class="w-5 h-5 rounded-full border border-outline-variant"></div>
+</div>
+<p class="font-title-lg text-title-lg text-on-surface">Scene Detection</p>
+<p class="text-on-surface-variant text-sm">Automated AI cut point analysis.</p>
+</div>
+</div>
+<div class="mt-8 space-y-4">
+<div>
+<div class="flex justify-between mb-2">
+<label class="font-label-md text-label-md">Segment Duration</label>
+<span class="font-label-sm text-label-sm text-primary">05:00.00</span>
+</div>
+<input class="w-full accent-primary h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer" type="range"/>
+</div>
+<div class="flex items-center gap-3 p-3 bg-surface-container rounded-lg">
+<input checked="" class="w-5 h-5 rounded border-outline bg-surface-container text-primary focus:ring-primary" type="checkbox"/>
+<label class="text-on-surface font-body-md">Lossless frame-accurate trimming</label>
+<span class="material-symbols-outlined text-on-surface-variant text-sm ml-auto">bolt</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Output and Summary -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- Output Settings Card -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6">
+<h3 class="font-label-md text-label-md text-primary mb-6">OUTPUT PARAMETERS</h3>
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CODEC</span>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-label-md">H.265 (HEVC)</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded-full text-xs font-label-md">ProRes 422</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">NAMING CONVENTION</span>
+<div class="bg-surface-container-highest font-label-md text-label-md p-3 rounded-lg border border-outline-variant text-on-surface-variant italic">
+                                [filename]_part_[index].[ext]
+                            </div>
+</div>
+<div class="flex flex-col gap-1 pt-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">DESTINATION</span>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+<span class="text-sm font-label-md underline cursor-pointer">/Volumes/SSD_01/Exports/Segments</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Card -->
+<section class="bg-primary-container/10 border border-primary/30 rounded-xl overflow-hidden">
+<div class="p-6">
+<h3 class="font-label-md text-label-md text-primary mb-4">BATCH PREVIEW</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+<span class="text-sm text-on-surface-variant">Estimated Parts</span>
+<span class="font-title-lg text-title-lg">24</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+<span class="text-sm text-on-surface-variant">Process Priority</span>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-sm text-on-surface-variant">Estimated Disk Space</span>
+<span class="font-label-md text-label-md text-tertiary">~44.8 GB</span>
+</div>
+</div>
+</div>
+<!-- Visual feedback wave/abstract -->
+<div class="h-24 relative bg-surface-container-highest overflow-hidden">
+
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-sm text-label-sm tracking-[4px] text-on-surface-variant uppercase">Ready to Split</span>
+</div>
+</div>
+</section>
+<!-- Quick Actions Chips -->
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-variant cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">history</span>
+<span class="text-xs font-label-md">Recent Settings</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-variant cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">save</span>
+<span class="text-xs font-label-md">Save Preset</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Bar -->
+<footer class="fixed bottom-0 left-0 right-0 h-24 bg-surface-container-low border-t border-outline-variant flex items-center justify-center px-tablet_margin z-50">
+<div class="max-w-6xl w-full flex justify-between items-center">
+<div class="hidden md:flex flex-col">
+<span class="text-on-surface-variant font-label-sm text-[10px]">CURRENT JOB</span>
+<span class="text-primary font-label-md">Split: Master_Render_V4</span>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-8 py-3 border border-outline text-primary font-title-lg rounded-full hover:bg-surface-variant transition-all active:scale-95">
+                    Cancel
+                </button>
+<button class="flex-1 md:flex-none px-12 py-3 bg-primary text-on-primary font-title-lg rounded-full hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+<span>Continue</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</footer>
+<!-- Hidden Navigation (Requirement) -->
+<nav class="hidden md:flex fixed left-0 top-0 bottom-0 w-20 bg-surface-container-lowest flex-col items-center py-8 gap-8 border-r border-outline-variant/30 z-[60]">
+<span class="material-symbols-outlined text-primary text-3xl mb-4">fluid_med</span>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-2 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_cut</span>
+<span class="text-[10px] font-label-md mt-1">Split</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined">merge</span>
+<span class="text-[10px] font-label-md mt-1">Merge</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="text-[10px] font-label-md mt-1">Queue</span>
+</div>
+<div class="mt-auto flex flex-col items-center justify-center text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-label-md mt-1">Settings</span>
+</div>
+</nav>
+</body></html>

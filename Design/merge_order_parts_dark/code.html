@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Merge Order</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "outline-variant": "#3e4946",
+                  "on-background": "#e0e3e1",
+                  "outline": "#889390",
+                  "background": "#000000",
+                  "on-error": "#690005",
+                  "on-secondary-fixed": "#20005f",
+                  "on-error-container": "#ffdad6",
+                  "inverse-on-surface": "#2d3130",
+                  "tertiary-container": "#8f4c36",
+                  "on-secondary-fixed-variant": "#4e2ca9",
+                  "surface-container": "#0A0A0A",
+                  "error-container": "#93000a",
+                  "surface-container-highest": "#1C1C1C",
+                  "on-primary": "#003731",
+                  "on-surface": "#e0e3e1",
+                  "inverse-surface": "#e0e3e1",
+                  "secondary": "#cdbdff",
+                  "on-secondary": "#370492",
+                  "inverse-primary": "#006b5f",
+                  "primary-container": "#006b5f",
+                  "on-primary-fixed": "#00201c",
+                  "surface-container-lowest": "#000000",
+                  "primary-fixed": "#9ff2e2",
+                  "surface-dim": "#101413",
+                  "surface": "#000000",
+                  "on-secondary-container": "#bda8ff",
+                  "surface-tint": "#83d5c6",
+                  "primary": "#83d5c6",
+                  "on-tertiary": "#55200d",
+                  "tertiary": "#ffb59e",
+                  "on-tertiary-fixed": "#390b00",
+                  "on-tertiary-container": "#ffcebf",
+                  "on-primary-container": "#95e8d9",
+                  "secondary-fixed-dim": "#cdbdff",
+                  "secondary-container": "#4e2ca9",
+                  "error": "#ffb4ab",
+                  "secondary-fixed": "#e8deff",
+                  "on-tertiary-fixed-variant": "#723521",
+                  "on-surface-variant": "#bec9c5",
+                  "on-primary-fixed-variant": "#005047",
+                  "primary-fixed-dim": "#83d5c6",
+                  "tertiary-fixed-dim": "#ffb59e",
+                  "surface-variant": "#1C1C1C",
+                  "surface-bright": "#222222",
+                  "surface-container-high": "#141414",
+                  "tertiary-fixed": "#ffdbd0",
+                  "surface-container-low": "#050505"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "gutter": "8px",
+                  "tablet_margin": "24px",
+                  "touch_target_min": "48px",
+                  "phone_margin": "16px",
+                  "list_padding": "12px"
+          },
+          "fontFamily": {
+                  "headline-md": ["Roboto Flex"],
+                  "label-sm": ["JetBrains Mono"],
+                  "title-lg": ["Roboto Flex"],
+                  "body-lg": ["Roboto Flex"],
+                  "label-md": ["JetBrains Mono"],
+                  "display-lg": ["Roboto Flex"],
+                  "headline-lg": ["Roboto Flex"],
+                  "body-md": ["Roboto Flex"]
+          },
+          "fontSize": {
+                  "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                  "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                  "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                  "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                  "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                  "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                  "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    .sortable-ghost {
+      opacity: 0.4;
+      background: #4e2ca9 !important;
+    }
+    body {
+      background-color: #000000;
+      color: #e0e3e1;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface-container text-primary flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Merge</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer" data-icon="help">help</span>
+<span class="material-symbols-outlined cursor-pointer" data-icon="settings">settings</span>
+</div>
+</header>
+<main class="flex-1 mt-14 mb-24 px-phone_margin py-6">
+<!-- Header Section -->
+<div class="mb-6">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-1">Order Parts</h2>
+<p class="font-body-md text-on-surface-variant">Drag to reorder the video clips for merging. Processing will follow this sequence.</p>
+</div>
+<!-- Drop Zone / Technical Status -->
+<div class="bg-surface-container-low border border-dashed border-outline-variant rounded-xl p-4 mb-6 flex flex-col items-center justify-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="movie_edit">movie_edit</span>
+<span class="font-label-md text-primary">DRAG CLIPS TO ADJUST SEQUENCE</span>
+</div>
+<!-- Draggable List (Bento-style items) -->
+<div class="space-y-3" id="merge-list">
+<!-- Item 1 -->
+<div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing border border-transparent hover:border-outline-variant transition-all duration-200" draggable="true">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-sm">01</span>
+</div>
+<div class="w-16 h-12 bg-surface-container-highest rounded-lg overflow-hidden flex-shrink-0 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-1 right-1 font-label-sm text-[10px] text-white">04:12</div>
+<img class="w-full h-full object-cover" data-alt="A cinematic 4K video frame showing a high-tech laboratory with glowing blue monitors and server racks. The lighting is moody and technical, emphasizing a deep amoled black background with sharp teal accents. The visual style is crisp, clean, and highly professional, fitting a high-end video utility application interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdqNjpIWZtQarOl2c4oArJ-2lFOegrNmMm2ilP7gE8KZGcD4Q3Rxj8f3LYJIaT5lEMH-EXtYU8M_GckdhjN8-D_vL8HP0I5hAbPZF8Yud0fiP2DwKHXeu_L2d8dqPmtfPUCSRBiZZZ_Kf5pbjs6AbyQBTcHVea49taN95i4qtLs0DwJ70jD3xY2QhzTsZgAe8PoyPZgKAclPNawqx_kEtNI-iTZEwc5KAtximDTOe0ipyPMDPqjQeYAE6AXD1f1ymt9EvlKYFD0Yvs"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-body-md font-bold truncate">Intro_Sequence_A.mp4</h3>
+<p class="font-label-sm text-on-surface-variant flex gap-2">
+<span>HEVC</span>
+<span>|</span>
+<span>24.5 MB</span>
+</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing border border-transparent hover:border-outline-variant transition-all duration-200" draggable="true">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-sm">02</span>
+</div>
+<div class="w-16 h-12 bg-surface-container-highest rounded-lg overflow-hidden flex-shrink-0 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-1 right-1 font-label-sm text-[10px] text-white">12:45</div>
+<img class="w-full h-full object-cover" data-alt="A high-contrast macro shot of complex digital circuits and fiber optic cables pulsing with violet light. The aesthetic is futuristic and technical, using deep black shadows and vibrant neon tones to convey high-speed data processing. The image has a clean, engineering-focused quality that integrates perfectly with a professional dark mode video editing software." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCXuPXrlOcDnbtVtamYa6H9PFHYAXk9JHjszq0cuvHaJQkuYWl7UfzKTiaogY6MoSshZJHB60dlRVjI5kv87E6X90oGapUwdmNcPdMy0AN4DE-KWIIGc0xyEq2QrmSGFVRbohRY6Fqo1a4Id5L-9ym6y-KTK5saEMNcNQIF-V_3v9QKvBB-5BcjuXiq91PXDraXkawzvHe5I60mEzcJZ4qlPEFiVpgRqnfEKP2j5WoU4fh2nPsgcg_er7DHoTk8bkQFEhbedJsz9cc"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-body-md font-bold truncate">Core_Content_Part1.mov</h3>
+<p class="font-label-sm text-on-surface-variant flex gap-2">
+<span>ProRes</span>
+<span>|</span>
+<span>1.2 GB</span>
+</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing border border-transparent hover:border-outline-variant transition-all duration-200" draggable="true">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-sm">03</span>
+</div>
+<div class="w-16 h-12 bg-surface-container-highest rounded-lg overflow-hidden flex-shrink-0 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-1 right-1 font-label-sm text-[10px] text-white">02:30</div>
+<img class="w-full h-full object-cover" data-alt="An abstract visualization of digital video bits flowing like a river through a dark, metallic conduit. The scene is lit by soft, volumetric lighting in shades of cyan and lavender. The overall mood is calm and efficient, representing seamless lossless video merging in a sophisticated developer-centric utility tool." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL27oN1bXSMyYopSr7hJTVW1SVa9ZQub0Q4n2cGnCNPDvnOARQd1A3xGOgoywObUEV3zDdDi5XSgWxcmotMHt82nGZ4JbSRG6G3N7roz1uQtO551nVzsEK2EqP5sz9KfhYuK31386JFUsfAJtx5w8Zi9Sq0Qvi01qZQQXNm80L4mG-oAQuQ-9u5tjqR_sRXQuNnixknghixuVPfon7PZor61Vfreti9cOlLmFn-_DR7qrKWAuWZcVCRS6F1q1DaJWx1Up7LrKVFJNt"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-body-md font-bold truncate">B-Roll_Stock_04.mp4</h3>
+<p class="font-label-sm text-on-surface-variant flex gap-2">
+<span>H.264</span>
+<span>|</span>
+<span>45.2 MB</span>
+</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</div>
+<!-- Item 4 -->
+<div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing border border-transparent hover:border-outline-variant transition-all duration-200" draggable="true">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-sm">04</span>
+</div>
+<div class="w-16 h-12 bg-surface-container-highest rounded-lg overflow-hidden flex-shrink-0 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-1 right-1 font-label-sm text-[10px] text-white">01:05</div>
+<img class="w-full h-full object-cover" data-alt="A sleek, dark studio setting featuring a high-end cinema camera mounted on a professional rig. The lighting uses dramatic rim lights to highlight the metallic textures against an amoled black background. This visual reinforces the tool's identity as a robust, utilitarian application for high-performance video professionals and editors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSIJK6N0mT23b1e66-waCvPKzPngP4zyj19Bl_LcMXnqo4waJnYvgKMZ591FejjjJyU1Elo-ifjwFYrU_mQaYdwBt9-r0MISG4A76hYRyVHEca9kjcEOzqufqpKm13_NRiTjsh7QviqPdKVgbImplmqxA8BDBS-7cciFdI2iFfh4xgqumNpfF5HJ8myymZpE5iEp1xvWkYgVTWZzI2Ek1i_KrGVbXECGvTHVZN0IA-BXZSLZOGzlVAyOOQbEF802x2XjZ_AsafYuPR"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-body-md font-bold truncate">Outro_Logo_Animation.mp4</h3>
+<p class="font-label-sm text-on-surface-variant flex gap-2">
+<span>HEVC</span>
+<span>|</span>
+<span>12.8 MB</span>
+</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</div>
+</div>
+<!-- Options Section -->
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="bg-surface-container rounded-xl p-4 border border-outline-variant/30 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings_ethernet">settings_ethernet</span>
+<span class="font-label-md">MODE</span>
+</div>
+<span class="font-body-md font-bold">Lossless (Copy)</span>
+<span class="font-label-sm text-on-surface-variant">No quality loss, instant merge.</span>
+</div>
+<div class="bg-surface-container rounded-xl p-4 border border-outline-variant/30 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="folder_open">folder_open</span>
+<span class="font-label-md">DEST</span>
+</div>
+<span class="font-body-md font-bold">/Downloads/...</span>
+<span class="font-label-sm text-on-surface-variant">Same as source folder.</span>
+</div>
+</div>
+<!-- Floating Action Action -->
+<div class="mt-8 flex gap-3">
+<button class="flex-1 h-touch_target_min bg-surface-container-highest text-on-surface font-label-md rounded-full border border-outline-variant flex items-center justify-center gap-2 active:scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+        Add Files
+      </button>
+<button class="flex-[2] h-touch_target_min bg-primary text-on-primary font-label-md font-bold rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform duration-100 shadow-lg">
+<span class="material-symbols-outlined" data-icon="merge" style="font-variation-settings: 'FILL' 1;">merge</span>
+        Start Merge
+      </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="merge" style="font-variation-settings: 'FILL' 1;">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<script>
+    // Lightweight Drag and Drop Simulation Logic
+    const list = document.getElementById('merge-list');
+    let draggedItem = null;
+
+    list.addEventListener('dragstart', (e) => {
+      draggedItem = e.target.closest('[draggable="true"]');
+      e.target.style.opacity = '0.5';
+    });
+
+    list.addEventListener('dragend', (e) => {
+      e.target.style.opacity = '1';
+    });
+
+    list.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    list.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const target = e.target.closest('[draggable="true"]');
+      if (target && draggedItem && target !== draggedItem) {
+        const items = Array.from(list.children);
+        const draggedIndex = items.indexOf(draggedItem);
+        const targetIndex = items.indexOf(target);
+
+        if (draggedIndex < targetIndex) {
+          target.after(draggedItem);
+        } else {
+          target.before(draggedItem);
+        }
+        
+        // Re-number the indices
+        document.querySelectorAll('#merge-list .font-label-sm:first-of-type').forEach((el, index) => {
+          if(el.textContent.length === 2) {
+             el.textContent = (index + 1).toString().padStart(2, '0');
+          }
+        });
+      }
+    });
+
+    // Touch support basic simulation
+    list.addEventListener('touchstart', (e) => {
+      const target = e.target.closest('[draggable="true"]');
+      if(target) target.classList.add('bg-secondary-container/20');
+    }, {passive: true});
+
+    list.addEventListener('touchend', (e) => {
+      const target = e.target.closest('[draggable="true"]');
+      if(target) target.classList.remove('bg-secondary-container/20');
+    }, {passive: true});
+  </script>
+</body></html>

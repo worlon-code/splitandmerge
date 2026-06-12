@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Split Confirmation - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght,grad@8..144,25..151,100..1000,-200..150&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8f4c36",
+                    "secondary-fixed": "#e8deff",
+                    "primary-container": "#006b5f",
+                    "on-background": "#e0e3e1",
+                    "on-tertiary-container": "#ffcebf",
+                    "surface-container": "#1c201f",
+                    "surface-dim": "#101413",
+                    "background": "#101413",
+                    "surface-container-high": "#272b2a",
+                    "on-error": "#690005",
+                    "on-secondary": "#370492",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-bright": "#363a39",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-container-low": "#181c1b",
+                    "on-tertiary-fixed": "#390b00",
+                    "surface-container-lowest": "#0b0f0e",
+                    "on-primary-fixed": "#00201c",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "on-secondary-container": "#bda8ff",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#cdbdff",
+                    "surface-tint": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "inverse-surface": "#e0e3e1",
+                    "outline": "#889390",
+                    "surface-variant": "#313634",
+                    "inverse-on-surface": "#2d3130",
+                    "on-surface-variant": "#bec9c5",
+                    "surface-container-highest": "#313634",
+                    "primary": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "inverse-primary": "#006b5f",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "on-secondary-fixed": "#20005f",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "outline-variant": "#3e4946",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#83d5c6",
+                    "secondary-container": "#4e2ca9",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#101413",
+                    "on-primary-container": "#95e8d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8px",
+                    "tablet_margin": "24px",
+                    "phone_margin": "16px",
+                    "list_padding": "12px",
+                    "touch_target_min": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            font-size: 24px;
+        }
+        .icon-48 {
+            font-size: 48px !important;
+        }
+        body {
+            background-color: #101413;
+            color: #e0e3e1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface-container text-primary flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</div>
+<div class="flex gap-4">
+<button class="material-symbols-outlined hover:bg-surface-variant transition-colors duration-200 p-2 rounded-full" data-icon="help">help</button>
+<button class="material-symbols-outlined hover:bg-surface-variant transition-colors duration-200 p-2 rounded-full" data-icon="settings">settings</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-phone_margin py-20 relative overflow-hidden">
+<!-- Subtle Atmospheric Background -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-secondary-container rounded-full blur-[100px]"></div>
+</div>
+<!-- Full-bleed centered ElevatedCard -->
+<div class="w-full max-w-lg bg-surface-container-high rounded-xl p-8 shadow-sm relative z-10 border border-outline-variant/30 backdrop-blur-md">
+<!-- Icon Section -->
+<div class="flex justify-center mb-6">
+<div class="w-20 h-20 rounded-full bg-primary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined icon-48 text-primary" data-icon="task_alt">task_alt</span>
+</div>
+</div>
+<!-- Headline & Body -->
+<div class="text-center mb-8">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2">Ready to split</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We'll create 7 parts from your original high-resolution master file using lossless splitting technology.</p>
+</div>
+<!-- Metadata Table -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden mb-8">
+<div class="flex border-b border-outline-variant">
+<div class="flex-1 p-4 border-r border-outline-variant">
+<div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Source size</div>
+<div class="font-label-sm text-label-sm text-primary font-bold">47.2 GB</div>
+</div>
+<div class="flex-1 p-4">
+<div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Free space</div>
+<div class="font-label-sm text-label-sm text-on-surface font-bold">243 GB</div>
+</div>
+</div>
+<div class="p-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="settings_ethernet">settings_ethernet</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Lossless export enabled • HEVC Main 10</span>
+</div>
+</div>
+<!-- Progress Indication (Static Placeholder) -->
+<div class="w-full bg-outline-variant h-1 rounded-full overflow-hidden mb-10">
+<div class="bg-primary h-full w-[0%]" id="progress-bar"></div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-3 w-full">
+<button class="flex-1 px-6 h-12 rounded-full border border-outline text-primary font-title-lg text-title-lg flex items-center justify-center gap-2 hover:bg-surface-variant transition-all active:scale-95">
+                    Back
+                </button>
+<button class="flex-[2] px-6 h-12 rounded-full bg-primary text-on-primary font-title-lg text-title-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-lg" id="start-btn">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+                    Start split
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low rounded-t-xl shadow-sm border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="merge">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for Start button
+        const startBtn = document.getElementById('start-btn');
+        const progressBar = document.getElementById('progress-bar');
+        
+        startBtn.addEventListener('click', () => {
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            startBtn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="refresh">refresh</span> Processing...';
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    startBtn.innerHTML = '<span class="material-symbols-outlined" data-icon="done_all">done_all</span> Completed';
+                    startBtn.classList.remove('bg-primary');
+                    startBtn.classList.add('bg-tertiary-container');
+                } else {
+                    width += 1;
+                    progressBar.style.width = width + '%';
+                }
+            }, 30);
+        });
+    </script>
+</body></html>

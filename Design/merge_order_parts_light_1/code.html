@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Merge — Order parts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#707976",
+                        "outline-variant": "#bfc9c5",
+                        "on-secondary-container": "#180062",
+                        "inverse-surface": "#2d3130",
+                        "secondary-fixed": "#e8deff",
+                        "surface-dim": "#d7dbd9",
+                        "secondary-container": "#e8deff",
+                        "tertiary-fixed": "#ffdbd0",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f1f4f2",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#00201c",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "tertiary-container": "#ffdbd0",
+                        "surface": "#f7faf8",
+                        "inverse-primary": "#83d5c6",
+                        "on-primary-fixed-variant": "#005047",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#006b5f",
+                        "primary-fixed-dim": "#83d5c6",
+                        "on-surface-variant": "#3f4946",
+                        "surface-container": "#ebefed",
+                        "primary-fixed": "#9ff2e2",
+                        "background": "#f7faf8",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#8f4c36",
+                        "surface-container-high": "#e5e9e7",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7faf8",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#20005f",
+                        "inverse-on-surface": "#eff1ef",
+                        "primary-container": "#9ff2e2",
+                        "on-primary-fixed": "#00201c",
+                        "on-tertiary-container": "#390b00",
+                        "on-surface": "#181c1b",
+                        "surface-variant": "#dbe5e1",
+                        "surface-container-highest": "#e0e3e1",
+                        "on-background": "#181c1b",
+                        "on-error-container": "#410002",
+                        "secondary": "#634bc0",
+                        "primary": "#006b5f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "4px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "2xl": "16px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Roboto Flex"],
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"],
+                        "display-lg": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f7faf8;
+            color: #181c1b;
+            font-family: 'Roboto Flex', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .reorder-ghost {
+            opacity: 0.5;
+            background: #e0e3e1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col pb-40">
+<!-- Top App Bar -->
+<header class="bg-surface-container w-full top-0 border-b border-outline-variant flex justify-between items-center px-4 h-16 sticky z-50">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors active:opacity-80">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Order parts</h1>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors active:opacity-80">
+<span class="material-symbols-outlined text-primary">auto_fix_high</span>
+</button>
+</header>
+<main class="flex-1 px-4 py-4 max-w-3xl mx-auto w-full space-y-4">
+<!-- Info Banner -->
+<div class="bg-primary-container text-on-primary-container p-4 rounded-xl flex gap-4 items-start shadow-sm border border-primary/10">
+<span class="material-symbols-outlined mt-1">info</span>
+<div>
+<p class="font-title-lg text-title-lg leading-tight">Add 2 or more parts in playback order.</p>
+<p class="font-body-md text-body-md opacity-90">We'll check that they came from the same source.</p>
+</div>
+</div>
+<!-- Reorderable List Area -->
+<div class="space-y-3" id="parts-list">
+<!-- Item 1-5 -->
+<script>
+                const partTemplate = (index, hasError = false) => `
+                    <div class="bg-surface-container-low rounded-xl p-3 flex items-center gap-3 border border-outline-variant/30 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
+                        <span class="material-symbols-outlined text-outline">drag_handle</span>
+                        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+                            ${index}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-label-md text-label-md text-on-surface truncate">Baahubali The Epic (2025).part${String(index).padStart(3, '0')}.mkv</h3>
+                            <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                <span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-label-sm text-label-sm">7.62 GB</span>
+                                <span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-label-sm text-label-sm">HEVC 4K</span>
+                                <span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-label-sm text-label-sm">ASS subs</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            ${hasError ? `
+                                <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1">error</span>
+                                <span class="text-[10px] text-error font-medium mt-1 text-right">Codec mismatch — different resolution</span>
+                            ` : `
+                                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">check_circle</span>
+                            `}
+                        </div>
+                    </div>
+                `;
+                
+                document.write([1,2,3,4,5].map(i => partTemplate(i)).join(''));
+                document.write(partTemplate(6, true));
+                document.write(partTemplate(7));
+            </script>
+</div>
+<!-- Add Button -->
+<button class="w-full flex items-center justify-center gap-2 border border-outline py-3 rounded-full text-primary font-title-lg text-title-lg hover:bg-surface-container-highest transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">add</span>
+            Add another part
+        </button>
+<!-- Tonal Info Card (Error State) -->
+<div class="bg-error-container text-on-error-container p-4 rounded-xl flex items-center justify-between border border-error/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1">warning</span>
+<span class="font-body-lg text-body-lg font-medium">1 issue found</span>
+</div>
+<button class="text-error font-title-lg text-title-lg hover:underline underline-offset-4">
+                Remove invalid parts
+            </button>
+</div>
+</main>
+<!-- Sticky Bottom Actions -->
+<div class="fixed bottom-20 left-0 w-full bg-surface-container/95 backdrop-blur-md px-4 py-4 flex gap-4 z-40 border-t border-outline-variant/30">
+<button class="flex-1 border border-outline py-2.5 rounded-full text-primary font-title-lg text-title-lg hover:bg-surface-container-highest active:scale-95 transition-all">
+            Cancel
+        </button>
+<button class="flex-1 bg-outline-variant text-on-surface-variant/40 py-2.5 rounded-full font-title-lg text-title-lg cursor-not-allowed" disabled="">
+            Continue
+        </button>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-2 bg-surface-container border-t border-outline-variant">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-container-highest transition-all active:scale-95">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-6 py-1.5 transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">merge</span>
+<span class="font-label-md text-label-md mt-0.5">Merge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-container-highest transition-all active:scale-95">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-container-highest transition-all active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</button>
+</nav>
+<script>
+        // Simple drag feedback simulation
+        const listItems = document.querySelectorAll('#parts-list > div');
+        listItems.forEach(item => {
+            item.addEventListener('mousedown', () => {
+                item.style.transform = 'scale(1.02)';
+                item.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1)';
+            });
+            item.addEventListener('mouseup', () => {
+                item.style.transform = 'scale(1)';
+                item.style.boxShadow = '';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'scale(1)';
+                item.style.boxShadow = '';
+            });
+        });
+    </script>
+</body></html>

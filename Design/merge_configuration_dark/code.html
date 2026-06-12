@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Merge Configuration - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#3e4946",
+                    "on-background": "#e0e3e1",
+                    "outline": "#889390",
+                    "background": "#000000",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#20005f",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2d3130",
+                    "tertiary-container": "#8f4c36",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "surface-container": "#0A0A0A",
+                    "error-container": "#93000a",
+                    "surface-container-highest": "#313634",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "inverse-surface": "#e0e3e1",
+                    "secondary": "#cdbdff",
+                    "on-secondary": "#370492",
+                    "inverse-primary": "#006b5f",
+                    "primary-container": "#006b5f",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-lowest": "#000000",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-dim": "#000000",
+                    "surface": "#000000",
+                    "on-secondary-container": "#bda8ff",
+                    "surface-tint": "#83d5c6",
+                    "primary": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "tertiary": "#ffb59e",
+                    "on-tertiary-fixed": "#390b00",
+                    "on-tertiary-container": "#ffcebf",
+                    "on-primary-container": "#95e8d9",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "secondary-container": "#4e2ca9",
+                    "error": "#ffb4ab",
+                    "secondary-fixed": "#e8deff",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-fixed-variant": "#005047",
+                    "primary-fixed-dim": "#83d5c6",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-variant": "#1c201f",
+                    "surface-bright": "#363a39",
+                    "surface-container-high": "#272b2a",
+                    "tertiary-fixed": "#ffdbd0",
+                    "surface-container-low": "#181c1b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8dp",
+                    "tablet_margin": "24dp",
+                    "touch_target_min": "48dp",
+                    "phone_margin": "16dp",
+                    "list_padding": "12dp"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "display-lg": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #000000;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(12, 1fr);
+            }
+        }
+        .glass-panel {
+            background: rgba(28, 32, 31, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(62, 73, 70, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar from JSON -->
+<header class="bg-surface-container flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-phone_margin md:px-tablet_margin max-w-7xl mx-auto">
+<!-- Section Header -->
+<div class="mb-8">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Merge Configuration</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure lossless merging parameters for technical precision.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+<!-- Main Queue Card -->
+<div class="col-span-4 md:col-span-8 glass-panel rounded-xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h2 class="font-title-lg text-title-lg text-on-surface">Source Files</h2>
+<button class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-md text-label-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        ADD FILE
+                    </button>
+</div>
+<div class="space-y-2 mt-2">
+<!-- List Item 1 -->
+<div class="flex items-center p-list_padding bg-surface-container-high rounded-lg group">
+<span class="material-symbols-outlined text-primary mr-4" data-icon="video_file">video_file</span>
+<div class="flex-1 overflow-hidden">
+<p class="font-body-md text-body-md text-on-surface truncate">A_sequence_001.mkv</p>
+<p class="font-label-sm text-label-sm text-outline">4K • HEVC • 24.5 GB</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant font-mono bg-surface-variant px-2 py-1 rounded">00:12:45:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+</button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center p-list_padding bg-surface-container-high rounded-lg group">
+<span class="material-symbols-outlined text-primary mr-4" data-icon="video_file">video_file</span>
+<div class="flex-1 overflow-hidden">
+<p class="font-body-md text-body-md text-on-surface truncate">B_sequence_002.mkv</p>
+<p class="font-label-sm text-label-sm text-outline">4K • HEVC • 12.1 GB</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant font-mono bg-surface-variant px-2 py-1 rounded">00:08:22:15</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+</button>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center p-list_padding bg-surface-container-high rounded-lg group border-2 border-dashed border-outline-variant/30 opacity-60">
+<span class="material-symbols-outlined text-outline mr-4" data-icon="upload_file">upload_file</span>
+<p class="font-body-md text-body-md text-outline italic">Drop additional streams here</p>
+</div>
+</div>
+</div>
+<!-- Output Preview Card -->
+<div class="col-span-4 md:col-span-4 glass-panel rounded-xl overflow-hidden flex flex-col relative group">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="A professional high-end cinematic video editing interface showing complex waveform data and dark aesthetic color grading. The scene is illuminated by the glow of neon turquoise and deep purple UI elements against a pitch black background. The mood is highly technical and focused, capturing the essence of professional 4K video processing in a modern engineering environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiLRMvSV6wgQs_Dfi9vHUbinOABx6xGUjDwgxudR1TpV9H6HMF0RHYm1N6FL22xvfdRSzD_53IGmDzxQIreRQWqMddRh406akaPLb5WwulHWTuB_qlJuQAP5BIgmo9GSV2yvc4FRS3Z9DTLE7hRcw7QJiiWQMZqRKYiIe2f9skqExLD0yy7U_KlsLkOhiIPVrSRbK1wTZ3Hs8Ll2wSYIAqknZlTFnWKyWcn2axjfaQV3_tiImo98nw7z5AfL_UsrJ1Gc-6KAebVwX5"/>
+</div>
+<div class="relative z-10 p-6 flex flex-col h-full bg-gradient-to-t from-black/80 to-transparent">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-auto">Sequence Render</h3>
+<div class="mt-4">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-outline">ESTIMATED SIZE</span>
+<span class="font-label-md text-label-md text-primary font-mono">36.6 GB</span>
+</div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-md text-label-md text-outline">TOTAL DURATION</span>
+<span class="font-label-md text-label-md text-primary font-mono">00:21:07:15</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-0 group-hover:w-full transition-all duration-[2000ms] ease-out"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Configuration Settings Card -->
+<div class="col-span-4 md:col-span-12 glass-panel rounded-xl p-6">
+<div class="flex flex-col md:flex-row gap-8">
+<!-- Left: Metadata -->
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary mb-4 tracking-widest">METADATA INJECTION</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-outline">OUTPUT FILENAME</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary h-12 px-4" type="text" value="project_alpha_final_render_v01"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-outline">CONTAINER FORMAT</label>
+<select class="w-full bg-surface-container-highest border-none rounded-lg font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary h-12 px-4">
+<option>Matroska (.mkv) — Default</option>
+<option>MPEG-4 (.mp4)</option>
+<option>QuickTime (.mov)</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Right: Technical Toggles -->
+<div class="md:w-72 flex flex-col gap-4 border-l border-outline-variant/30 md:pl-8">
+<h4 class="font-label-md text-label-md text-primary mb-2 tracking-widest">STREAM LOGIC</h4>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Lossless passthrough</span>
+<div class="w-10 h-6 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Merge subtitles</span>
+<div class="w-10 h-6 bg-surface-variant rounded-full relative">
+<div class="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Keep audio tracks</span>
+<div class="w-10 h-6 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Actions -->
+<div class="col-span-4 md:col-span-12 flex justify-end gap-4 mt-4">
+<button class="px-8 py-3 rounded-full border border-outline text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-colors">
+                    CANCEL
+                </button>
+<button class="px-12 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                    INITIATE MERGE
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar from JSON -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<!-- Split -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="content_cut">content_cut</span>
+<span>Split</span>
+</a>
+<!-- Merge (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 font-label-md text-label-md Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="merge" style="font-variation-settings: 'FILL' 1;">merge</span>
+<span>Merge</span>
+</a>
+<!-- Queue -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span>Queue</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<!-- Subtle atmospheric glow in background -->
+<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
+<script>
+        // Micro-interaction for list item drag visualization
+        const items = document.querySelectorAll('.group');
+        items.forEach(item => {
+            item.addEventListener('mousedown', () => {
+                item.classList.add('scale-[0.98]', 'bg-surface-container-highest');
+            });
+            item.addEventListener('mouseup', () => {
+                item.classList.remove('scale-[0.98]', 'bg-surface-container-highest');
+            });
+        });
+
+        // Hover effect for the process button
+        const mainBtn = document.querySelector('button.bg-primary');
+        mainBtn.addEventListener('mousemove', (e) => {
+            const rect = mainBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            mainBtn.style.background = `radial-gradient(circle at ${x}px ${y}px, #9ff2e2 0%, #83d5c6 100%)`;
+        });
+        mainBtn.addEventListener('mouseleave', () => {
+            mainBtn.style.background = '';
+        });
+    </script>
+</body></html>

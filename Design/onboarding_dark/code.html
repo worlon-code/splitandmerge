@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#2d3130",
+                    "inverse-surface": "#e0e3e1",
+                    "surface-dim": "#101413",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed": "#390b00",
+                    "primary-fixed": "#9ff2e2",
+                    "on-secondary-container": "#bda8ff",
+                    "surface-container-high": "#272b2a",
+                    "outline": "#889390",
+                    "on-primary-container": "#95e8d9",
+                    "on-tertiary-container": "#ffcebf",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "secondary": "#cdbdff",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "primary": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "surface-container-low": "#181c1b",
+                    "on-error": "#690005",
+                    "surface-bright": "#363a39",
+                    "on-surface-variant": "#bec9c5",
+                    "on-secondary-fixed": "#20005f",
+                    "on-primary-fixed": "#00201c",
+                    "on-primary-fixed-variant": "#005047",
+                    "on-secondary": "#370492",
+                    "on-primary": "#003731",
+                    "surface-container-lowest": "#0b0f0e",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "secondary-container": "#4e2ca9",
+                    "primary-container": "#006b5f",
+                    "surface": "#101413",
+                    "error": "#ffb4ab",
+                    "inverse-primary": "#006b5f",
+                    "surface-container-highest": "#313634",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "on-background": "#e0e3e1",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#1c201f",
+                    "on-tertiary": "#55200d",
+                    "tertiary-container": "#8f4c36",
+                    "outline-variant": "#3e4946",
+                    "surface-variant": "#313634",
+                    "background": "#101413",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4e2ca9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "12px",
+                    "2xl": "16px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "list_padding": "12px",
+                    "tablet_margin": "24px",
+                    "gutter": "8px",
+                    "touch_target_min": "48px",
+                    "phone_margin": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Roboto Flex"],
+                    "headline-md": ["Roboto Flex"],
+                    "display-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "display-sm": ["36px", {"lineHeight": "44px", "fontWeight": "400"}],
+                    "title-medium": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                    "body-small": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .amoled-bg {
+            background-color: #000000;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="amoled-bg selection:bg-primary/30">
+<main class="flex flex-col min-h-screen px-phone_margin max-w-md mx-auto relative overflow-hidden">
+<!-- Top Safe Area Padding -->
+<div class="h-12 w-full"></div>
+<div class="flex-1 flex flex-col items-center justify-center text-center">
+<!-- Branding Icon Section -->
+<div class="relative flex items-center justify-center">
+<!-- Surface Container Circle #0A0A0A -->
+<div class="w-[160px] h-[160px] rounded-full bg-[#0A0A0A] flex items-center justify-center animate-pulse duration-[4000ms]">
+<span class="material-symbols-rounded text-primary" data-icon="movie_filter" style="font-size: 96px;">
+                        movie_filter
+                    </span>
+</div>
+</div>
+<!-- Gap 32dp -->
+<div class="h-8 w-full"></div>
+<!-- Headline: displaySmall (36px in M3), weight 500 -->
+<h1 class="text-on-surface font-title-lg text-display-sm font-medium max-w-[280px]">
+                Split big videos. Merge them back.
+            </h1>
+<!-- Gap 12dp -->
+<div class="h-3 w-full"></div>
+<!-- Sub-headline: bodyLarge -->
+<p class="text-on-surface-variant font-body-lg text-body-lg whitespace-nowrap">
+                Lossless. Subtitles preserved. 4K untouched.
+            </p>
+<!-- Flexible Spacer -->
+<div class="flex-grow"></div>
+<!-- Configuration Card -->
+<div class="w-full p-4 border border-outline-variant rounded-2xl flex items-start gap-4 text-left transition-all hover:bg-surface-container-low active:scale-[0.98]">
+<span class="material-symbols-rounded text-on-surface-variant shrink-0" data-icon="folder_open" style="font-size: 24px;">
+                    folder_open
+                </span>
+<div class="flex flex-col gap-1">
+<h3 class="text-on-surface font-title-lg text-title-medium">
+                        Pick a folder for your splits
+                    </h3>
+<p class="text-on-surface-variant font-body-md text-body-small">
+                        We'll save parts here. You can change this later in Settings.
+                    </p>
+</div>
+</div>
+<!-- Gap 24dp -->
+<div class="h-6 w-full"></div>
+<!-- Primary Action Button -->
+<button class="w-full h-14 bg-primary text-on-primary rounded-full flex items-center justify-center gap-2 font-title-lg text-title-medium shadow-lg hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-rounded" data-icon="folder_open" style="font-size: 18px;">
+                    folder_open
+                </span>
+                Pick output folder
+            </button>
+<!-- Gap 12dp -->
+<div class="h-3 w-full"></div>
+<!-- Secondary Text Button -->
+<button class="text-primary font-title-lg text-title-medium py-3 px-8 rounded-full hover:bg-primary/10 active:scale-95 transition-all">
+                Skip for now
+            </button>
+<!-- Bottom Safe Area Padding 24dp -->
+<div class="h-6 w-full"></div>
+</div>
+</main>
+<!-- Interactive Layer for subtle parallax/micro-interactions -->
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const circle = document.querySelector('.bg-\\[\\#0A0A0A\\]');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+            circle.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Simulating the feeling of a native app interaction
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.addEventListener('touchstart', () => {
+                btn.style.opacity = '0.7';
+            });
+            btn.addEventListener('touchend', () => {
+                btn.style.opacity = '1';
+            });
+        });
+    </script>
+</body></html>

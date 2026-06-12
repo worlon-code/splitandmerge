@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8f4c36",
+                    "secondary-fixed": "#e8deff",
+                    "primary-container": "#006b5f",
+                    "on-background": "#e0e3e1",
+                    "on-tertiary-container": "#ffcebf",
+                    "surface-container": "#1c201f",
+                    "surface-dim": "#101413",
+                    "background": "#101413",
+                    "surface-container-high": "#272b2a",
+                    "on-error": "#690005",
+                    "on-secondary": "#370492",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-bright": "#363a39",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-container-low": "#181c1b",
+                    "on-tertiary-fixed": "#390b00",
+                    "surface-container-highest": "#313634",
+                    "on-primary-fixed": "#00201c",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "on-secondary-container": "#bda8ff",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#cdbdff",
+                    "surface-tint": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "inverse-surface": "#e0e3e1",
+                    "outline": "#889390",
+                    "surface-variant": "#313634",
+                    "inverse-on-surface": "#2d3130",
+                    "on-surface-variant": "#bec9c5",
+                    "surface-container-lowest": "#0b0f0e",
+                    "primary": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "inverse-primary": "#006b5f",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "on-secondary-fixed": "#20005f",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "outline-variant": "#3e4946",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#83d5c6",
+                    "secondary-container": "#4e2ca9",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#101413",
+                    "on-primary-container": "#95e8d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8dp",
+                    "tablet_margin": "24dp",
+                    "phone_margin": "16dp",
+                    "list_padding": "12dp",
+                    "touch_target_min": "48dp"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            margin: 0;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .thin-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .thin-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .thin-scrollbar::-webkit-scrollbar-thumb {
+            background: #3e4946;
+            border-radius: 10px;
+        }
+        .amoled-surface {
+            background-color: #000000;
+        }
+        .glass-tonal {
+            backdrop-filter: blur(8px);
+            background: rgba(28, 32, 31, 0.8);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary selection:text-on-primary">
+<div class="flex h-screen w-full overflow-hidden amoled-surface">
+<!-- Navigation Rail (Material 3 Tablet Pattern) -->
+<nav class="w-20 flex flex-col items-center py-6 bg-surface-container-low border-r border-outline-variant/30">
+<div class="mb-8">
+<span class="material-symbols-outlined text-primary text-[32px]">movie_edit</span>
+</div>
+<div class="flex flex-col gap-6 flex-1">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</button>
+<button class="flex flex-col items-center gap-1 bg-secondary-container text-on-secondary-container rounded-2xl p-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</div>
+<button class="mt-auto p-3 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</nav>
+<!-- Left Pane: Job List (360dp) -->
+<aside class="w-[360px] flex flex-col bg-surface-container-low border-r border-outline-variant/30">
+<header class="px-6 py-4 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h1 class="font-headline-md text-headline-md text-on-surface">Queue</h1>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-variant text-on-surface-variant rounded-md">8 TOTAL</span>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary text-body-md" placeholder="Search tasks..." type="text"/>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto thin-scrollbar">
+<!-- Active Job -->
+<div class="px-4 py-2">
+<div class="p-4 rounded-2xl bg-secondary-container/20 border border-secondary-container flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container">sync</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-secondary-container leading-tight">Baahubali The Epic</h3>
+<p class="font-label-sm text-label-sm text-primary">TRANSCODING • 64%</p>
+</div>
+</div>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 64%"></div>
+</div>
+</div>
+</div>
+<!-- Upcoming Jobs -->
+<div class="mt-4 px-4 flex flex-col gap-1">
+<p class="px-2 mb-2 font-label-md text-label-md text-outline uppercase tracking-wider">Upcoming</p>
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-variant transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">movie</span>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Inception_Remaster_4K.mkv</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">42.4 GB • HEVC • Pending</p>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-variant transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">movie</span>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Family_Vlog_022.mp4</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">1.2 GB • H.264 • Waiting</p>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-variant transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">movie</span>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Dune_Part_Two_Trailer.mov</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">850 MB • ProRes • Queued</p>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+</div>
+<!-- Finished Jobs -->
+<div class="mt-8 px-4 flex flex-col gap-1 pb-10">
+<p class="px-2 mb-2 font-label-md text-label-md text-outline uppercase tracking-wider">Completed</p>
+<div class="flex items-center gap-4 p-4 rounded-xl opacity-60">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Wedding_Highlights.mp4</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">12m ago • Success</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Pane: Detail View -->
+<main class="flex-1 flex flex-col relative amoled-surface">
+<!-- Top App Bar (Detail Header) -->
+<header class="h- touch_target_min px-tablet_margin flex justify-between items-center bg-surface-container/50 backdrop-blur-md sticky top-0 z-20">
+<div class="flex items-center gap-4">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface">Job Details</h2>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Canvas -->
+<div class="flex-1 overflow-y-auto thin-scrollbar px-tablet_margin pb-32">
+<!-- Hero Section: Job Title and Codec Card -->
+<section class="mt-6 flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">RUNNING</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: #VUD-2025-084</span>
+</div>
+<h1 class="font-display-lg text-display-lg font-bold text-on-surface">Baahubali The Epic (2025)</h1>
+</div>
+<!-- Codec Data Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="p-5 rounded-3xl bg-surface-container-high border border-outline-variant/20 flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]">videocam</span>
+</div>
+<p class="font-label-md text-label-md text-primary uppercase">Output Codec</p>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">HEVC (H.265)</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Main 10 Profile</span>
+</div>
+</div>
+<div class="p-5 rounded-3xl bg-surface-container-high border border-outline-variant/20 flex flex-col gap-4">
+<p class="font-label-md text-label-md text-primary uppercase">Resolution</p>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">3840 x 2160</span>
+<span class="font-body-md text-body-md text-on-surface-variant">4K Ultra HD • 16:9</span>
+</div>
+</div>
+<div class="p-5 rounded-3xl bg-surface-container-high border border-outline-variant/20 flex flex-col gap-4">
+<p class="font-label-md text-label-md text-primary uppercase">Processing</p>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">64% Done</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Est. 12m remaining</span>
+</div>
+</div>
+</div>
+</section>
+<!-- About this job -->
+<section class="mt-12">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-4">About this job</h3>
+<div class="grid grid-cols-2 gap-x-12 gap-y-6 max-w-3xl">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline">Source File</span>
+<span class="font-body-lg text-body-lg text-on-surface font-label-md">Baahubali_Raw_Master_2025.prores</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline">Target Directory</span>
+<span class="font-body-lg text-body-lg text-on-surface font-label-md">/Exports/Movies/2025/</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline">Frame Rate</span>
+<span class="font-body-lg text-body-lg text-on-surface font-label-md">24.000 fps (Constant)</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline">Bitrate Control</span>
+<span class="font-body-lg text-body-lg text-on-surface font-label-md">CRF 18 (Visually Lossless)</span>
+</div>
+</div>
+</section>
+<!-- Parts List -->
+<section class="mt-12">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-title-lg text-title-lg text-on-surface">Parallel Parts</h3>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[18px]">settings_ethernet</span>
+<span class="font-label-md text-label-md">Optimized Distribution</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Part Item 1 -->
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-highest/30 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center font-label-md text-primary">01</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-lg text-body-lg text-on-surface">Chapter 1: The Awakening</span>
+<span class="font-label-sm text-label-sm text-primary">COMPLETED</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1">
+<div class="bg-primary h-1 rounded-full w-full"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+<!-- Part Item 2 -->
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-highest/30 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center font-label-md text-primary">02</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-lg text-body-lg text-on-surface">Chapter 2: Royal Court</span>
+<span class="font-label-sm text-label-sm text-primary">PROCESSING (82%)</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1">
+<div class="bg-primary h-1 rounded-full" style="width: 82%"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant animate-spin">sync</span>
+</div>
+<!-- Part Item 3 -->
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-highest/30 border border-outline-variant/10 opacity-60">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center font-label-md text-outline">03</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-lg text-body-lg text-on-surface">Chapter 3: The Great War</span>
+<span class="font-label-sm text-label-sm text-outline">WAITING</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1">
+<div class="bg-outline h-1 rounded-full w-0"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">schedule</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Bottom Bar -->
+<footer class="absolute bottom-0 left-0 right-0 p-tablet_margin flex justify-center z-30">
+<div class="max-w-xl w-full flex items-center justify-between p-4 rounded-3xl glass-tonal border border-outline-variant/20 shadow-2xl">
+<div class="flex items-center gap-4 px-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">High Performance Mode</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">All cores engaged</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-3 rounded-full border border-error text-error hover:bg-error/10 transition-all active:scale-95">
+<span class="material-symbols-outlined">cancel</span>
+<span class="font-label-md text-label-md">Cancel</span>
+</button>
+<button class="flex items-center gap-2 px-8 py-3 rounded-full bg-primary text-on-primary hover:bg-surface-tint transition-all shadow-lg active:scale-95">
+<span class="material-symbols-outlined">pause_circle</span>
+<span class="font-label-md text-label-md">Pause Job</span>
+</button>
+</div>
+</div>
+</footer>
+<!-- Animated Background Gradient Element -->
+<div class="absolute inset-0 pointer-events-none opacity-10">
+
+</div>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hover effect for parts list
+            const parts = document.querySelectorAll('section:last-of-type > div > div');
+            parts.forEach(part => {
+                part.addEventListener('mouseenter', () => {
+                    part.classList.add('border-primary/30');
+                    part.style.transform = 'translateX(4px)';
+                });
+                part.addEventListener('mouseleave', () => {
+                    part.classList.remove('border-primary/30');
+                    part.style.transform = 'translateX(0px)';
+                });
+                part.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+
+            // Smooth scroll for the detail view
+            const scrollArea = document.querySelector('main > div');
+            scrollArea.addEventListener('scroll', () => {
+                const header = document.querySelector('main > header');
+                if (scrollArea.scrollTop > 20) {
+                    header.classList.add('shadow-md');
+                } else {
+                    header.classList.remove('shadow-md');
+                }
+            });
+        });
+    </script>
+</body></html>

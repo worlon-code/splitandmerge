@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Configure Split</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8f4c36",
+                    "secondary-fixed": "#e8deff",
+                    "primary-container": "#006b5f",
+                    "on-background": "#e0e3e1",
+                    "on-tertiary-container": "#ffcebf",
+                    "surface-container": "#1c201f",
+                    "surface-dim": "#101413",
+                    "background": "#000000",
+                    "surface-container-high": "#272b2a",
+                    "on-error": "#690005",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#9ff2e2",
+                    "surface-bright": "#363a39",
+                    "tertiary-fixed-dim": "#ffb59e",
+                    "surface-container-low": "#181c1b",
+                    "on-tertiary-fixed": "#390b00",
+                    "surface-container-highest": "#313634",
+                    "on-primary-fixed": "#00201c",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#4e2ca9",
+                    "on-secondary-container": "#bda8ff",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#cdbdff",
+                    "surface-tint": "#83d5c6",
+                    "on-tertiary": "#55200d",
+                    "inverse-surface": "#e0e3e1",
+                    "outline": "#889390",
+                    "surface-variant": "#313634",
+                    "inverse-on-surface": "#2d3130",
+                    "on-surface-variant": "#bec9c5",
+                    "surface-container-lowest": "#0b0f0e",
+                    "primary": "#83d5c6",
+                    "on-tertiary-fixed-variant": "#723521",
+                    "inverse-primary": "#006b5f",
+                    "on-primary": "#003731",
+                    "on-surface": "#e0e3e1",
+                    "tertiary": "#ffb59e",
+                    "on-secondary-fixed": "#20005f",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "outline-variant": "#3e4946",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#83d5c6",
+                    "secondary-container": "#4e2ca9",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#101413",
+                    "on-primary-container": "#95e8d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8px",
+                    "tablet_margin": "24px",
+                    "phone_margin": "16px",
+                    "list_padding": "12px",
+                    "touch_target_min": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            font-family: 'Roboto Flex', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .amoled-card {
+            background-color: #0A0A0A;
+            border: 1px solid #1c201f;
+        }
+        .glass-summary {
+            background: rgba(28, 32, 31, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="bg-surface-container dark:bg-surface-container text-primary dark:text-primary font-title-lg text-title-lg flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">Configure split</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors">help</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors">settings</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-[48px] mb-[80px] p-phone_margin md:max-w-3xl md:mx-auto w-full space-y-6">
+<!-- File Name Card -->
+<section class="amoled-card rounded-xl p-4">
+<h2 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-4">Input Metadata</h2>
+<div class="relative">
+<label class="absolute -top-2 left-3 px-1 bg-[#0A0A0A] text-label-sm font-label-sm text-outline">File Name</label>
+<input class="w-full bg-transparent border border-outline rounded-lg px-4 py-3 font-label-md text-label-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="Baahubali.2.The.Conclusion.2017.4K.HEVC.MKV"/>
+</div>
+</section>
+<!-- Split Logic Card -->
+<section class="amoled-card rounded-xl p-4 space-y-6">
+<h2 class="font-label-md text-label-md text-primary uppercase tracking-widest">Splitting Logic</h2>
+<!-- Segmented Button -->
+<div class="flex w-full bg-surface-container-low rounded-full p-1 border border-outline-variant">
+<button class="flex-1 py-2 px-2 text-center rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container transition-all" onclick="setActive(this)">Exact parts</button>
+<button class="flex-1 py-2 px-2 text-center rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all" onclick="setActive(this)">Size cap</button>
+<button class="flex-1 py-2 px-2 text-center rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all" onclick="setActive(this)">Both</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Numeric Stepper -->
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Number of Parts</span>
+<div class="flex items-center justify-between bg-surface-container-highest rounded-lg p-1">
+<button class="material-symbols-outlined w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-variant rounded-lg">remove</button>
+<span class="font-display-lg text-title-lg">7</span>
+<button class="material-symbols-outlined w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-variant rounded-lg">add</button>
+</div>
+</div>
+<!-- Size Input -->
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Max Segment Size</span>
+<div class="flex items-center gap-2 bg-surface-container-highest rounded-lg px-4 py-2 border border-transparent focus-within:border-primary transition-all">
+<input class="bg-transparent w-full text-title-lg font-display-lg outline-none text-right" type="text" value="4.2"/>
+<span class="text-on-surface-variant font-label-md">GB</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Output Settings -->
+<section class="amoled-card rounded-xl p-4 space-y-4">
+<h2 class="font-label-md text-label-md text-primary uppercase tracking-widest">Output Configuration</h2>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg group cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">folder_open</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Destination</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">/storage/emulated/0/Movies/Split/</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">chevron_right</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant">lock</span>
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-2 px-3 py-1 bg-tertiary-container rounded-full text-on-tertiary-container">
+<span class="material-symbols-outlined text-[18px]">settings_ethernet</span>
+<span class="font-label-sm text-label-sm">Lossless MKV</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-secondary-container rounded-full text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">hd</span>
+<span class="font-label-sm text-label-sm">4K HEVC</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Process Summary Bento -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="col-span-2 glass-summary rounded-2xl p-6 flex flex-col justify-center items-center text-center">
+<span class="font-label-md text-label-md text-primary uppercase mb-2">Estimated Output</span>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">7</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">parts</span>
+</div>
+<p class="font-label-sm text-label-sm text-outline-variant mt-2">Precision: Lossless Keyframe</p>
+</div>
+<div class="amoled-card rounded-2xl p-4 flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary">speed</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Avg. Part</p>
+<p class="font-title-lg text-title-lg text-on-surface">3.8 GB</p>
+</div>
+</div>
+<div class="amoled-card rounded-2xl p-4 flex flex-col justify-between">
+<span class="material-symbols-outlined text-tertiary">schedule</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Time</p>
+<p class="font-title-lg text-title-lg text-on-surface">~4m 12s</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Sticky Bar -->
+<footer class="fixed bottom-0 left-0 right-0 bg-surface-container-low border-t border-outline-variant px-phone_margin py-3 z-50 flex items-center justify-end gap-3 shadow-sm">
+<button class="px-6 py-2 rounded-full font-label-md text-label-md text-primary hover:bg-surface-variant transition-colors">
+            Cancel
+        </button>
+<button class="px-8 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary hover:opacity-90 active:scale-95 transition-all shadow-lg flex items-center gap-2">
+            Continue
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</footer>
+<script>
+        function setActive(btn) {
+            const container = btn.parentElement;
+            const buttons = container.querySelectorAll('button');
+            
+            buttons.forEach(b => {
+                b.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                b.classList.add('text-on-surface-variant', 'hover:bg-surface-variant');
+            });
+
+            btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+            btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant');
+            
+            // Interaction feedback
+            btn.classList.add('scale-95');
+            setTimeout(() => btn.classList.remove('scale-95'), 100);
+        }
+    </script>
+</body></html>

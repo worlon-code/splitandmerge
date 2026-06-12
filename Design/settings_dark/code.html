@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .amoled-border {
+            border: 0.5px solid #3e4946;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3e4946",
+                        "on-background": "#e0e3e1",
+                        "outline": "#889390",
+                        "background": "#000000",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#20005f",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2d3130",
+                        "tertiary-container": "#8f4c36",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "surface-container": "#0A0A0A",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#313634",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "inverse-surface": "#e0e3e1",
+                        "secondary": "#cdbdff",
+                        "on-secondary": "#370492",
+                        "inverse-primary": "#006b5f",
+                        "primary-container": "#006b5f",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-lowest": "#000000",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-dim": "#000000",
+                        "surface": "#000000",
+                        "on-secondary-container": "#bda8ff",
+                        "surface-tint": "#83d5c6",
+                        "primary": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "tertiary": "#ffb59e",
+                        "on-tertiary-fixed": "#390b00",
+                        "on-tertiary-container": "#ffcebf",
+                        "on-primary-container": "#95e8d9",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "secondary-container": "#4e2ca9",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-fixed-variant": "#005047",
+                        "primary-fixed-dim": "#83d5c6",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-variant": "#313634",
+                        "surface-bright": "#363a39",
+                        "surface-container-high": "#272b2a",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-container-low": "#181c1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "touch_target_min": "48px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "display-lg": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="bg-surface-container flex justify-between items-center px-phone_margin h-touch_target_min w-full docked full-width top-0 z-40 fixed">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Video Utility</h1>
+<div class="flex gap-2">
+<button class="w-touch_target_min h-touch_target_min flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="help">help</span>
+</button>
+<button class="w-touch_target_min h-touch_target_min flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-phone_margin max-w-3xl mx-auto">
+<section class="mb-8">
+<h2 class="font-headline-lg text-headline-lg mb-6">Settings</h2>
+<!-- Bento Settings Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Encoding Profile Card -->
+<div class="bg-surface-container rounded-xl p-6 amoled-border flex flex-col justify-between group hover:border-primary transition-colors duration-300">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="settings_ethernet">settings_ethernet</span>
+<span class="font-label-sm text-label-sm bg-primary-container text-on-primary-container px-2 py-1 rounded">LOSSLESS</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-2">Default Profile</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">HEVC Main 10 profile at 60fps. Prioritizes file size efficiency while maintaining 4K clarity.</p>
+</div>
+<button class="mt-6 flex items-center gap-2 text-primary font-label-md text-label-md">
+                        CONFIGURE <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+<!-- Storage Information -->
+<div class="bg-surface-container rounded-xl p-6 amoled-border flex flex-col group">
+<h3 class="font-title-lg text-title-lg mb-4">Storage Path</h3>
+<div class="bg-surface-container-lowest rounded-lg p-4 mb-4 border border-outline-variant">
+<code class="font-label-md text-label-md text-secondary-container">/internal/Movies/VideoUtility/Output/</code>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Available Space</p>
+<p class="font-title-lg text-title-lg">124.5 GB</p>
+</div>
+<button class="bg-secondary-container text-on-secondary-container p-3 rounded-full hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+</button>
+</div>
+</div>
+<!-- Hardware Acceleration -->
+<div class="bg-surface-container rounded-xl p-6 amoled-border md:col-span-2 flex items-center justify-between">
+<div class="flex gap-4 items-center">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg">Hardware Acceleration</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Use GPU for faster transcoding and splitting processes.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-14 h-8 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:start-[4px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Technical Metadata Toggle -->
+<div class="bg-surface-container rounded-xl p-4 amoled-border">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md">Show Technical Readouts</span>
+<input class="w-5 h-5 rounded border-outline-variant bg-surface-container-lowest text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+<!-- Keep Originals Toggle -->
+<div class="bg-surface-container rounded-xl p-4 amoled-border">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md">Keep Original Files</span>
+<input checked="" class="w-5 h-5 rounded border-outline-variant bg-surface-container-lowest text-primary focus:ring-primary" type="checkbox"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Advanced Section -->
+<section class="mt-12">
+<h3 class="font-title-lg text-title-lg mb-4 text-on-surface-variant">Advanced Configuration</h3>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-list_padding hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="terminal">terminal</span>
+<div>
+<p class="font-body-lg text-body-lg">FFmpeg Arguments</p>
+<p class="font-label-sm text-label-sm text-outline">Custom CLI parameters for advanced users</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-list_padding hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="memory">memory</span>
+<div>
+<p class="font-body-lg text-body-lg">Thread Management</p>
+<p class="font-label-sm text-label-sm text-outline">Currently set to: Auto (8 Threads)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-list_padding hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-error" data-icon="delete_forever">delete_forever</span>
+<div>
+<p class="font-body-lg text-body-lg text-error">Clear Application Cache</p>
+<p class="font-label-sm text-label-sm text-outline">Delete temporary split chunks (1.2 GB)</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Aesthetic Branding Element -->
+<div class="mt-16 opacity-20 flex flex-col items-center">
+<span class="material-symbols-outlined text-6xl mb-2" data-icon="video_settings">video_settings</span>
+<p class="font-label-md text-label-md tracking-widest uppercase">Kinetic Logic Engine v2.4.0</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm docked full-width rounded-t-xl">
+<!-- Split -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200 p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<!-- Merge -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200 p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="merge">merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<!-- Queue -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200 p-2 rounded-xl" href="#">
+<div class="relative">
+<span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</a>
+<!-- Settings (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for switches and ripples
+        document.querySelectorAll('input[type="checkbox"]').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                // Haptic feedback simulation or state updates could go here
+                console.log('Setting updated');
+            });
+        });
+
+        // Add a simple "active" state listener to nav items
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // If we were handling real routing, we'd swap active classes here
+            });
+        });
+    </script>
+</body></html>

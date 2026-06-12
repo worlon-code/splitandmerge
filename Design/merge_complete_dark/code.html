@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      background-color: #000000;
+      color: #e0e3e1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .success-gradient {
+      background: radial-gradient(circle at center, rgba(131, 213, 198, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+    @keyframes checkmark-draw {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .animate-checkmark {
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: checkmark-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      animation-delay: 0.2s;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#3e4946",
+            "on-background": "#e0e3e1",
+            "outline": "#889390",
+            "background": "#101413",
+            "on-error": "#690005",
+            "on-secondary-fixed": "#20005f",
+            "on-error-container": "#ffdad6",
+            "inverse-on-surface": "#2d3130",
+            "tertiary-container": "#8f4c36",
+            "on-secondary-fixed-variant": "#4e2ca9",
+            "surface-container": "#1c201f",
+            "error-container": "#93000a",
+            "surface-container-highest": "#313634",
+            "on-primary": "#003731",
+            "on-surface": "#e0e3e1",
+            "inverse-surface": "#e0e3e1",
+            "secondary": "#cdbdff",
+            "on-secondary": "#370492",
+            "inverse-primary": "#006b5f",
+            "primary-container": "#006b5f",
+            "on-primary-fixed": "#00201c",
+            "surface-container-lowest": "#0b0f0e",
+            "primary-fixed": "#9ff2e2",
+            "surface-dim": "#101413",
+            "surface": "#101413",
+            "on-secondary-container": "#bda8ff",
+            "surface-tint": "#83d5c6",
+            "primary": "#83d5c6",
+            "on-tertiary": "#55200d",
+            "tertiary": "#ffb59e",
+            "on-tertiary-fixed": "#390b00",
+            "on-tertiary-container": "#ffcebf",
+            "on-primary-container": "#95e8d9",
+            "secondary-fixed-dim": "#cdbdff",
+            "secondary-container": "#4e2ca9",
+            "error": "#ffb4ab",
+            "secondary-fixed": "#e8deff",
+            "on-tertiary-fixed-variant": "#723521",
+            "on-surface-variant": "#bec9c5",
+            "on-primary-fixed-variant": "#005047",
+            "primary-fixed-dim": "#83d5c6",
+            "tertiary-fixed-dim": "#ffb59e",
+            "surface-variant": "#313634",
+            "surface-bright": "#363a39",
+            "surface-container-high": "#272b2a",
+            "tertiary-fixed": "#ffdbd0",
+            "surface-container-low": "#181c1b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "8px",
+            "tablet_margin": "24px",
+            "touch_target_min": "48px",
+            "phone_margin": "16px",
+            "list_padding": "12px"
+          },
+          "fontFamily": {
+            "headline-md": ["Roboto Flex"],
+            "label-sm": ["JetBrains Mono"],
+            "title-lg": ["Roboto Flex"],
+            "body-lg": ["Roboto Flex"],
+            "label-md": ["JetBrains Mono"],
+            "display-lg": ["Roboto Flex"],
+            "headline-lg": ["Roboto Flex"],
+            "body-md": ["Roboto Flex"]
+          },
+          "fontSize": {
+            "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+            "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+            "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+            "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+            "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="bg-surface-container dark:bg-surface-container text-primary dark:text-primary docked full-width top-0 flex justify-between items-center px-phone_margin h-touch_target_min w-full z-40">
+<div class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">Video Utility</div>
+<div class="flex gap-2">
+<button class="w-touch_target_min h-touch_target_min flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-touch_target_min h-touch_target_min flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-phone_margin pb-32">
+<!-- Success Animation Area -->
+<div class="relative w-full max-w-sm aspect-square flex items-center justify-center">
+<div class="absolute inset-0 success-gradient rounded-full scale-110"></div>
+<div class="relative flex flex-col items-center">
+<!-- SVG Success Icon -->
+<div class="w-32 h-32 mb-8 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+<svg class="w-20 h-20 text-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path class="animate-checkmark" d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-2">Merge Complete</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center mb-8 max-w-[280px]">Your video files have been successfully merged into a single lossless output.</p>
+</div>
+</div>
+<!-- Technical Details Card -->
+<section class="w-full max-w-sm mt-4">
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant/30">
+<div class="flex justify-between items-start mb-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-1">Output File</span>
+<span class="font-label-md text-label-md text-on-surface truncate max-w-[200px]">final_presentation_merged.mkv</span>
+</div>
+<div class="bg-surface-container-highest px-2 py-1 rounded text-primary font-label-sm text-label-sm">4K HEVC</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-outline-variant/20 pt-4">
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Total Duration</span>
+<span class="font-label-md text-label-md text-on-surface">00:42:15.08</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Final Size</span>
+<span class="font-label-md text-label-md text-on-surface">3.82 GB</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Status</span>
+<span class="font-label-md text-label-md text-primary">Verified Lossless</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Encoding Time</span>
+<span class="font-label-md text-label-md text-on-surface">0.4s (Pass-thru)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Bar -->
+<div class="w-full max-w-sm mt-8 flex flex-col gap-3">
+<button class="w-full h-12 bg-primary text-on-primary rounded-full font-title-lg text-title-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined">play_arrow</span>
+        Preview Output
+      </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="h-12 border border-outline-variant text-primary rounded-full font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-variant/20 transition-all active:scale-95">
+<span class="material-symbols-outlined">folder_open</span>
+          Show in Folder
+        </button>
+<button class="h-12 border border-outline-variant text-primary rounded-full font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-variant/20 transition-all active:scale-95">
+<span class="material-symbols-outlined">share</span>
+          Share File
+        </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<!-- Split -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200 p-2 rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</a>
+<!-- Merge (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</a>
+<!-- Queue -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200 p-2 rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200 p-2 rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<script>
+    // Micro-interaction for the success card haptic feel
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('touchstart', () => {
+        btn.classList.add('scale-95');
+      });
+      btn.addEventListener('touchend', () => {
+        btn.classList.remove('scale-95');
+      });
+    });
+
+    // Simple interaction to simulate "Preview" click
+    const previewBtn = document.querySelector('button.bg-primary');
+    previewBtn.addEventListener('click', () => {
+      console.log('Opening system player...');
+      previewBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Opening...';
+      setTimeout(() => {
+        previewBtn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span> Preview Output';
+      }, 1500);
+    });
+  </script>
+</body></html>

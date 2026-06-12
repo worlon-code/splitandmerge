@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Split Progress - Video Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            color: #e0e3e1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Circular Progress Animation */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#8f4c36",
+                        "secondary-fixed": "#e8deff",
+                        "primary-container": "#006b5f",
+                        "on-background": "#e0e3e1",
+                        "on-tertiary-container": "#ffcebf",
+                        "surface-container": "#1c201f",
+                        "surface-dim": "#101413",
+                        "background": "#000000", /* AMOLED Overridden */
+                        "surface-container-high": "#272b2a",
+                        "on-error": "#690005",
+                        "on-secondary": "#370492",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-bright": "#363a39",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-container-low": "#181c1b",
+                        "on-tertiary-fixed": "#390b00",
+                        "surface-container-highest": "#313634",
+                        "on-primary-fixed": "#00201c",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "on-secondary-container": "#bda8ff",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#cdbdff",
+                        "surface-tint": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "inverse-surface": "#e0e3e1",
+                        "outline": "#889390",
+                        "surface-variant": "#313634",
+                        "inverse-on-surface": "#2d3130",
+                        "on-surface-variant": "#bec9c5",
+                        "surface-container-lowest": "#0b0f0e",
+                        "primary": "#83d5c6",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "inverse-primary": "#006b5f",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "tertiary": "#ffb59e",
+                        "on-secondary-fixed": "#20005f",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "outline-variant": "#3e4946",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#83d5c6",
+                        "secondary-container": "#4e2ca9",
+                        "on-primary-fixed-variant": "#005047",
+                        "surface": "#101413",
+                        "on-primary-container": "#95e8d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8px",
+                        "tablet_margin": "24px",
+                        "phone_margin": "16px",
+                        "list_padding": "12px",
+                        "touch_target_min": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Roboto Flex"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar -->
+<header class="bg-surface-container text-on-surface flex justify-between items-center px-phone_margin h-touch_target_min w-full fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">arrow_back</span>
+<h1 class="font-headline-md text-[20px] font-bold text-on-surface">Video Utility</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer" data-icon="settings">settings</span>
+<span class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer" data-icon="help">help</span>
+</div>
+</header>
+<main class="pt-20 pb-24 px-phone_margin max-w-lg mx-auto flex flex-col items-center">
+<!-- Title & Hero Info -->
+<div class="text-center mb-8">
+<h2 class="font-headline-md text-on-surface mb-1">Baahubali The Epic (2025)</h2>
+<p class="font-label-md text-on-surface-variant uppercase tracking-widest">Processing High-Efficiency Stream</p>
+</div>
+<!-- Circular Progress Indicator (200dp approx 200px) -->
+<div class="relative w-[200px] h-[200px] mb-10 group">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<!-- Background Circle -->
+<circle class="text-surface-variant" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-width="8"></circle>
+<!-- Progress Circle -->
+<circle class="text-primary progress-ring__circle" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-dasharray="264" stroke-dashoffset="140" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<!-- Center Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-primary text-[48px] leading-none mb-1">47%</span>
+<span class="font-label-md text-on-surface-variant">Part 3 of 7</span>
+</div>
+</div>
+<!-- Stats Grid (Three tiles) -->
+<div class="grid grid-cols-3 gap-3 w-full mb-8">
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="speed">speed</span>
+<span class="font-label-sm text-on-surface-variant uppercase mb-1">Speed</span>
+<span class="font-label-md text-on-surface font-bold">82 MB/s</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="timer">timer</span>
+<span class="font-label-sm text-on-surface-variant uppercase mb-1">ETA</span>
+<span class="font-label-md text-on-surface font-bold">~8 min</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="data_usage">data_usage</span>
+<span class="font-label-sm text-on-surface-variant uppercase mb-1">Written</span>
+<span class="font-label-md text-on-surface font-bold">22.1 GB</span>
+</div>
+</div>
+<!-- Parts List -->
+<div class="w-full space-y-2">
+<h3 class="font-title-lg text-on-surface px-1 mb-3">Queue Status</h3>
+<!-- Row 1: Complete -->
+<div class="flex items-center bg-surface-container p-list_padding rounded-lg group hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="check">check</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 1: Introduction</p>
+<p class="font-label-sm text-on-surface-variant">4.2 GB • Completed</p>
+</div>
+<span class="font-label-md text-on-surface-variant">100%</span>
+</div>
+<!-- Row 2: Complete -->
+<div class="flex items-center bg-surface-container p-list_padding rounded-lg group hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="check">check</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 2: Rising Action</p>
+<p class="font-label-sm text-on-surface-variant">8.1 GB • Completed</p>
+</div>
+<span class="font-label-md text-on-surface-variant">100%</span>
+</div>
+<!-- Row 3: Active -->
+<div class="flex items-center bg-secondary-container p-list_padding rounded-lg border border-primary/30">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-4 animate-pulse">
+<span class="material-symbols-outlined text-on-primary" data-icon="sync">sync</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-secondary-container font-bold">Part 3: The Battle Begins</p>
+<p class="font-label-sm text-on-secondary-container opacity-80">9.8 GB • In Progress</p>
+</div>
+<span class="font-label-md text-on-secondary-container font-bold">47%</span>
+</div>
+<!-- Row 4-7: Pending -->
+<div class="flex items-center bg-surface-container/50 p-list_padding rounded-lg opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="schedule">schedule</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 4: Interval</p>
+<p class="font-label-sm text-on-surface-variant">Pending</p>
+</div>
+<span class="font-label-md text-on-surface-variant">0%</span>
+</div>
+<div class="flex items-center bg-surface-container/50 p-list_padding rounded-lg opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="schedule">schedule</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 5: Redemption</p>
+<p class="font-label-sm text-on-surface-variant">Pending</p>
+</div>
+<span class="font-label-md text-on-surface-variant">0%</span>
+</div>
+<div class="flex items-center bg-surface-container/50 p-list_padding rounded-lg opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="schedule">schedule</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 6: Climax</p>
+<p class="font-label-sm text-on-surface-variant">Pending</p>
+</div>
+<span class="font-label-md text-on-surface-variant">0%</span>
+</div>
+<div class="flex items-center bg-surface-container/50 p-list_padding rounded-lg opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="schedule">schedule</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-lg text-on-surface">Part 7: Credits</p>
+<p class="font-label-sm text-on-surface-variant">Pending</p>
+</div>
+<span class="font-label-md text-on-surface-variant">0%</span>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Bar: Cancel Job -->
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-surface-container-low/90 backdrop-blur-md border-t border-outline-variant z-50">
+<div class="max-w-lg mx-auto">
+<button class="w-full h-touch_target_min flex items-center justify-center gap-2 bg-error-container text-on-error-container rounded-full font-title-lg transition-transform active:scale-95 hover:bg-opacity-90">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+                Cancel Processing Job
+            </button>
+</div>
+</div>
+<!-- Background Decoration (Subtle animated shader effect) -->
+<div class="fixed inset-0 -z-10 opacity-20 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full animate-pulse"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 blur-[120px] rounded-full animate-pulse" style="animation-delay: 2s"></div>
+</div>
+<script>
+        // Micro-interaction for the progress ring
+        const circle = document.querySelector('.progress-ring__circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        
+        function setProgress(percent) {
+            const offset = circumference - (percent / 100 * circumference);
+            circle.style.strokeDashoffset = offset;
+        }
+
+        // Initialize with prompt value
+        setProgress(47);
+
+        // Simulation for dynamic feel
+        let currentProgress = 47;
+        setInterval(() => {
+            if (currentProgress < 47.8) {
+                currentProgress += 0.01;
+                document.querySelector('.font-display-lg').innerText = `${Math.floor(currentProgress)}%`;
+                setProgress(currentProgress);
+            }
+        }, 2000);
+    </script>
+</body></html>
