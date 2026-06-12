@@ -1,0 +1,24 @@
+════════════════════════════════════════
+BUILD LOG — Video Splitter
+Timestamp:    2026-06-12T14:11:00Z
+Build type:   release
+Gradle:       8.7
+Kotlin:       2.0.21
+AGP:          8.4.2
+versionName:  0.0.3
+versionCode:  3
+Git branch:   main
+Git commit:   9c2f87b
+════════════════════════════════════════
+[LINT OUTPUT]
+BUILD SUCCESSFUL in 2s
+[TEST OUTPUT]
+BUILD SUCCESSFUL in 19s
+[BUILD OUTPUT]
+BUILD SUCCESSFUL in 40s
+[RESULT: Status / APK Path / Size / SHA-256 / Duration]
+Status: SUCCESS
+APK Path: app/build/outputs/apk/release/app-release.apk
+Size: 25588438 bytes
+SHA-256: 0584DB3103E32C864A9585F963D253AA83DDC31462B0DFE3DE869A6F8EFB2D81
+Duration: 40s
