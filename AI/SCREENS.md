@@ -23,7 +23,7 @@ The app uses 17 screens + 3 modal dialogs. Most reuse the same Stitch
 | S7 | Split Progress | `JobProgressScreen` | `JobProgressViewModel` | `split_progress_light`, `split_progress_dark` |
 | S8 | Split Complete | `SplitResultScreen` | `SplitResultViewModel` | `split_complete_light`, `split_complete_dark` |
 | S9 | Merge — Pick first part (SAF) | system | — | n/a |
-| S10 | Merge — Order parts | `MergeOrderScreen` | `MergeOrderViewModel` | `merge_order_parts_light` *(missing — re-prompt)*, `merge_order_parts_dark` |
+| S10 | Merge — Order parts | `MergeOrderScreen` | `MergeOrderViewModel` | `merge_order_parts_light_2` *(canonical)*, `merge_order_parts_dark`; `merge_order_parts_light_1` kept as alternate reference |
 | S11 | Merge Configuration | `MergeConfigScreen` | `MergeConfigViewModel` | `merge_configuration_light`, `merge_configuration_dark` |
 | S12 | Merge Progress | reuses `JobProgressScreen` with `Title="Merging"` | `JobProgressViewModel` | reuses split progress |
 | S13 | Merge Complete | `MergeResultScreen` | `MergeResultViewModel` | `merge_complete_light`, `merge_complete_dark` |
@@ -246,7 +246,7 @@ Real test fixtures are 60-second 720p HEVC clips
 | S6 | ✅ | ✅ | n/a | n/a |
 | S7 | ✅ | ✅ | n/a | n/a |
 | S8 | ✅ | ✅ | n/a | n/a |
-| S10 | ❌ (re-prompt) | ✅ | n/a | n/a |
+| S10 | ✅ (`_2` canonical; `_1` alternate) | ✅ | n/a | n/a |
 | S11 | ✅ | ✅ | n/a | n/a |
 | S13 | ✅ | ✅ | n/a | n/a |
 | S14 | ✅ | ✅ | ✅ | ✅ |
@@ -255,7 +255,9 @@ Real test fixtures are 60-second 720p HEVC clips
 | S16 | ✅ | ✅ | n/a | n/a |
 | Dialogs | ✅ | ✅ | n/a | n/a |
 
-Update this table as the missing S10 light variant lands.
+S10 now has two light exports. Use `merge_order_parts_light_2` as the
+canonical implementation reference and keep `_1` only as an alternate design
+exploration.
 
 ## 6. Translation rule for the agent
 

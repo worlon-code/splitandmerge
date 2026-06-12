@@ -10,6 +10,9 @@ Format: `YYYY-MM-DD · phase · short title · ref(s)`.
 
 ## 2026-06-12 — Pre-scaffold (specs)
 
+- 2026-06-12 · 2 · Existing lint blockers fixed; `run-tests.ps1` hardened for local execution; debug APK built, tested, and installed on device. · ref: `app/src/main/AndroidManifest.xml`, `app/src/main/res/xml/data_extraction_rules.xml`, `run-tests.ps1`, `logs/`.
+- 2026-06-12 · 2 · Phase 2 Stitch audit completed; canonical screen mapping published in `AI/DESIGN_INDEX.md` and S10 light export reconciled. · ref: `AI/DESIGN_INDEX.md`, `AI/SCREENS.md`, `AI/tasks.md`.
+
 - 2026-06-12 · 0 · Documentation pack complete (analysis 00–13). · ref: `analysis/`.
 - 2026-06-12 · 0 · `ANSWERS.md` finalised (24 Q + 4 clarifications). · ref: `ANSWERS.md`.
 - 2026-06-12 · 0 · `STITCH-BRIEF.md` produced (single-file design brief). · ref: `STITCH-BRIEF.md`.

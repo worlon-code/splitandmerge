@@ -8,25 +8,25 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 
 ---
 
-## Phase 1 — Scaffold (current)
+## Phase 1 — Scaffold
 
 | ID | Status | Title | Owner |
 |---|---|---|---|
-| T-001 | TODO | User provides target repo path. | user |
-| T-002 | TODO | Run `git init`, copy specs, create `AI/`, `logs/`, `.gitignore`. | agent |
-| T-003 | TODO | Create root `README.md` (user-facing). | agent |
-| T-004 | TODO | Hand-write `app/` Android module per `analysis/09-PROJECT-STRUCTURE.md`. | agent |
-| T-005 | TODO | Confirm `./gradlew --version` works. | agent |
-| T-006 | TODO | First commit: `chore: initial scaffold (Phase 1 + 2)`. | agent |
-| T-007 | TODO | Stop and report. Wait for user approval to proceed. | agent |
+| T-001 | DONE-v0.0.1 | User provides target repo path. | user |
+| T-002 | DONE-v0.0.1 | Run `git init`, copy specs, create `AI/`, `logs/`, `.gitignore`. | agent |
+| T-003 | DONE-v0.0.1 | Create root `README.md` (user-facing). | agent |
+| T-004 | DONE-v0.0.1 | Hand-write `app/` Android module per `analysis/09-PROJECT-STRUCTURE.md`. | agent |
+| T-005 | DONE-v0.0.1 | Confirm `./gradlew --version` works. | agent |
+| T-006 | DONE-v0.0.1 | First commit: `chore: initial scaffold (Phase 1 + 2)`. | agent |
+| T-007 | DONE-v0.0.1 | Stop and report. Wait for user approval to proceed. | agent |
 
 ## Phase 2 — Stitch import
 
 | ID | Status | Title | Owner |
 |---|---|---|---|
-| T-010 | TODO | Re-prompt Stitch for the missing `mergeorder_light/` (K-007). | user |
-| T-011 | TODO | Consolidate the two Stitch folders into `Design/` per the agreed mapping. | agent |
-| T-012 | TODO | Update `Design/INDEX.md` with the final folder map. | agent |
+| T-010 | DONE-v0.0.1 | Audit the S10 light exports and choose a canonical merge-order light variant. | agent |
+| T-011 | DONE-v0.0.1 | Audit the imported Stitch folders in `Design/` and identify the canonical normalized set. | agent |
+| T-012 | DONE-v0.0.1 | Publish the final folder map in `AI/DESIGN_INDEX.md` per the approved exception. | agent |
 | T-013 | TODO | User confirms the mapping. | user |
 
 ## Phase 3 — Compose UI + nav with mock data

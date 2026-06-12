@@ -68,14 +68,14 @@ $Script:ApkAndroidTest = 'app\build\outputs\apk\androidTest\debug\app-debug-andr
 # ---------- Helpers ----------
 function Write-Section([string]$msg) {
     Write-Host ''
-    Write-Host ('═' * 60) -ForegroundColor DarkCyan
+    Write-Host ('=' * 60) -ForegroundColor DarkCyan
     Write-Host (" $msg") -ForegroundColor Cyan
-    Write-Host ('═' * 60) -ForegroundColor DarkCyan
+    Write-Host ('=' * 60) -ForegroundColor DarkCyan
 }
 
-function Write-Ok([string]$msg)   { Write-Host "  ✔ $msg" -ForegroundColor Green }
-function Write-Bad([string]$msg)  { Write-Host "  ✖ $msg" -ForegroundColor Red }
-function Write-Info([string]$msg) { Write-Host "  • $msg" -ForegroundColor Gray }
+function Write-Ok([string]$msg)   { Write-Host "  [OK] $msg" -ForegroundColor Green }
+function Write-Bad([string]$msg)  { Write-Host "  [FAIL] $msg" -ForegroundColor Red }
+function Write-Info([string]$msg) { Write-Host "  [INFO] $msg" -ForegroundColor Gray }
 
 function Assert-File([string]$path, [string]$desc) {
     if (-not (Test-Path $path)) {
@@ -96,7 +96,7 @@ function Get-OneDevice {
     if ($lines.Count -gt 1) {
         Write-Bad "More than one device connected:"
         $lines | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
-        throw "Multiple devices. Pass -s <serial> via ADB env, or disconnect extras."
+        throw "Multiple devices. Pass -s SERIAL via ADB env, or disconnect extras."
     }
     $serial = ($lines[0] -split '\s+')[0]
     Write-Ok "Device: $serial"
@@ -110,7 +110,14 @@ function Invoke-GradleStep {
         [string]$Label
     )
     Write-Info "Running: $Script:Gradle $($GradleArgs -join ' ')"
-    & $Script:Gradle @GradleArgs 2>&1 | Tee-Object -FilePath $LogPath
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $output = & $Script:Gradle @GradleArgs *>&1
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    $output | Tee-Object -FilePath $LogPath | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Bad "$Label FAILED (exit $LASTEXITCODE)  Log: $LogPath"
         return $false
@@ -172,7 +179,7 @@ if (-not $SkipUnit) {
     }
 } else {
     Write-Section "UNIT TESTS"
-    Write-Info 'Skipped (–SkipUnit).'
+    Write-Info 'Skipped (--SkipUnit).'
 }
 
 # ---------- Build APKs ----------
@@ -206,16 +213,22 @@ if (-not $SkipInstrumented -and $buildOk) {
 
     # Pull failure screenshots, if any
     $remoteShots = "/sdcard/Android/data/$Script:AppPkg/files/test-failures"
-    & $Script:Adb shell "ls $remoteShots" 2>$null | Out-Null
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & $Script:Adb shell "ls $remoteShots" 2>$null | Out-Null
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
     if ($LASTEXITCODE -eq 0) {
         $localShots = Join-Path $reportDir 'screenshots'
         New-Item -ItemType Directory -Path $localShots -Force | Out-Null
         & $Script:Adb pull $remoteShots $localShots 2>&1 | Out-Null
-        Write-Ok "Screenshots → $localShots"
+        Write-Ok "Screenshots -> $localShots"
     }
 } elseif ($SkipInstrumented) {
     Write-Section "INSTRUMENTED TESTS"
-    Write-Info 'Skipped (–SkipInstrumented).'
+    Write-Info 'Skipped (--SkipInstrumented).'
 }
 
 # ---------- Monkey smoke ----------
@@ -243,9 +256,9 @@ if (-not (Test-Path $reportIndex)) {
 
 Write-Host ''
 if ($unitOk -and $instOk) {
-    Write-Host "  ✔ ALL GREEN" -ForegroundColor Green
+    Write-Host "  [OK] ALL GREEN" -ForegroundColor Green
 } else {
-    Write-Host "  ✖ FAILED — see logs in $reportDir" -ForegroundColor Red
+    Write-Host "  [FAIL] FAILED - see logs in $reportDir" -ForegroundColor Red
 }
 Write-Host ''
 Write-Host ("  Unit:         {0}" -f $(if ($SkipUnit) {'skipped'} elseif ($unitOk) {'passed'} else {'FAILED'})) -ForegroundColor White
