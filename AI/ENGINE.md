@@ -106,22 +106,33 @@ Notes:
 - Subtitle timestamp shift is automatic via `-avoid_negative_ts make_zero`.
   See [SUBTITLES.md](SUBTITLES.md).
 
-## 4. Merge — exact FFmpeg command
+## 4. Merge — exact FFmpeg command & Disk Optimization
+
+To bypass JNI crash/segmentation faults (K-013) that occur when FFmpeg's background concat demuxer thread (`dmx0:concat`) internally closes SAF descriptors, a **Stage-then-concat** workflow is used with the following disk optimizations:
+
+1. **Fast-path Staging & Move Skip:** If the input part SAF URIs and/or output directory tree URI resolve to physical file system paths (e.g. on `/storage/emulated/0/...`), staging copies and temporary output caching are bypassed. FFmpeg reads/writes directly on these physical paths.
+2. **Staging:** For input URIs that do not resolve to physical paths, they are copied to standard local files in the app's cache directory (e.g. `staged_part_0.mkv`, `staged_part_1.mkv`).
+3. **Sequential Cache Cleanup:** To minimize peak cache size, during the `CONCAT` phase, when the linear progress reaches beyond a part's boundary plus a 5-second safety margin, its local staged cache file is deleted immediately. The last staged part is deleted in the `finally` block.
+4. **Concat:** Perform the merge using standard file paths and write the output to a temporary cache file (`merge_tmp.mkv`) if output staging is needed.
+5. **Move:** Copy the output file from cache to the final SAF destination directory if output staging was used.
+6. **Cleanup:** Always delete any remaining staged files and temporary output file in a `finally` block.
+
+The FFmpeg command runs using the `file` protocol:
 
 ```bash
 ffmpeg -hide_banner -y \
   -f concat -safe 0                  \   # demuxer mode
-  -i mergelist.txt                   \   # absolute paths inside
+  -i concat.txt                      \   # absolute local file paths inside
   -map 0 -c copy                     \
   -avoid_negative_ts make_zero       \
   -f matroska                        \
-  output.mkv
+  <cache>/merge_tmp.mkv
 ```
 
-`mergelist.txt` content (lines, one per part):
+`concat.txt` content (lines, one per part):
 ```
-file '/storage/emulated/0/Movies/Baahubali The Epic (2025)/Baahubali The Epic (2025).part001.mkv'
-file '/storage/emulated/0/Movies/Baahubali The Epic (2025)/Baahubali The Epic (2025).part002.mkv'
+file /data/user/0/com.splitandmerge.mkvslice.debug/cache/staged_part_0.mkv
+file /data/user/0/com.splitandmerge.mkvslice.debug/cache/staged_part_1.mkv
 …
 ```
 
@@ -273,30 +284,43 @@ samples for each category.
 
 Before any job:
 
-```kotlin
-val needed = (job.streams.sizeBytes * 1.05).toLong()
-val have   = StatFs(job.outputDirRealPath).availableBytes
-if (have < needed) throw EngineError.InsufficientStorage(needed, have)
-```
+- **Split jobs:**
+  ```kotlin
+  val needed = (job.streams.sizeBytes * 1.05).toLong()
+  val have   = StatFs(job.outputDirRealPath).availableBytes
+  if (have < needed) throw EngineError.InsufficientStorage(needed, have)
+  ```
+- **Merge jobs:**
+  ```kotlin
+  val needed = totalSizeRequired * 2
+  val available = context.cacheDir.usableSpace
+  if (available < needed * 1.05) throw EngineError.InsufficientStorage(needed, available)
+  ```
 
-The 5 % padding accounts for container overhead. We refuse early rather
-than letting FFmpeg fail mid-write.
+The padding/multiplier accounts for staging requirements and container overhead. We refuse early rather than letting FFmpeg or staging fail mid-write.
 
 ## 12. SAF integration
 
-FFmpeg can read `pipe:N` where N is a file descriptor. We use this for
-inputs that resolve only to `content://` URIs (no real filesystem path).
+FFmpeg cannot natively read Android `content://` URIs. We use FFmpegKit's SAF protocol integration to bridge this **for split operations only**:
 
 ```kotlin
-val pfd: ParcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")!!
-val args = listOf("-ss", "0", "-i", "pipe:${pfd.fd}", "-to", "5", "-c", "copy", "-f", "matroska", outPath)
+// 1. Get a saf: protocol descriptor
+val safPath = FFmpegKitConfig.getSafParameterForRead(context, uri)
+    ?: throw EngineError.InputUnreadable(uri.toString(), "saf parameter unavailable")
+
+// 2. Use it in arguments (must enable saf in protocol_whitelist)
+val args = listOf("-protocol_whitelist", "file,crypto,data,saf", "-i", safPath, ...)
+
+// 3. DO NOT manually close the descriptor. 
+// The native layer manages the lifecycle and automatically calls saf_close 
+// internally when FFmpeg finishes tearing down the context.
 ```
 
+Merge operations **do not** use SAF protocol directly in FFmpeg to avoid native thread JNI crashes (K-013). Instead, they stage files to standard files first and merge using the `file` protocol.
+
 Caveats:
-- Pipe is **non-seekable**. `-ss` works only at value 0 with pipes.
-- For seek-required reads (split with `-ss <kf>`), we must have a real path.
-  The agent attempts path resolution first and falls back to "ask the user
-  to copy the file to local storage".
+- The `saf:` protocol requires the array-form `FFmpegKit.executeWithArgumentsAsync` to bypass tokenization issues.
+- **CRITICAL**: Do NOT call `closeFFmpegPipe` on `saf:` paths. That is for named pipes only. Calling it on SAF paths will cause a double-close SIGSEGV.
 
 ## 13. Output staging
 
@@ -352,3 +376,5 @@ ecosystem evolves. Plan for:
 - ❌ Pass arbitrary user-supplied strings into the FFmpeg command without
   argv-quoting them. Use `ProcessBuilder.command(List<String>)` form, never
   string interpolation.
+- ❌ Call `FFmpegKitConfig.closeFFmpegPipe` on `saf:<id>.<ext>` paths. The SAF descriptor lifecycle is native-managed.
+- ❌ Manually close SAF descriptors. Let FFmpegKit handle teardown automatically.

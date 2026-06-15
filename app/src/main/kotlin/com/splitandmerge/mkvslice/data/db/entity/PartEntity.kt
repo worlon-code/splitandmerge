@@ -23,6 +23,7 @@ data class PartEntity(
     val jobId: String,
     val index: Int,                     // 1-based for display
     val name: String,
+    val sourceUri: String? = null,      // Added for MERGE parts
     val startSec: Double,
     val endSec: Double,
     val sizeBytes: Long? = null,        // null until written

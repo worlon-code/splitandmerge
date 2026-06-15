@@ -19,18 +19,22 @@ import com.splitandmerge.mkvslice.engine.FfprobeEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import com.splitandmerge.mkvslice.domain.progress.JobPhaseHint
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
+import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
 class Splitter @Inject constructor(
-    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
+    @ApplicationContext private val context: Context,
     private val jobDao: JobDao,
     private val ffprobeEngine: FfprobeEngine,
     private val ffmpegEngine: FfmpegEngine,
     private val cutPlanner: CutPlanner,
-    private val manifestWriter: ManifestWriter
+    private val manifestWriter: ManifestWriter,
+    private val jobProgressTracker: JobProgressTracker
 ) {
 
     suspend fun runSplit(jobId: String) = withContext(Dispatchers.IO) {
@@ -38,7 +42,8 @@ class Splitter @Inject constructor(
         if (job.status == JobStatus.CANCELLED) return@withContext
 
         try {
-            jobDao.updateProgress(jobId, JobStatus.RUNNING, 0, System.currentTimeMillis())
+            jobProgressTracker.setPhaseHint(jobId, JobPhaseHint.Analyzing)
+            jobDao.updateProgress(jobId, JobStatus.RUNNING, 0, null, null, null, System.currentTimeMillis())
 
             // 1. Probe input
             val uri = Uri.parse(job.sourceUri)
@@ -74,6 +79,8 @@ class Splitter @Inject constructor(
             // Ensure subfolder is created
             val subfolder = outDir.createDirectory(job.outputBaseName) ?: outDir
 
+            jobProgressTracker.setPhaseHint(jobId, null)
+
             // Ensure part entities exist
             var lastCut = 0.0
             for ((i, cut) in plan.cuts.withIndex()) {
@@ -87,7 +94,7 @@ class Splitter @Inject constructor(
                     endSec = partEnd,
                     sourceUri = job.sourceUri,
                     outDir = subfolder,
-                    baseName = job.outputBaseName,
+                    baseName = subfolder.name ?: job.outputBaseName,
                     manifestParts = manifestParts,
                     ceilingBytes = plan.ceilingBytes,
                     totalDurationSec = probeResult.format.durationSeconds,
@@ -104,7 +111,7 @@ class Splitter @Inject constructor(
                 endSec = probeResult.format.durationSeconds,
                 sourceUri = job.sourceUri,
                 outDir = subfolder,
-                baseName = job.outputBaseName,
+                baseName = subfolder.name ?: job.outputBaseName,
                 manifestParts = manifestParts,
                 ceilingBytes = plan.ceilingBytes,
                 totalDurationSec = probeResult.format.durationSeconds,
@@ -137,18 +144,19 @@ class Splitter @Inject constructor(
                 appVersion = "0.0.4"
             )
 
-            manifestWriter.writeManifest(subfolder.uri, job.outputBaseName, manifest)
+            manifestWriter.writeManifest(subfolder.uri, subfolder.name ?: job.outputBaseName, manifest)
 
             jobDao.updateProgress(jobId, JobStatus.DONE, 100, 0.0, 0, actualTotalParts, System.currentTimeMillis())
 
         } catch (e: Exception) {
-            e.printStackTrace()
             Timber.e(e, "Split job failed")
             // Check if cancelled vs actual error
             val currentJob = jobDao.getById(jobId)
             if (currentJob?.status != JobStatus.CANCELLED) {
                 jobDao.updateProgress(jobId, JobStatus.FAILED, 0, null, null, null, System.currentTimeMillis())
             }
+        } finally {
+            jobProgressTracker.setPhaseHint(jobId, null)
         }
     }
 

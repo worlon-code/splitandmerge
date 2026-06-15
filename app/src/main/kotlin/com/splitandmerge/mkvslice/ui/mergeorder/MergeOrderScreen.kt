@@ -66,10 +66,21 @@ fun MergeOrderScreen(
             )
         },
         floatingActionButton = {
+            val context = androidx.compose.ui.platform.LocalContext.current
             val filePicker = androidx.activity.compose.rememberLauncherForActivityResult(
                 contract = androidx.activity.result.contract.ActivityResultContracts.OpenMultipleDocuments()
             ) { uris ->
                 if (uris.isNotEmpty()) {
+                    for (uri in uris) {
+                        try {
+                            context.contentResolver.takePersistableUriPermission(
+                                uri,
+                                android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            )
+                        } catch (e: SecurityException) {
+                            // ignore
+                        }
+                    }
                     viewModel.addParts(uris.map { it.toString() })
                 }
             }

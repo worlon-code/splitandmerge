@@ -43,6 +43,8 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 
 ## Phase 4 — Engine: probe + keyframes
 
+| ID | Status | Title | Owner |
+|---|---|---|---|
 | T-055 | TODO | Storage check + auto-resplit fallback. | agent |
 | T-056 | TODO | End-to-end test: split a 1 GB fixture; subs intact. | agent |
 
@@ -51,9 +53,10 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | ID | Status | Title | Owner |
 |---|---|---|---|
 | T-060 | TODO | `MergeValidator` (codec / pix-fmt / track count). | agent |
-| T-061 | TODO | `Merger` + concat-list writer. | agent |
+| T-061 | DONE-v0.0.5 | `Merger` + concat-list writer (updated to Stage-then-concat). | agent |
 | T-062 | TODO | Manifest reader + auto-discovery on S9. | agent |
 | T-063 | TODO | Round-trip MD5 test: elementary streams identical. | agent |
+| T-112 | DONE-v0.0.5 | Fix native concat demuxer JNI saf_close crash on unattached pthread (K-013). | agent |
 
 ## Phase 7 — Polish + Settings + Update check
 
@@ -61,7 +64,7 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 |---|---|---|---|
 | T-070 | TODO | `SettingsStore` (DataStore Preferences) per `DATA_MODELS.md` §2.4. | agent |
 | T-071 | TODO | `CleanupRepository` + `CleanupEngine` integration on S15a. | agent |
-| T-072 | TODO | `UpdateService` + Retrofit + SHA-256 verify + `PackageInstaller`. | agent |
+| T-072 | DONE-v0.0.8 | `UpdateService` + Retrofit + SHA-256 verify + `PackageInstaller`. | agent |
 | T-073 | TODO | Permission flow (POST_NOTIFICATIONS, SAF, REQUEST_INSTALL_PACKAGES). | agent |
 | T-074 | TODO | OSS notices generator (`oss-licenses.json`). | agent |
 
@@ -75,6 +78,17 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | T-083 | TODO | `deploy_release.ps1` published to releases repo. | agent |
 | T-084 | TODO | GitHub release tag `v0.0.1` + APK attached. | agent |
 | T-085 | TODO | In-app update check on a v0.0.1 phone reports "Up to date". | agent |
+
+## Release v0.0.7 — Tight Boundaries, Library Details, Merge Disk Optimization
+
+| ID | Status | Title | Owner |
+|---|---|---|---|
+| T-113 | DONE-v0.0.7 | Position `-ss` before `-i` in Splitter for fast seek and tight GOP boundaries. | agent |
+| T-114 | DONE-v0.0.7 | Omit `-to` on final part in Splitter. | agent |
+| T-115 | DONE-v0.0.7 | Implement JobDetailSheet for CANCELLED/FAILED jobs with tablet max width 600dp constraint. | agent |
+| T-116 | DONE-v0.0.7 | Implement retry replication logic duplicating part entities with new IDs/same URIs verbatim. | agent |
+| T-117 | DONE-v0.0.7 | Skip staging/copying in Merger for writable real paths; sequential cache cleanup with 5s safety margin. | agent |
+| T-118 | DONE-v0.0.7 | Update phase label steps to support dynamic step totals and hide step prefix for steps <= 2. | agent |
 
 ---
 
@@ -91,6 +105,7 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | T-106 | TODO | Hardware-decoder thumbnails on File Details (MediaCodec, **not** for split). | v0.0.8 |
 | T-107 | TODO | Migrate engine to in-house FFmpeg build via Gradle. | v1.1 |
 | T-108 | TODO | Re-encode mode for too-few-keyframes files (K-004). | v1.1+ |
+| T-111 | TODO | (Optional) DebugCrashCollector: FileObserver on /data/tombstones | v0.0.6 |
 
 ---
 

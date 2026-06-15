@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.splitandmerge.mkvslice.ui.components.FolderValidationDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +26,15 @@ fun MergeConfigScreen(
     onConfirm: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val validationResult by viewModel.validationResult.collectAsState()
+
+    val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.updateOutputFolder(uri.toString())
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -78,13 +88,6 @@ fun MergeConfigScreen(
                             color = if (state.outputFolder.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
-                        val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
-                            contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
-                        ) { uri ->
-                            if (uri != null) {
-                                viewModel.updateOutputFolder(uri.toString())
-                            }
-                        }
                         IconButton(onClick = { folderPicker.launch(null) }) {
                             Icon(Icons.Default.Folder, contentDescription = "Change")
                         }
@@ -106,6 +109,17 @@ fun MergeConfigScreen(
             ) {
                 Text("Start Merge", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
+
+            FolderValidationDialog(
+                validation = validationResult,
+                onPickAgain = {
+                    viewModel.onPickFolderAgain()
+                    folderPicker.launch(null)
+                },
+                onDismiss = {
+                    viewModel.dismissValidation()
+                }
+            )
         }
     }
 }

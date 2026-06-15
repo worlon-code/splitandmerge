@@ -28,6 +28,7 @@
 | `CleanupPreviewSheet` (D1) | `ui/dialogs/CleanupPreviewSheet.kt` | between S5 → S6 |
 | `FolderCollisionSheet` (D2) | `ui/dialogs/FolderCollisionSheet.kt` | between S5 → S6 |
 | `ContainerPromotionSheet` (D3) | `ui/dialogs/ContainerPromotionSheet.kt` | from S5 |
+| `JobDetailSheet` | `ui/components/JobDetailSheet.kt` | S2, S14 |
 
 ## 2. Component contracts
 
@@ -324,6 +325,17 @@ data class ContainerPromotionState(
     val outputContainer: String,                    // ".mkv"
     val onContinueOriginal: () -> Unit,             // drops bitmap subs
     val onAcceptMkv: () -> Unit,
+)
+```
+
+`JobDetailSheet` props:
+```kotlin
+@Composable
+fun JobDetailSheet(
+    job: Job,
+    onRetry: () -> Unit,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit
 )
 ```
 

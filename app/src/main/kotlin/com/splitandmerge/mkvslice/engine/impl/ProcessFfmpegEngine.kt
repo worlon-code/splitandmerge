@@ -31,14 +31,10 @@ class ProcessFfmpegEngine @Inject constructor() : FfmpegEngine {
         val token = UUID.randomUUID().toString()
         trySend(EngineEvent.Started(token))
 
-        // Properly quote arguments that have spaces, since we are joining them into a string
-        val cmd = args.joinToString(" ") { arg ->
-            if (arg.contains(" ") && !arg.startsWith("\"")) "\"$arg\"" else arg
-        }
-        Timber.tag("ENGINE").d("start token=%s args=%s", token, cmd)
+        Timber.tag("ENGINE").d("start token=%s args=%s", token, args)
 
-        val session = FFmpegKit.executeAsync(
-            cmd,
+        val session = FFmpegKit.executeWithArgumentsAsync(
+            args.toTypedArray(),
             /* completeCallback */ { session ->
                 val exit = session.returnCode?.value ?: -1
                 Timber.tag("ENGINE").d("done token=%s exit=%d", token, exit)
@@ -47,7 +43,7 @@ class ProcessFfmpegEngine @Inject constructor() : FfmpegEngine {
                 close()
             },
             /* logCallback */ { log ->
-                val line = log.message?.trimEnd() ?: return@executeAsync
+                val line = log.message?.trimEnd() ?: return@executeWithArgumentsAsync
                 Timber.tag("ENGINE").v("stderr %s", line)
                 trySend(EngineEvent.Stderr(line))
                 ProgressParser.parseLine(line)?.let { progress ->
@@ -70,9 +66,19 @@ class ProcessFfmpegEngine @Inject constructor() : FfmpegEngine {
     }
 
     override suspend fun cancel(token: String) {
-        activeSessions.remove(token)?.let { sessionId ->
-            Timber.tag("ENGINE").d("cancel(explicit) sessionId=%d token=%s", sessionId, token)
-            FFmpegKit.cancel(sessionId)
+        if (token == "all") {
+            // Cancel every active session. Used by JobService.cancelCurrentJob().
+            activeSessions.keys.toList().forEach { t ->
+                activeSessions.remove(t)?.let { sessionId ->
+                    Timber.tag("ENGINE").d("cancel(all) sessionId=%d token=%s", sessionId, t)
+                    FFmpegKit.cancel(sessionId)
+                }
+            }
+        } else {
+            activeSessions.remove(token)?.let { sessionId ->
+                Timber.tag("ENGINE").d("cancel(explicit) sessionId=%d token=%s", sessionId, token)
+                FFmpegKit.cancel(sessionId)
+            }
         }
     }
 }

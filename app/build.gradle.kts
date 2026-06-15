@@ -10,13 +10,14 @@ plugins {
 android {
     namespace = "com.splitandmerge.mkvslice"
     compileSdk = 35
+    useLibrary("android.test.mock")
 
     defaultConfig {
         applicationId = "com.splitandmerge.mkvslice"
         minSdk = 26
         targetSdk = 35
-        versionCode = 5
-        versionName = "0.0.5"
+        versionCode = 8
+        versionName = "0.0.8"
 
         testInstrumentationRunner = "com.splitandmerge.mkvslice.HiltTestRunner"
         vectorDrawables {
@@ -26,6 +27,8 @@ android {
         ndk {
             abiFilters.add("arm64-v8a")
         }
+
+        buildConfigField("String", "UPDATE_CHECK_URL", "\"https://raw.githubusercontent.com/splitandmerge/mkvslice-releases/main/\"")
     }
 
     signingConfigs {
@@ -72,6 +75,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
         }
     }
 }
@@ -112,6 +117,15 @@ dependencies {
     // Storage Access Framework helper
     implementation(libs.androidx.documentfile)
 
+    // Preferences DataStore
+    implementation(libs.androidx.datastore.preferences)
+
+    // Network (Retrofit + OkHttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
     // Logging
     implementation(libs.timber)
 
@@ -123,8 +137,11 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)
+    testImplementation(libs.okhttp.tls)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)

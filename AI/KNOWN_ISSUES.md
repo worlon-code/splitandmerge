@@ -30,10 +30,16 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 | K-007 | MAJOR | OPEN | Stitch design pack: `mergeorder_light/` not yet generated. Re-prompt scheduled. |
 | K-008 | KNOWN | OPEN | Settings → Reliability → "Improve reliability on this device" only displays the OEM helper text on Xiaomi/OnePlus/Huawei/Realme; works on all OEMs. |
 | K-009 | KNOWN | OPEN | x86_64 emulator can't run the engine smoke test (no HEVC decoder on most images). Tests are gated with `assumeTrue` on `Build.SUPPORTED_64_BIT_ABIS.contains("arm64-v8a")`. CI emulator is x86_64 → engine smoke runs only on physical devices. |
+| K-017 | MINOR | OPEN | Merge "Pick parts" flow shows no progress indicator while MergeOrderViewModel.addParts() runs ffprobe on each selected part. Picking 3 large MKV parts can leave the UI idle for 5-30 seconds. Same UX class as the v0.0.8 split "Analyzing" fix (Step 5b). Lands in v0.0.9 alongside LoadingArc / PulseDot Compose components. |
 
 ## Resolved
 
-(none yet — populate as fixes land)
+| ID | Severity | Status | Title |
+|---|---|---|---|
+| K-016 | MAJOR | FIXED-IN-v0.0.8 | SplitResultScreen showed hardcoded "Bahubali (2025).part1.mkv / part2 / part3" on every split regardless of the actual source. Fixed by introducing SplitResultViewModel that loads real PartEntity rows from JobDao. Also removed dead JobsScreen/JobsScreenTablet/JobsViewModel/Routes.JOBS scaffolding from Phase 3 that was never wired into AppNav. |
+| K-015 | MAJOR | FIXED-IN-v0.0.8 | Merger, Splitter, and MergeResultScreen folder naming collision (SAF rename suffix) crash. |
+| K-014 | KNOWN | FIXED-IN-v0.0.7 | Merged output duration drifts by ≈3 s relative to the sum of input part durations. Fixed by positioning `-ss` before `-i` in the Splitter for fast seek and using identical cut timestamps verbatim. |
+| K-013 | MAJOR | FIXED-IN-v0.0.5 | FFmpegKit concat demuxer native JNI saf_close crash on unattached pthread. Fixed structurally by implementing stage-then-concat to cache and merge via standard file system paths. |
 
 ## How to add a row
 

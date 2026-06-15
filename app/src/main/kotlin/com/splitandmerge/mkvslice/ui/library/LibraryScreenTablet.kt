@@ -51,6 +51,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.compose.runtime.LaunchedEffect
+import com.splitandmerge.mkvslice.ui.components.JobDetailSheet
+import com.splitandmerge.mkvslice.domain.model.JobStatus
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreenTablet(
@@ -58,11 +62,28 @@ fun LibraryScreenTablet(
     onNavigateToSettings: () -> Unit,
     onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
-    onNavigateToJobDetail: (String) -> Unit
+    onNavigateToJobDetail: (String) -> Unit,
+    onNavigateToSplitResult: (String) -> Unit,
+    onNavigateToMergeResult: (String) -> Unit
 ) {
     val jobs by viewModel.jobs.collectAsState()
     var selectedJob by remember { mutableStateOf<Job?>(null) }
+    var detailSheetJob by remember { mutableStateOf<Job?>(null) }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvents.collect { command ->
+            when (command) {
+                is LibraryViewModel.NavCommand.ToProgress -> onNavigateToJobDetail(command.jobId)
+                is LibraryViewModel.NavCommand.ToSplitResult -> onNavigateToSplitResult(command.jobId)
+                is LibraryViewModel.NavCommand.ToMergeResult -> onNavigateToMergeResult(command.jobId)
+                is LibraryViewModel.NavCommand.ToDetailSheet -> {
+                    detailSheetJob = jobs.find { it.id == command.jobId }
+                }
+                LibraryViewModel.NavCommand.DoNothing -> {}
+            }
+        }
+    }
 
     val splitFilePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -172,7 +193,10 @@ fun LibraryScreenTablet(
                         items(jobs) { job ->
                             JobItemRow(
                                 job = job,
-                                onClick = { selectedJob = job }
+                                onClick = {
+                                    selectedJob = job
+                                    viewModel.handleIntent(LibraryIntent.RowTapped(job.id))
+                                }
                             )
                         }
                     }
@@ -231,10 +255,15 @@ fun LibraryScreenTablet(
                                 }
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Button(
-                                    onClick = { onNavigateToJobDetail(job.id) },
+                                    onClick = { viewModel.handleIntent(LibraryIntent.RowTapped(job.id)) },
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text("Open Progress / Result")
+                                    Text(
+                                        text = when (job.status) {
+                                            JobStatus.CANCELLED, JobStatus.FAILED -> "Show details"
+                                            else -> "Open Progress / Result"
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -242,6 +271,15 @@ fun LibraryScreenTablet(
                 }
             }
         }
+    }
+
+    if (detailSheetJob != null) {
+        JobDetailSheet(
+            job = detailSheetJob!!,
+            onRetry = { viewModel.handleIntent(LibraryIntent.RetryJob(detailSheetJob!!.id)) },
+            onDelete = { viewModel.handleIntent(LibraryIntent.DeleteJob(detailSheetJob!!.id)) },
+            onDismiss = { detailSheetJob = null }
+        )
     }
 }
 

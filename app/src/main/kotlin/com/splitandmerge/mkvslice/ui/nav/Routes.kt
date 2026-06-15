@@ -11,10 +11,10 @@ object Routes {
     const val MERGE_ORDER = "merge_order"
     const val MERGE_CONFIG = "merge_config?uris={uris}"
     const val MERGE_RESULT = "merge_result/{jobId}"
-    const val JOBS = "jobs"
     const val SETTINGS = "settings"
     const val CLEANUP_PATTERNS = "cleanup_patterns"
     const val OSS_NOTICES = "oss_notices"
+    const val LOGS = "logs"
 
     fun jobProgress(jobId: String) = "job_progress/$jobId"
     fun splitResult(jobId: String) = "split_result/$jobId"

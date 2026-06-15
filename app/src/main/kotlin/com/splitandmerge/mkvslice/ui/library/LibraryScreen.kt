@@ -52,6 +52,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.provider.OpenableColumns
 import androidx.compose.ui.platform.LocalContext
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.splitandmerge.mkvslice.ui.components.JobDetailSheet
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
@@ -59,10 +65,27 @@ fun LibraryScreen(
     onNavigateToSettings: () -> Unit,
     onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
-    onNavigateToJobDetail: (String) -> Unit
+    onNavigateToJobDetail: (String) -> Unit,
+    onNavigateToSplitResult: (String) -> Unit,
+    onNavigateToMergeResult: (String) -> Unit
 ) {
     val jobs by viewModel.jobs.collectAsState()
     val context = LocalContext.current
+    var detailSheetJob by remember { mutableStateOf<Job?>(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvents.collect { command ->
+            when (command) {
+                is LibraryViewModel.NavCommand.ToProgress -> onNavigateToJobDetail(command.jobId)
+                is LibraryViewModel.NavCommand.ToSplitResult -> onNavigateToSplitResult(command.jobId)
+                is LibraryViewModel.NavCommand.ToMergeResult -> onNavigateToMergeResult(command.jobId)
+                is LibraryViewModel.NavCommand.ToDetailSheet -> {
+                    detailSheetJob = jobs.find { it.id == command.jobId }
+                }
+                LibraryViewModel.NavCommand.DoNothing -> {}
+            }
+        }
+    }
 
     val splitFilePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -152,11 +175,20 @@ fun LibraryScreen(
                         )
                     }
                     items(jobs) { job ->
-                        JobItemRow(job = job, onClick = { onNavigateToJobDetail(job.id) })
+                        JobItemRow(job = job, onClick = { viewModel.handleIntent(LibraryIntent.RowTapped(job.id)) })
                     }
                 }
             }
         }
+    }
+
+    if (detailSheetJob != null) {
+        JobDetailSheet(
+            job = detailSheetJob!!,
+            onRetry = { viewModel.handleIntent(LibraryIntent.RetryJob(detailSheetJob!!.id)) },
+            onDelete = { viewModel.handleIntent(LibraryIntent.DeleteJob(detailSheetJob!!.id)) },
+            onDismiss = { detailSheetJob = null }
+        )
     }
 }
 

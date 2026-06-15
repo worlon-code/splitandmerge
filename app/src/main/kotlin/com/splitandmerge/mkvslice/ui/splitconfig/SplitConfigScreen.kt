@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.splitandmerge.mkvslice.domain.model.SplitMode
+import com.splitandmerge.mkvslice.ui.components.FolderValidationDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +52,16 @@ fun SplitConfigScreen(
     onConfirm: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val validationResult by viewModel.validationResult.collectAsState()
     val scrollState = rememberScrollState()
+
+    val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.updateOutputFolder(uri.toString())
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -164,13 +174,6 @@ fun SplitConfigScreen(
                             color = if (state.outputFolder.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
-                        val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
-                            contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
-                        ) { uri ->
-                            if (uri != null) {
-                                viewModel.updateOutputFolder(uri.toString())
-                            }
-                        }
                         IconButton(onClick = { folderPicker.launch(null) }) {
                             Icon(Icons.Default.Folder, contentDescription = "Change")
                         }
@@ -209,6 +212,17 @@ fun SplitConfigScreen(
             ) {
                 Text("Continue", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
+
+            FolderValidationDialog(
+                validation = validationResult,
+                onPickAgain = {
+                    viewModel.onPickFolderAgain()
+                    folderPicker.launch(null)
+                },
+                onDismiss = {
+                    viewModel.dismissValidation()
+                }
+            )
         }
     }
 }

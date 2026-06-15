@@ -7,10 +7,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+import android.content.Context
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
+import androidx.lifecycle.viewModelScope
+import com.splitandmerge.mkvslice.engine.FfprobeEngine
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 data class MergePart(
     val id: String,
     val index: Int,
     val name: String,
+    val uriString: String,
     val sizeBytes: Long,
     val durationSec: Double,
     val errorDetails: String? = null
@@ -18,22 +28,23 @@ data class MergePart(
 
 data class MergeOrderState(
     val parts: List<MergePart> = emptyList(),
-    val isCompatible: Boolean = true
+    val isCompatible: Boolean = true,
+    val compatibilityError: String? = null,
+    val isLoading: Boolean = false
 )
 
 @HiltViewModel
-class MergeOrderViewModel @Inject constructor() : ViewModel() {
+class MergeOrderViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val ffprobeEngine: FfprobeEngine,
+    private val mergeValidator: com.splitandmerge.mkvslice.domain.merger.MergeValidator
+) : ViewModel() {
     private val _state = MutableStateFlow(MergeOrderState())
     val state: StateFlow<MergeOrderState> = _state.asStateFlow()
 
-    init {
-        // Start empty
-    }
-
     fun removePart(partId: String) {
         val updatedList = _state.value.parts.filter { it.id != partId }
-        val compatible = updatedList.none { it.errorDetails != null }
-        _state.value = _state.value.copy(parts = updatedList, isCompatible = compatible)
+        validateList(updatedList)
     }
 
     fun reorderParts(fromIndex: Int, toIndex: Int) {
@@ -41,29 +52,71 @@ class MergeOrderViewModel @Inject constructor() : ViewModel() {
         if (fromIndex in list.indices && toIndex in list.indices) {
             val item = list.removeAt(fromIndex)
             list.add(toIndex, item)
-            _state.value = _state.value.copy(parts = list)
+            validateList(list)
         }
     }
 
     fun addParts(uris: List<String>) {
-        val newParts = uris.mapIndexed { index, uri ->
-            // Just a basic representation. Real app would probe the files to get real sizes
-            MergePart(
-                id = java.util.UUID.randomUUID().toString(),
-                index = _state.value.parts.size + index,
-                name = uri, // Use URI as name temporarily
-                sizeBytes = 0L,
-                durationSec = 0.0
-            )
+        _state.value = _state.value.copy(isLoading = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val newParts = uris.mapIndexed { index, uriStr ->
+                val uri = Uri.parse(uriStr)
+                val docFile = DocumentFile.fromSingleUri(context, uri)
+                val name = docFile?.name ?: "Unknown Part"
+                val size = docFile?.length() ?: 0L
+                val duration = try {
+                    ffprobeEngine.probe(uriStr).format.durationSeconds
+                } catch (e: Exception) {
+                    0.0
+                }
+                
+                MergePart(
+                    id = java.util.UUID.randomUUID().toString(),
+                    index = _state.value.parts.size + index,
+                    name = name,
+                    uriString = uriStr,
+                    sizeBytes = size,
+                    durationSec = duration
+                )
+            }
+            
+            val updatedList = _state.value.parts + newParts
+            validateList(updatedList)
         }
-        val updatedList = _state.value.parts + newParts
-        _state.value = _state.value.copy(
-            parts = updatedList,
-            isCompatible = true // Assume compatible for now since we skip actual probing
-        )
+    }
+
+    private fun validateList(list: List<MergePart>) {
+        if (list.isEmpty()) {
+            _state.value = _state.value.copy(
+                parts = list,
+                isCompatible = true,
+                compatibilityError = null,
+                isLoading = false
+            )
+            return
+        }
+        
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                mergeValidator.validate(list.map { it.uriString })
+                _state.value = _state.value.copy(
+                    parts = list,
+                    isCompatible = true,
+                    compatibilityError = null,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    parts = list,
+                    isCompatible = false,
+                    compatibilityError = e.message,
+                    isLoading = false
+                )
+            }
+        }
     }
 
     fun getPartsUris(): String {
-        return _state.value.parts.joinToString(",") { it.name } // Name stores URI for now
+        return _state.value.parts.joinToString(",") { it.uriString }
     }
 }

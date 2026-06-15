@@ -24,6 +24,7 @@ class CutPlannerTest {
 
         assertEquals(3, plan.cuts.size)
         assertEquals(listOf(10.0, 20.0, 30.0), plan.cuts)
+        assertTrue(plan.cuts.all { it in keyframes })
     }
 
     @Test

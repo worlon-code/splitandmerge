@@ -36,6 +36,7 @@ The app uses 17 screens + 3 modal dialogs. Most reuse the same Stitch
 | D1 | Cleanup preview sheet | `CleanupPreviewSheet` | (derived) | inside `dialogs_sheet_*` |
 | D2 | Folder collision sheet | `FolderCollisionSheet` | (derived) | inside `dialogs_sheet_*` |
 | D3 | Container promotion sheet | `ContainerPromotionSheet` | (derived) | inside `dialogs_sheet_*` |
+| D4 | Job details sheet | `JobDetailSheet` | (derived) | inside `dialogs_sheet_*` |
 
 ## 2. Bottom navigation
 
@@ -217,6 +218,14 @@ Notes / edge cases
 - Body: explanation.
 - Buttons: Continue with original (drops bitmap subs) / OK.
 - Suppressible via `match_input_container = true` (default).
+
+### D4 — Job details sheet
+
+- Triggered when tapping a CANCELLED or FAILED job row on S2 Library.
+- Title: original/cleaned filename + status badge.
+- Body: cancellation or failure timestamp, and failure error logs inside a tonal expandable container.
+- Buttons: Retry (spawns new job, replicating merge parts) / Delete row.
+- Constraints: width capped at 600dp on tablets.
 
 ## 4. Per-screen sample data
 

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Video Splitter</string>
+    <string name="folder_validation_title">Folder unavailable</string>
+    <string name="folder_validation_not_reachable">This folder can\'t be opened. The storage may be unmounted or the app\'s permission revoked.</string>
+    <string name="folder_validation_permission_revoked">The app no longer has permission to write to this folder. Please pick it again to grant access.</string>
+    <string name="folder_validation_not_writable">Can\'t write to this folder. (%1$s)</string>
+    <string name="folder_validation_insufficient_space">Not enough free space here. Need %1$.1f GB, have %2$.1f GB free.</string>
+    <string name="folder_validation_pick_again">Pick a different folder</string>
+    <string name="folder_validation_cancel">Cancel</string>
+    <string name="split_analyzing_title">Analyzing video structure</string>
+    <string name="split_analyzing_subtitle">This can take up to a minute on large files. Don\'t close the app.</string>
 </resources>

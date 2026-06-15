@@ -8,6 +8,18 @@ Format: `YYYY-MM-DD · phase · short title · ref(s)`.
 
 ---
 
+## 2026-06-15 — Release v0.0.8 (Settings, Logs, Update check, Folder collision fix)
+
+- 2026-06-15 · 10 steps shipped · Migrated Settings to DataStore, added OutputFolderValidator + unified picker validation, first-run dialog, legacy folder migration, split "Analyzing" UI, fixed SAF folder collision in merger/splitter, added rotating file logger with redaction + log viewer + safe clear, added secure update check (Retrofit + SHA-256 + PackageInstaller). Refs: AI/plans/2026-06-14-v0-0-8.md and step 5/5b/5c/5d/7/8 prompts. Step 5e fixed SplitResultScreen mock data with real PartEntity wiring and removed dead Jobs* scaffolding.
+
+## 2026-06-14 — Release v0.0.7
+
+- 2026-06-14 · 7 · Implemented precise split boundaries, Library retry duplication with new IDs/same URIs verbatim, tablet cap on JobDetailSheet, merge path resolution and disk optimization, and dynamic phase labels. · ref: `AI/plans/2026-06-14-v0-0-7.md`.
+
+## 2026-06-13 — Phase 6 Follow-ups
+
+- 2026-06-13 · 6 · Fixed native JNI saf_close SIGSEGV crash in libffmpegkit.so by staging merge inputs to cache before concat; implemented pre-flight storage check and staged file lifecycle cleanup. · ref: `AI/plans/2026-06-13-merge-stage-then-concat.md`.
+
 ## 2026-06-12 — Pre-scaffold (specs)
 
 - 2026-06-12 · 4 · Implemented FFmpeg/FFprobe engine wrappers with LGPL ffmpeg-kit-min, and pure Kotlin CutPlanner. Verified with smoke tests. · ref: `app/src/main/kotlin/com/splitandmerge/mkvslice/engine/`, `AI/ENGINE.md`.

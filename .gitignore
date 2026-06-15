@@ -23,3 +23,17 @@ screenshots/
 /AI/plans/*.draft.md
 /keystore.properties
 *.jks
+d r i d a m . m k v  
+ 
+# Test video fixtures and scratch files (never commit large media)
+*.mkv
+*.mp4
+*.avi
+*.mov
+
+# Agent scratch / temporary files
+tmp_*
+local_*  
+
+# Test artifact directories (databases pulled from device, etc.)
+tmp/

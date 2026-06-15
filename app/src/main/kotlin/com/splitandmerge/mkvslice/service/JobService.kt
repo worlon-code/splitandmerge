@@ -13,15 +13,18 @@ import androidx.core.app.NotificationCompat
 import com.splitandmerge.mkvslice.MainActivity
 import com.splitandmerge.mkvslice.R
 import com.splitandmerge.mkvslice.data.db.JobDao
+import com.splitandmerge.mkvslice.di.ApplicationScope
 import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.splitter.Splitter
 import com.splitandmerge.mkvslice.engine.FfmpegEngine
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,12 +37,17 @@ class JobService : Service() {
     @Inject lateinit var splitter: Splitter
     @Inject lateinit var merger: com.splitandmerge.mkvslice.domain.merger.Merger
     @Inject lateinit var ffmpegEngine: FfmpegEngine
+    @Inject lateinit var startupReadyDeferred: CompletableDeferred<Unit>
+    @Inject lateinit var jobProgressTracker: JobProgressTracker
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
     private var wakeLock: PowerManager.WakeLock? = null
-    
+
     private var isProcessing = false
     private var currentJobId: String? = null
+
+    /** Per-job coroutine handle — cancelled and joined by [cancelCurrentJob] (A3). */
+    private var currentJobCoroutine: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -51,10 +59,9 @@ class JobService : Service() {
         if (action == ACTION_CANCEL) {
             val jobId = intent.getStringExtra(EXTRA_JOB_ID)
             if (jobId != null && jobId == currentJobId) {
-                cancelCurrentJob()
+                serviceScope.launch { cancelCurrentJob() }
             }
         } else {
-            // Start processing if not already doing so
             if (!isProcessing) {
                 startProcessing()
             }
@@ -65,35 +72,40 @@ class JobService : Service() {
     private fun startProcessing() {
         isProcessing = true
         acquireWakeLock()
-        
-        // Start foreground immediately with a generic notification
+
         startForeground(NOTIFICATION_ID, buildNotification("Checking for jobs...", 0))
 
         serviceScope.launch {
+            // A6: wait for App.onCreate() startup sweep to complete before touching the queue.
+            startupReadyDeferred.await()
+
             while (isActive) {
                 val nextJob = jobDao.nextQueued()
                 if (nextJob == null) {
-                    // Queue empty
                     break
                 }
-                
+
                 currentJobId = nextJob.id
                 updateNotification("Processing: ${nextJob.outputBaseName}", 0)
-                
-                try {
-                    if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.SPLIT) {
-                        splitter.runSplit(nextJob.id)
-                    } else if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.MERGE) {
-                        merger.runMerge(nextJob.id)
+
+                // Store per-job coroutine handle so cancelCurrentJob() can join it (A3).
+                currentJobCoroutine = serviceScope.launch {
+                    try {
+                        if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.SPLIT) {
+                            splitter.runSplit(nextJob.id)
+                        } else if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.MERGE) {
+                            merger.runMerge(nextJob.id)
+                        }
+                    } catch (e: Exception) {
+                        Timber.e(e, "Job failed")
                     }
-                } catch (e: Exception) {
-                    Timber.e(e, "Job failed")
                 }
-                
+
+                currentJobCoroutine?.join()
                 currentJobId = null
+                currentJobCoroutine = null
             }
-            
-            // Queue exhausted
+
             stopProcessing()
         }
     }
@@ -101,35 +113,40 @@ class JobService : Service() {
     private fun stopProcessing() {
         isProcessing = false
         currentJobId = null
+        currentJobCoroutine = null
         releaseWakeLock()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
-    private fun cancelCurrentJob() {
-        serviceScope.launch {
-            val jobId = currentJobId ?: return@launch
-            Timber.i("Cancelling job $jobId")
-            jobDao.updateProgress(jobId, JobStatus.CANCELLED, 0, System.currentTimeMillis())
-            // Signal engine to stop
-            ffmpegEngine.cancel("all")
-        }
+    /**
+     * Cancels the running job coroutine and waits for its [finally] block to complete
+     * before allowing the queue loop to advance (A3). Also kills FFmpeg.
+     */
+    private suspend fun cancelCurrentJob() {
+        val jobId = currentJobId ?: return
+        Timber.i("Cancelling job $jobId")
+        jobProgressTracker.setPhaseHint(jobId, null)
+        // Write CANCELLED status first so Merger's catch block doesn't overwrite it with FAILED.
+        jobDao.updateProgress(jobId, JobStatus.CANCELLED, 0, null, null, null, System.currentTimeMillis())
+        // cancelAndJoin() blocks until finally{} in Merger.runMerge() completes (A3).
+        currentJobCoroutine?.cancelAndJoin()
+        // Belt-and-suspenders: also signal the FFmpeg engine.
+        ffmpegEngine.cancel("all")
     }
 
     private fun acquireWakeLock() {
         if (wakeLock == null) {
             val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MkvSlice::EngineWakeLock").apply {
-                acquire(24 * 60 * 60 * 1000L) // 24 hours max
+                acquire(24 * 60 * 60 * 1000L)
             }
         }
     }
 
     private fun releaseWakeLock() {
         wakeLock?.let {
-            if (it.isHeld) {
-                it.release()
-            }
+            if (it.isHeld) it.release()
         }
         wakeLock = null
     }
@@ -164,7 +181,7 @@ class JobService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Video Splitter")
             .setContentText(text)
-            .setSmallIcon(android.R.drawable.ic_popup_sync) // Placeholder icon
+            .setSmallIcon(android.R.drawable.ic_popup_sync)
             .setOngoing(true)
             .setProgress(100, progress, progress == 0)
             .setContentIntent(pendingIntent)

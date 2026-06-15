@@ -19,6 +19,9 @@ interface JobDao {
     @Query("SELECT * FROM jobs WHERE id = :id")
     fun observeById(id: String): Flow<JobEntity?>
 
+    @Query("SELECT * FROM parts WHERE jobId = :jobId ORDER BY `index` ASC")
+    suspend fun getPartsForJob(jobId: String): List<com.splitandmerge.mkvslice.data.db.entity.PartEntity>
+
     @Query("SELECT * FROM jobs WHERE status = :status ORDER BY createdAt ASC LIMIT 1")
     suspend fun nextQueued(status: JobStatus = JobStatus.QUEUED): JobEntity?
 
@@ -33,4 +36,17 @@ interface JobDao {
 
     @Query("DELETE FROM jobs WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    /**
+     * Startup recovery: any job still RUNNING after a process kill is marked FAILED.
+     * Safe to call on a clean install (no rows matched → no-op).
+     */
+    @Query("UPDATE jobs SET status = 'FAILED', errorMessage = 'Process killed unexpectedly' WHERE status = 'RUNNING'")
+    suspend fun recoverStuckJobs()
+
+    /**
+     * Paired with [recoverStuckJobs]: marks RUNNING parts as FAILED (A5).
+     */
+    @Query("UPDATE parts SET status = 'FAILED' WHERE status = 'RUNNING'")
+    suspend fun recoverStuckParts()
 }

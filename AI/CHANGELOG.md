@@ -5,6 +5,81 @@
 
 ---
 
+## [Unreleased]
+
+## [0.0.8] — 2026-06-15
+
+🚀 NEW FEATURES
+- **First-run setup**: New install now prompts for a default save folder
+  on launch (non-dismissible until set). Folder selection is unified —
+  Settings, Split, and Merge all read from / write to the same source.
+- **Diagnostic logs**: All app activity is now captured to local
+  rotating daily log files in app cache (`logs/app-<date>.log`). 7-day
+  auto-purge. SAF URIs are redacted (8-char hash) for privacy. Logs
+  are accessible via Settings → "View diagnostic logs" with read,
+  share (via FileProvider), and safe clear-all (active file truncated,
+  not deleted — writer survives).
+- **In-app update check**: Settings → "Check for updates" fetches a
+  signed manifest over HTTPS, validates SHA-256, and installs via
+  `PackageInstaller` session. HTTPS-only, debug builds disabled,
+  malformed manifests rejected.
+- **Battery optimization toggle**: Settings exposes a real
+  `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` toggle with state
+  reflected via `PowerManager`.
+- **Split "Analyzing" UI**: The 20-30s keyframe scan at split start
+  no longer appears as stuck-at-0%. Shows an indeterminate spinner
+  with "Analyzing video structure" until the first real progress.
+
+🔧 BUG FIXES
+- **Merge folder collision** (5d): When the user's chosen output
+  folder already contains a sub-folder with the merge's base name,
+  SAF correctly auto-creates `<name> (1)`, but the app was writing
+  to `<name>/file.mkv` instead of `<name> (1)/<name> (1).mkv`. Fixed
+  in Merger and Splitter; MergeResultScreen no longer crashes on
+  collision.
+- K-016: Fix SplitResultScreen showing fake "Bahubali" outputs on
+  every split. Now reads real part filenames and sizes from the Room
+  database via new SplitResultViewModel. Also removed dead Phase 3
+  Jobs scaffolding (JobsScreen/JobsScreenTablet/JobsViewModel +
+  Routes.JOBS) that was imported in AppNav but never routed.
+
+📦 TECHNICAL
+- Migrated SettingsViewModel from SharedPreferences to androidx
+  Preferences DataStore via new `SettingsRepository`. Legacy values
+  auto-migrate on first launch.
+- New `OutputFolderValidator` rejects unreachable / unwritable / low-space
+  / permission-revoked folders with a unified `FolderValidationDialog`
+  shown across all three pickers (11 unit tests cover every branch).
+- Added: androidx.datastore-preferences 1.1.1, retrofit 2.11.0,
+  okhttp 4.12.0, okhttp-tls 4.12.0 (test only).
+- Round-trip lossless floor confirmed at 13450.895s for the 3:44:07
+  source (matches v0.0.7 baseline).
+- All v0.0.7 functionality unchanged.
+
+---
+
+## [0.0.7] — 2026-06-14
+
+🚀 NEW FEATURES
+- Tap on cancelled or failed rows in S2 Library now opens a `JobDetailSheet` bottom sheet showing execution details.
+- Added `JobDetailSheet` action buttons: "Retry" (spawns a new queued job, replicating parts for merge) and "Delete row".
+
+🔧 BUG FIXES
+- Fixed the native crash (SIGSEGV in libffmpegkit.so saf_close) by staging files to cache and running concat demuxer on standard filesystem paths (Fixes K-013).
+- Resolved video duration drift and GOP overlap in split-then-merge round-trips by positioning `-ss` before `-i` in the Splitter for fast seek and using identical cut timestamps verbatim (Fixes K-014).
+
+⚡ IMPROVEMENTS
+- Skipped staging and temporary copying in the Merger when input and output files are on readable/writable physical paths.
+- Added sequential cache cleanup of staged parts with a 5-second safety margin, freeing disk space during concat progression.
+- Dynamically hides the "Step X of Y" step count prefix in progress phase labels when total steps <= 2.
+- Added a 600dp max width cap for `JobDetailSheet` on tablets to prevent stretching.
+
+📦 TECHNICAL
+- Version bump to 0.0.7, versionCode 7.
+- Added comprehensive instrumented tests for sequential cleanup (`MergerSequentialCleanupTest`), direct path merge (`MergerNoStagingTest`), and round-trip duration verification (`SplitMergeRoundTripTest`).
+
+---
+
 ## [0.0.5] — 2026-06-12
 
 🚀 NEW FEATURES
@@ -14,6 +89,7 @@
 
 🔧 BUG FIXES
 - Corrected the `totalParts` miscalculation bug when using Size Cap only mode.
+- Fixed merge failures on Android work profiles / dual apps by using `saf:` protocol descriptors directly in the FFmpeg concat demuxer.
 
 ⚡ IMPROVEMENTS
 - Added powerful regex-based filename Title Cleaner to automatically normalize messy release names (e.g. stripping codec, resolution, and release group markers).

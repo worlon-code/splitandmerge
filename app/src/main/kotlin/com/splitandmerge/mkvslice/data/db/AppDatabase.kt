@@ -11,7 +11,7 @@ import com.splitandmerge.mkvslice.data.db.entity.PartEntity
         JobEntity::class,
         PartEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -48,6 +50,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalContext
+import com.splitandmerge.mkvslice.data.settings.ThemeMode
+import com.splitandmerge.mkvslice.data.update.Phase
+import androidx.compose.material3.LinearProgressIndicator
+import com.splitandmerge.mkvslice.ui.components.FolderValidationDialog
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,11 +70,22 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
     onNavigateToCleanupPatterns: () -> Unit,
-    onNavigateToOssNotices: () -> Unit
+    onNavigateToOssNotices: () -> Unit,
+    onNavigateToLogs: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val validationResult by viewModel.validationResult.collectAsState()
+    val updateState by viewModel.updateState.collectAsState()
     val scrollState = rememberScrollState()
     var dropdownExpanded by remember { mutableStateOf(false) }
+
+    val folderPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.updateOutputFolder(uri.toString())
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -165,7 +191,10 @@ fun SettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = state.defaultOutputFolder, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+                        Text(text = state.defaultOutputFolder.ifEmpty { "Not Set" }, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+                    }
+                    IconButton(onClick = { folderPicker.launch(null) }) {
+                        Icon(Icons.Default.Folder, contentDescription = "Change Folder")
                     }
                 }
             }
@@ -206,6 +235,59 @@ fun SettingsScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val context = LocalContext.current
+            val isIgnoringBatteryOptimizations by viewModel.isIgnoringBatteryOptimizations.collectAsState()
+            val lifecycleOwner = LocalLifecycleOwner.current
+
+            DisposableEffect(lifecycleOwner) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        viewModel.checkBatteryOptimizations()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose {
+                    lifecycleOwner.lifecycle.removeObserver(observer)
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Ignore Battery Optimizations", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                    Text(
+                        text = if (isIgnoringBatteryOptimizations) {
+                            "Already exempted. Tap to manage in system settings."
+                        } else {
+                            "Prevents system throttling split and merge tasks."
+                        },
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = isIgnoringBatteryOptimizations,
+                    onCheckedChange = { ignore ->
+                        val intent = if (ignore) {
+                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = Uri.parse("package:" + context.packageName)
+                            }
+                        } else {
+                            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                        }
+                        try {
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            Timber.tag("Settings").w(e, "Battery optimization intent failed")
+                        }
+                    }
+                )
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
             Divider()
             Spacer(modifier = Modifier.height(24.dp))
@@ -222,6 +304,13 @@ fun SettingsScreen(
                         title = "Title Cleanup Patterns",
                         subtitle = "Configure regular expressions to clean up filenames",
                         onClick = onNavigateToCleanupPatterns
+                    )
+                    Divider()
+                    SettingsNavigationItem(
+                        icon = { Icon(Icons.Default.BugReport, contentDescription = "Diagnostic Logs") },
+                        title = "View diagnostic logs",
+                        subtitle = "Stored locally for 7 days; never sent automatically",
+                        onClick = onNavigateToLogs
                     )
                     Divider()
                     SettingsNavigationItem(
@@ -251,11 +340,31 @@ fun SettingsScreen(
                     Text("Current Version: v${state.currentVersion}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = state.updateMessage, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                    if (updateState.phase == Phase.Downloading) {
+                        val progress = if (updateState.totalBytes > 0) {
+                            updateState.downloadedBytes.toFloat() / updateState.totalBytes.toFloat()
+                        } else 0f
+                        Spacer(modifier = Modifier.height(8.dp))
+                        LinearProgressIndicator(
+                            progress = { progress },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else if (updateState.phase == Phase.Verifying || updateState.phase == Phase.ReadyToInstall) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    val isBusy = state.checkingForUpdates ||
+                            updateState.phase == Phase.Downloading ||
+                            updateState.phase == Phase.Verifying ||
+                            updateState.phase == Phase.ReadyToInstall
 
                     Button(
                         onClick = { viewModel.checkForUpdates() },
-                        enabled = !state.checkingForUpdates,
+                        enabled = !isBusy,
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -265,8 +374,30 @@ fun SettingsScreen(
                         }
                         Text("Check for updates")
                     }
+
+                    if (updateState.phase == Phase.AvailableReady) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = { viewModel.installUpdate() },
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Install now")
+                        }
+                    }
                 }
             }
+
+            FolderValidationDialog(
+                validation = validationResult,
+                onPickAgain = {
+                    viewModel.onPickFolderAgain()
+                    folderPicker.launch(null)
+                },
+                onDismiss = {
+                    viewModel.dismissValidation()
+                }
+            )
         }
     }
 }

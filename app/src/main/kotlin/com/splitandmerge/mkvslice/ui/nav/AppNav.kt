@@ -13,9 +13,6 @@ import com.splitandmerge.mkvslice.ui.cleanup.CleanupPatternsScreenTablet
 import com.splitandmerge.mkvslice.ui.cleanup.CleanupPatternsViewModel
 import com.splitandmerge.mkvslice.ui.filedetails.FileDetailsScreen
 import com.splitandmerge.mkvslice.ui.filedetails.FileDetailsViewModel
-import com.splitandmerge.mkvslice.ui.jobs.JobsScreen
-import com.splitandmerge.mkvslice.ui.jobs.JobsScreenTablet
-import com.splitandmerge.mkvslice.ui.jobs.JobsViewModel
 import com.splitandmerge.mkvslice.ui.library.LibraryScreen
 import com.splitandmerge.mkvslice.ui.library.LibraryScreenTablet
 import com.splitandmerge.mkvslice.ui.library.LibraryViewModel
@@ -26,6 +23,7 @@ import com.splitandmerge.mkvslice.ui.onboarding.OnboardingScreen
 import com.splitandmerge.mkvslice.ui.progress.JobProgressScreen
 import com.splitandmerge.mkvslice.ui.progress.JobProgressViewModel
 import com.splitandmerge.mkvslice.ui.result.MergeResultScreen
+import com.splitandmerge.mkvslice.ui.result.MergeResultViewModel
 import com.splitandmerge.mkvslice.ui.result.SplitResultScreen
 import com.splitandmerge.mkvslice.ui.settings.SettingsScreen
 import com.splitandmerge.mkvslice.ui.settings.SettingsViewModel
@@ -34,20 +32,27 @@ import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigScreenTablet
 import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigViewModel
 import com.splitandmerge.mkvslice.ui.splitconfirm.SplitConfirmScreen
 import com.splitandmerge.mkvslice.ui.oss.OssNoticesScreen
+import com.splitandmerge.mkvslice.ui.logs.LogViewerScreen
+import com.splitandmerge.mkvslice.ui.logs.LogViewerViewModel
+import com.splitandmerge.mkvslice.domain.model.JobType
 
 @Composable
-fun AppNav() {
+fun AppNav(
+    startDestination: String = Routes.ONBOARDING,
+    onOnboardingFinished: () -> Unit = {}
+) {
     val navController = rememberNavController()
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp >= 600
 
     NavHost(
         navController = navController,
-        startDestination = Routes.ONBOARDING
+        startDestination = startDestination
     ) {
         composable(Routes.ONBOARDING) {
             OnboardingScreen(
                 onFinished = {
+                    onOnboardingFinished()
                     navController.navigate(Routes.LIBRARY) {
                         popUpTo(Routes.ONBOARDING) { inclusive = true }
                     }
@@ -65,6 +70,12 @@ fun AppNav() {
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
+                    },
+                    onNavigateToSplitResult = { jobId ->
+                        navController.navigate(Routes.splitResult(jobId))
+                    },
+                    onNavigateToMergeResult = { jobId ->
+                        navController.navigate(Routes.mergeResult(jobId))
                     }
                 )
             } else {
@@ -75,6 +86,12 @@ fun AppNav() {
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
+                    },
+                    onNavigateToSplitResult = { jobId ->
+                        navController.navigate(Routes.splitResult(jobId))
+                    },
+                    onNavigateToMergeResult = { jobId ->
+                        navController.navigate(Routes.mergeResult(jobId))
                     }
                 )
             }
@@ -163,7 +180,8 @@ fun AppNav() {
                 viewModel = progressViewModel,
                 jobId = jobId,
                 onNavigateToResult = { id ->
-                    if (id == "job-2") {
+                    val jobType = progressViewModel.state.value.jobType
+                    if (jobType == JobType.MERGE) {
                         navController.navigate(Routes.mergeResult(id)) {
                             popUpTo(Routes.LIBRARY) { inclusive = false }
                         }
@@ -225,8 +243,9 @@ fun AppNav() {
             arguments = listOf(navArgument("jobId") { type = NavType.StringType })
         ) { backStackEntry ->
             val jobId = backStackEntry.arguments?.getString("jobId") ?: "1"
+            val mergeResultViewModel: MergeResultViewModel = hiltViewModel()
             MergeResultScreen(
-                jobId = jobId,
+                viewModel = mergeResultViewModel,
                 onNavigateHome = { navController.popBackStack(Routes.LIBRARY, false) }
             )
         }
@@ -237,7 +256,16 @@ fun AppNav() {
                 viewModel = settingsViewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToCleanupPatterns = { navController.navigate(Routes.CLEANUP_PATTERNS) },
-                onNavigateToOssNotices = { navController.navigate(Routes.OSS_NOTICES) }
+                onNavigateToOssNotices = { navController.navigate(Routes.OSS_NOTICES) },
+                onNavigateToLogs = { navController.navigate(Routes.LOGS) }
+            )
+        }
+
+        composable(Routes.LOGS) {
+            val logsViewModel: LogViewerViewModel = hiltViewModel()
+            LogViewerScreen(
+                viewModel = logsViewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 
