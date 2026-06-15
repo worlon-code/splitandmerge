@@ -57,6 +57,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.splitandmerge.mkvslice.ui.components.JobDetailSheet
+import com.splitandmerge.mkvslice.ui.components.shimmer
+import com.splitandmerge.mkvslice.ui.components.PulseDot
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +72,8 @@ fun LibraryScreen(
     onNavigateToSplitResult: (String) -> Unit,
     onNavigateToMergeResult: (String) -> Unit
 ) {
-    val jobs by viewModel.jobs.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val jobs = state.jobs
     val context = LocalContext.current
     var detailSheetJob by remember { mutableStateOf<Job?>(null) }
 
@@ -149,7 +153,26 @@ fun LibraryScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
         ) {
-            if (jobs.isEmpty()) {
+            if (state.isInitialLoad) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    item {
+                        Text(
+                            text = "Recent Jobs",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    }
+                    items(3) {
+                        ShimmerJobRow()
+                    }
+                }
+            } else if (jobs.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -229,6 +252,9 @@ fun JobItemRow(job: Job, onClick: () -> Unit) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                if (job.status == JobStatus.RUNNING) {
+                    PulseDot(modifier = Modifier.padding(end = 8.dp))
+                }
                 StatusChip(status = job.status)
             }
             
@@ -240,6 +266,55 @@ fun JobItemRow(job: Job, onClick: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ShimmerJobRow() {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp))
+                    .shimmer()
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(16.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp))
+                        .shimmer()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .height(12.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp))
+                        .shimmer()
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(
+                modifier = Modifier
+                    .size(width = 60.dp, height = 24.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                    .shimmer()
+            )
         }
     }
 }

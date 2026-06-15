@@ -26,16 +26,15 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 | K-003 | KNOWN | OPEN | No two-pane treatment yet for S4, S7, S8, S15. Phone-style layout is rendered on tablets. v0.0.5+. |
 | K-004 | KNOWN | OPEN | Single-keyframe / static-GOP files cannot split. Error sheet directs the user to "Open with another app". A re-encode fallback lands in v1.1+. |
 | K-005 | MINOR | OPEN | Subtitles spanning a cut boundary appear at the start of the next part instead of the end of the previous one. Documented in app help text. |
-| K-006 | MINOR | OPEN | Filename cleanup may strip a noise token that's actually part of the title (e.g. "True" in "True Lies"). User can edit the cleaned title in S5 before continuing. v0.0.4 adds a per-job "disable cleanup" toggle. |
+| K-006 | MINOR | OPEN | Filename cleanup may strip a noise token that's actually part of the title (e.g. "True" in "True Lies"). User can edit the cleaned title in S5 before continuing. v0.0.4 adds a per-job "disable cleanup" toggle. (Mitigated in v0.0.9 — TRUE/REAL removed from default pattern set; user-added patterns can still hit this.) |
 | K-007 | MAJOR | OPEN | Stitch design pack: `mergeorder_light/` not yet generated. Re-prompt scheduled. |
 | K-008 | KNOWN | OPEN | Settings → Reliability → "Improve reliability on this device" only displays the OEM helper text on Xiaomi/OnePlus/Huawei/Realme; works on all OEMs. |
 | K-009 | KNOWN | OPEN | x86_64 emulator can't run the engine smoke test (no HEVC decoder on most images). Tests are gated with `assumeTrue` on `Build.SUPPORTED_64_BIT_ABIS.contains("arm64-v8a")`. CI emulator is x86_64 → engine smoke runs only on physical devices. |
-| K-017 | MINOR | OPEN | Merge "Pick parts" flow shows no progress indicator while MergeOrderViewModel.addParts() runs ffprobe on each selected part. Picking 3 large MKV parts can leave the UI idle for 5-30 seconds. Same UX class as the v0.0.8 split "Analyzing" fix (Step 5b). Lands in v0.0.9 alongside LoadingArc / PulseDot Compose components. |
-
 ## Resolved
 
 | ID | Severity | Status | Title |
 |---|---|---|---|
+| K-017 | MINOR | FIXED-IN-v0.0.9 | Merge "Pick parts" flow showed no progress indicator while MergeOrderViewModel.addParts() ran ffprobe on each selected part. Fixed by adding `verifying: Boolean` to MergeOrderState and rendering LoadingArc + disabled action buttons in MergeOrderScreen. |
 | K-016 | MAJOR | FIXED-IN-v0.0.8 | SplitResultScreen showed hardcoded "Bahubali (2025).part1.mkv / part2 / part3" on every split regardless of the actual source. Fixed by introducing SplitResultViewModel that loads real PartEntity rows from JobDao. Also removed dead JobsScreen/JobsScreenTablet/JobsViewModel/Routes.JOBS scaffolding from Phase 3 that was never wired into AppNav. |
 | K-015 | MAJOR | FIXED-IN-v0.0.8 | Merger, Splitter, and MergeResultScreen folder naming collision (SAF rename suffix) crash. |
 | K-014 | KNOWN | FIXED-IN-v0.0.7 | Merged output duration drifts by ≈3 s relative to the sum of input part durations. Fixed by positioning `-ss` before `-i` in the Splitter for fast seek and using identical cut timestamps verbatim. |

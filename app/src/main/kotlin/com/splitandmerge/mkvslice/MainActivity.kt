@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.splitandmerge.mkvslice.data.settings.SettingsRepository
 import com.splitandmerge.mkvslice.domain.onboarding.FirstRunChecker
@@ -50,20 +51,46 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var outputFolderValidator: OutputFolderValidator
     @Inject lateinit var firstRunChecker: FirstRunChecker
 
+    // Pre-read result of the first-run DataStore check. Null means the read
+    // hasn't completed yet; the splash screen is held open while it is null.
+    // Using mutableStateOf so that the setContent closure recomposes as soon
+    // as the value arrives, picking up the correct `initial` for collectAsState
+    // before the splash dismisses and the first frame is shown to the user.
+    private var preReadFirstRun by androidx.compose.runtime.mutableStateOf<Boolean?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
+        // Hold the splash until BOTH conditions are met:
+        //   1. App-level startup recovery is complete (startupReadyDeferred).
+        //   2. The first-run DataStore pre-read has resolved (preReadFirstRun != null).
+        // This guarantees the first visible frame always has the correct state.
+        val app = application as App
+        splashScreen.setKeepOnScreenCondition {
+            !app.startupReadyDeferred.isCompleted || preReadFirstRun == null
+        }
+
         super.onCreate(savedInstanceState)
+
+        // Pre-read DataStore on a lifecycle-aware coroutine. Keeps the splash
+        // open via setKeepOnScreenCondition until this resolves. lifecycleScope
+        // is cancelled automatically if the activity is destroyed before the
+        // read completes (e.g. immediate back-press during splash).
+        lifecycleScope.launch {
+            preReadFirstRun = firstRunChecker.isFirstRun()
+        }
 
         setContent {
             VideoSplitterTheme {
                 // Track validation failures from the first-run folder picker.
                 var firstRunValidationError by remember { mutableStateOf<OutputFolderValidation?>(null) }
 
-                // isFirstRun is true while defaultOutputFolderUri is blank in DataStore.
-                // initial = true: on a genuine fresh install DataStore hasn't emitted yet,
-                // so we show the dialog immediately and let it auto-dismiss once DataStore
-                // emits false (folder is set). Returning users get a single-frame flash at
-                // most (~10 ms) because DataStore emits quickly from the cached proto file.
-                val firstRun by firstRunChecker.isFirstRunFlow.collectAsState(initial = true)
+                // preReadFirstRun is set by the lifecycleScope.launch above before the splash
+                // dismisses (setKeepOnScreenCondition holds until non-null). So this `initial`
+                // is always the real DataStore truth for the first visible frame. The ?: false
+                // fallback is unreachable in normal operation but satisfies the non-null contract.
+                val initialFirstRun = preReadFirstRun ?: false
+                val firstRun by firstRunChecker.isFirstRunFlow.collectAsState(initial = initialFirstRun)
 
                 Surface(
                     modifier = androidx.compose.ui.Modifier.fillMaxSize(),

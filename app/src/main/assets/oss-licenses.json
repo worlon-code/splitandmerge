@@ -1,0 +1,68 @@
+[
+  {
+    "name": "FFmpegKit (Karpenko fork)",
+    "publisher": "Anton Karpenko (fork of Taner Sener original)",
+    "license": "LGPL-3.0-or-later",
+    "licenseTextOrUrl": "https://www.gnu.org/licenses/lgpl-3.0.html"
+  },
+  {
+    "name": "Jetpack Compose",
+    "publisher": "The Android Open Source Project",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "Dagger Hilt",
+    "publisher": "Google LLC",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "AndroidX Room",
+    "publisher": "The Android Open Source Project",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "kotlinx.serialization",
+    "publisher": "JetBrains s.r.o.",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "Retrofit",
+    "publisher": "Square, Inc.",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "OkHttp",
+    "publisher": "Square, Inc.",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "Timber",
+    "publisher": "Jake Wharton",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "AndroidX Core KTX",
+    "publisher": "The Android Open Source Project",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "AndroidX DataStore",
+    "publisher": "The Android Open Source Project",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name": "AndroidX Core SplashScreen",
+    "publisher": "The Android Open Source Project",
+    "license": "Apache-2.0",
+    "licenseTextOrUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+  }
+]

@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
+import com.splitandmerge.mkvslice.ui.components.LoadingArc
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,7 +47,7 @@ fun FileDetailsScreen(
     onBack: () -> Unit,
     onContinue: () -> Unit
 ) {
-    val details by viewModel.fileDetails.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -68,56 +72,121 @@ fun FileDetailsScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(scrollState)
+                    .fillMaxWidth()
             ) {
-                if (details == null) {
-                    Text("Loading file metadata...", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else {
-                    val file = details!!
-                    Text(
-                        text = file.name,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                if (uiState.isLoading) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Container: ${file.container}", fontWeight = FontWeight.SemiBold)
-                            Text("Size: ${formatSize(file.sizeBytes)}")
-                            Text("Duration: ${formatDuration(file.durationSec)}")
-                            Text("Resolution: ${file.resolution}")
+                        LoadingArc(modifier = Modifier.size(48.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Analyzing source...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else if (uiState.error != null) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Warning,
+                                    contentDescription = "Error",
+                                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Failed to analyze video",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = uiState.error ?: "Unknown error occurred",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { viewModel.probeFile(uiState.uri, uiState.filename) }
+                            ) {
+                                Text("Retry")
+                            }
                         }
                     }
+                } else if (uiState.details != null) {
+                    val file = uiState.details!!
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                    ) {
+                        Text(
+                            text = file.name,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text("Container: ${file.container}", fontWeight = FontWeight.SemiBold)
+                                Text("Size: ${formatSize(file.sizeBytes)}")
+                                Text("Duration: ${formatDuration(file.durationSec)}")
+                                Text("Resolution: ${file.resolution}")
+                            }
+                        }
 
-                    Text(
-                        text = "Streams",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    file.streams.forEach { stream ->
-                        StreamRowItem(stream)
+                        Text(
+                            text = "Streams",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        file.streams.forEach { stream ->
+                            StreamRowItem(stream)
+                        }
                     }
                 }
             }
 
             Button(
                 onClick = onContinue,
-                enabled = details != null,
+                enabled = uiState.details != null,
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()

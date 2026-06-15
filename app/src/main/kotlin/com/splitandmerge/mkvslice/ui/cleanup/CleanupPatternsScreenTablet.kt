@@ -1,6 +1,8 @@
 package com.splitandmerge.mkvslice.ui.cleanup
 
+import com.splitandmerge.mkvslice.data.db.entity.CleanupPatternEntity
 import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -273,10 +275,11 @@ fun TraceStepItem(stepIndex: Int, stepName: String, stepResult: String) {
     }
 }
 
-private fun computeTraceSteps(input: String, patterns: List<CleanupPattern>): List<Pair<String, String>> {
+private fun computeTraceSteps(input: String, patterns: List<CleanupPatternEntity>): List<Pair<String, String>> {
     val steps = mutableListOf<Pair<String, String>>()
     var text = input
     steps.add(Pair("Initial Input (with extension)", text))
+
 
     val lastDot = text.lastIndexOf('.')
     if (lastDot > 0) {

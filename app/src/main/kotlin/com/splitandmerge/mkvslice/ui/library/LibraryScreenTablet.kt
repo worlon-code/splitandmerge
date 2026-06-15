@@ -66,7 +66,8 @@ fun LibraryScreenTablet(
     onNavigateToSplitResult: (String) -> Unit,
     onNavigateToMergeResult: (String) -> Unit
 ) {
-    val jobs by viewModel.jobs.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val jobs = state.jobs
     var selectedJob by remember { mutableStateOf<Job?>(null) }
     var detailSheetJob by remember { mutableStateOf<Job?>(null) }
     val context = LocalContext.current
@@ -190,14 +191,20 @@ fun LibraryScreenTablet(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(jobs) { job ->
-                            JobItemRow(
-                                job = job,
-                                onClick = {
-                                    selectedJob = job
-                                    viewModel.handleIntent(LibraryIntent.RowTapped(job.id))
-                                }
-                            )
+                        if (state.isInitialLoad) {
+                            items(3) {
+                                ShimmerJobRow()
+                            }
+                        } else {
+                            items(jobs) { job ->
+                                JobItemRow(
+                                    job = job,
+                                    onClick = {
+                                        selectedJob = job
+                                        viewModel.handleIntent(LibraryIntent.RowTapped(job.id))
+                                    }
+                                )
+                            }
                         }
                     }
                 }

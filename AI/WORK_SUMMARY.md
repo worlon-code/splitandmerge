@@ -8,6 +8,16 @@ Format: `YYYY-MM-DD · phase · short title · ref(s)`.
 
 ---
 
+## 2026-06-16 — Release v0.0.9 (Loading primitives, Cleanup Patterns DB, OSS Notices, Adaptive Icon)
+
+- 2026-06-16 · Step 1 · Created LoadingArc, PulseDot, ShimmerSkeleton Compose primitives in `ui/components/`. · ref: AI/plans/2026-06-15-v0-0-9.md
+- 2026-06-16 · Step 2 · Added adaptive launcher icon (foreground/background layers) + splash screen with `setKeepOnScreenCondition` held on first-run deferred. · ref: Step 2 plan approval
+- 2026-06-16 · Step 2b · Fixed first-run dialog flash regression surfaced during Step 2 verification. MainActivity now pre-reads DataStore via `lifecycleScope.launch` before the splash dismisses, and `setKeepOnScreenCondition` holds the splash until both `startupReadyDeferred.isCompleted` AND `preReadFirstRun != null`. Returning users see no first-run flash; fresh installs see the dialog correctly on the first post-splash frame. · ref: Step 2b diagnostic + fix approval
+- 2026-06-16 · Step 3 · OSS Notices screen wired to packaged `oss_notices.json` asset; shimmer while loading; tap-to-open licence URL. · ref: Step 3 plan approval
+- 2026-06-16 · Step 4 · Room schema v3 to v4: `cleanup_patterns` table seeded with 12 default rules. Migration_3_4 + MigrationTestHelper test. CleanupPatternsViewModel + CRUD + unit tests. Fixed Pattern #7 (removed TRUE/REAL) and Pattern #8 (restricted to dash-prefixed group tags). · ref: Steps 4/4a diagnostic approvals
+- 2026-06-16 · Step 4b · Wired LoadingArc into MergeOrderScreen: `verifying` state in MergeOrderViewModel with try/finally guard; closes K-017. · ref: Step 4b approval
+- 2026-06-16 · Step 5 · Wired loading primitives into LibraryScreen (shimmer + PulseDot) and FileDetailsScreen (LoadingArc + error card). LibraryViewModel isInitialLoad flag. FileDetailsViewModel UiState refactor. Unit tests for both. · ref: Step 5 approval; verified on M51 (RZ8N90X627R)
+
 ## 2026-06-15 — Release v0.0.8 (Settings, Logs, Update check, Folder collision fix)
 
 - 2026-06-15 · 10 steps shipped · Migrated Settings to DataStore, added OutputFolderValidator + unified picker validation, first-run dialog, legacy folder migration, split "Analyzing" UI, fixed SAF folder collision in merger/splitter, added rotating file logger with redaction + log viewer + safe clear, added secure update check (Retrofit + SHA-256 + PackageInstaller). Refs: AI/plans/2026-06-14-v0-0-8.md and step 5/5b/5c/5d/7/8 prompts. Step 5e fixed SplitResultScreen mock data with real PartEntity wiring and removed dead Jobs* scaffolding.

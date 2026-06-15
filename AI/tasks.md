@@ -90,6 +90,21 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | T-117 | DONE-v0.0.7 | Skip staging/copying in Merger for writable real paths; sequential cache cleanup with 5s safety margin. | agent |
 | T-118 | DONE-v0.0.7 | Update phase label steps to support dynamic step totals and hide step prefix for steps <= 2. | agent |
 
+## Release v0.0.9 — Loading Primitives, Cleanup Patterns, OSS Notices, Adaptive Icon
+
+| ID | Status | Title | Owner |
+|---|---|---|---|
+| T-119 | DONE-v0.0.9 | Create LoadingArc, PulseDot, ShimmerSkeleton Compose primitives. | agent |
+| T-120 | DONE-v0.0.9 | Adaptive launcher icon (foreground/background layers) + splash screen keep-on-screen guard. | agent |
+| T-121 | DONE-v0.0.9 | OSS Notices screen from packaged oss_notices.json asset with shimmer + tap-to-URL. | agent |
+| T-122 | DONE-v0.0.9 | Room v3 to v4: cleanup_patterns table + seed 12 default patterns (Migration_3_4 + MigrationTestHelper test). | agent |
+| T-123 | DONE-v0.0.9 | Fix CleanupPattern regex #7 (remove TRUE/REAL tokens) and #8 (restrict to dash-prefixed group tag). | agent |
+| T-124 | DONE-v0.0.9 | CleanupPatternsViewModel + CRUD unit tests. | agent |
+| T-125 | DONE-v0.0.9 | Wire LoadingArc into MergeOrderScreen (verifying state, try/finally guard). Fixes K-017. | agent |
+| T-126 | DONE-v0.0.9 | LibraryViewModel isInitialLoad flag + ShimmerSkeleton placeholders + PulseDot on RUNNING jobs. | agent |
+| T-127 | DONE-v0.0.9 | FileDetailsViewModel UiState refactor (Loading/Success/Error) + LoadingArc + error card in FileDetailsScreen. | agent |
+| T-128 | DONE-v0.0.9 | Unit tests: LibraryViewModelTest (isInitialLoad), FileDetailsViewModelTest (all 3 UiState paths). | agent |
+
 ---
 
 ## Backlog (post-v1)

@@ -30,6 +30,11 @@ sealed interface LibraryIntent {
     data class DeleteJob(val jobId: String) : LibraryIntent
 }
 
+data class LibraryState(
+    val jobs: List<Job> = emptyList(),
+    val isInitialLoad: Boolean = true
+)
+
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val jobDao: JobDao,
@@ -47,9 +52,9 @@ class LibraryViewModel @Inject constructor(
     private val _navigationEvents = Channel<NavCommand>(Channel.BUFFERED)
     val navigationEvents = _navigationEvents.receiveAsFlow()
 
-    val jobs: StateFlow<List<Job>> = jobDao.observeAll()
+    val state: StateFlow<LibraryState> = jobDao.observeAll()
         .map { entities ->
-            entities.map { entity ->
+            val jobList = entities.map { entity ->
                 Job(
                     id = entity.id,
                     type = entity.type,
@@ -67,7 +72,16 @@ class LibraryViewModel @Inject constructor(
                     progress = entity.progressPct / 100f
                 )
             }
+            LibraryState(jobs = jobList, isInitialLoad = false)
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = LibraryState(jobs = emptyList(), isInitialLoad = true)
+        )
+
+    val jobs: StateFlow<List<Job>> = state
+        .map { it.jobs }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

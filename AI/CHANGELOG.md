@@ -7,6 +7,35 @@
 
 ## [Unreleased]
 
+## [0.0.9] — 2026-06-16
+
+🚀 NEW FEATURES
+- **Adaptive launcher icon + splash screen**: Foreground/background layer icons with AMOLED-safe background; splash screen held until first-run check resolves, preventing library flash on cold start.
+- **Loading primitives**: New reusable Compose components — `LoadingArc` (indeterminate spinner), `PulseDot` (animated status dot), `ShimmerSkeleton` (shimmer placeholder rows).
+- **Library shimmer + PulseDot**: Library screen shows 3 shimmer card placeholders on cold start (before Room emits first value); RUNNING jobs show a `PulseDot` alongside their status chip.
+- **Merge "Verifying parts…" arc** (K-017): `MergeOrderViewModel.addParts()` now sets `verifying = true` while ffprobe runs on selected parts; `MergeOrderScreen` shows `LoadingArc` + "Verifying parts…" text, with action buttons disabled until probing completes.
+- **File Details loading/error state**: `FileDetailsScreen` replaces the static "Loading file metadata…" text with `LoadingArc`; probe failures are surfaced as an error card with a retry button instead of silently swallowing the exception.
+- **OSS Notices screen**: Real open-source licence data served from the packaged `oss_notices.json` asset; shimmer shown while loading; each entry taps through to its licence URL.
+- **Cleanup Patterns (Room)**: 12 default regex cleanup rules persisted to Room (DB v4); user can view, enable/disable, reorder, add, and delete patterns in `CleanupPatternsScreen`. Rules applied in-order to split/merge output filenames.
+
+🔧 BUG FIXES
+- K-017: Merge "Pick parts" flow no longer sits idle for 5-30 s when probing large MKV files; `LoadingArc` + disabled buttons give clear feedback during the wait.
+- K-006 (mitigated): The default cleanup pattern set no longer includes the TRUE / REAL tokens that could strip words from legitimate titles ("True Lies", "Real Steel"). K-006 remains OPEN because user-added custom patterns can still hit the same edge case; the built-in defaults no longer trigger it.
+- Fixed silent exception swallow in `FileDetailsViewModel`: probe errors now propagate to a visible error card in `FileDetailsScreen` instead of leaving the screen stuck on a loading state.
+- Fixed `CleanupPattern` regex Pattern #7 (`markers`): removed `TRUE` and `REAL` tokens that would have stripped words from legitimate titles such as "True Lies" and "Real Steel".
+- Fixed `CleanupPattern` regex Pattern #8 (`release_group`): changed from `[-.\s][A-Za-z0-9]{3,}$` (which ate trailing title words like "Endgame") to `-([A-Z][A-Za-z0-9]{2,15})$`, matching only dash-prefixed, capitalised release group tags.
+
+📦 TECHNICAL
+- Room schema migrated from v3 to v4 (`Migration_3_4`): adds `cleanup_patterns` table; seeded with 12 default patterns on first install.
+- `MigrationTestHelper` test (`Migration_3_4Test`) validates schema upgrade from exported v3 JSON.
+- `CleanupPatternsViewModel` and `CleanupPatternsViewModelTest` added (enable/disable, reorder, CRUD operations).
+- `LibraryViewModel` gains `isInitialLoad: Boolean` flag (flipped false on first DAO emission); unit tests cover loading to loaded transition.
+- `FileDetailsViewModel` refactored to sealed `UiState` (Loading / Success / Error); `FileDetailsViewModelTest` covers all three states.
+- `MergeOrderState` gains `verifying: Boolean`; `try/finally` guarantees the flag resets on exception paths.
+- ShimmerSkeleton implemented as `Modifier.shimmer()` extension using `rememberInfiniteTransition` + `animateFloat`; gradient sweeps left-to-right across the rendered surface (200px band over 1400px range).
+
+---
+
 ## [0.0.8] — 2026-06-15
 
 🚀 NEW FEATURES

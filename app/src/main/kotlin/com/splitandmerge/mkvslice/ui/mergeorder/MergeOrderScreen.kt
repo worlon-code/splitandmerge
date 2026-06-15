@@ -1,6 +1,7 @@
 package com.splitandmerge.mkvslice.ui.mergeorder
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import com.splitandmerge.mkvslice.ui.components.LoadingArc
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -85,8 +88,12 @@ fun MergeOrderScreen(
                 }
             }
             FloatingActionButton(
-                onClick = { filePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*", "application/json")) },
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                onClick = {
+                    if (!state.verifying) {
+                        filePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*", "application/json"))
+                    }
+                },
+                containerColor = if (state.verifying) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primaryContainer
             ) {
                 Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Add, contentDescription = "Add Part")
@@ -106,6 +113,35 @@ fun MergeOrderScreen(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                state.error?.let { errorMsg ->
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = "Warning",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = errorMsg,
+                                fontSize = 13.sp,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 18.sp
+                            )
+                        }
+                    }
+                }
+
                 if (!state.isCompatible) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
@@ -135,7 +171,22 @@ fun MergeOrderScreen(
                     }
                 }
 
-                if (state.parts.isEmpty()) {
+                if (state.verifying) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            LoadingArc(modifier = Modifier.size(48.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Verifying parts...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                } else if (state.parts.isEmpty()) {
                     Spacer(modifier = Modifier.height(48.dp))
                     Text(
                         text = "No files selected. Add some video parts to merge them.",
@@ -228,7 +279,7 @@ fun MergeOrderScreen(
 
             Button(
                 onClick = onContinue,
-                enabled = state.isCompatible && state.parts.isNotEmpty(),
+                enabled = !state.verifying && state.isCompatible && state.parts.isNotEmpty(),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,5 +1,6 @@
 package com.splitandmerge.mkvslice.ui
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
@@ -14,7 +15,15 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.isRoot
+import androidx.lifecycle.SavedStateHandle
 import androidx.test.platform.app.InstrumentationRegistry
+import com.splitandmerge.mkvslice.data.db.JobDao
+import com.splitandmerge.mkvslice.data.settings.SettingsRepository
+import com.splitandmerge.mkvslice.domain.cleanup.TitleCleaner
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
+import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidator
+import com.splitandmerge.mkvslice.engine.FfprobeEngine
+import com.splitandmerge.mkvslice.data.update.UpdateRepository
 import com.splitandmerge.mkvslice.ui.cleanup.CleanupPatternsScreen
 import com.splitandmerge.mkvslice.ui.cleanup.CleanupPatternsScreenTablet
 import com.splitandmerge.mkvslice.ui.cleanup.CleanupPatternsViewModel
@@ -23,13 +32,11 @@ import com.splitandmerge.mkvslice.ui.dialogs.ContainerPromotionSheet
 import com.splitandmerge.mkvslice.ui.dialogs.FolderCollisionSheet
 import com.splitandmerge.mkvslice.ui.filedetails.FileDetailsScreen
 import com.splitandmerge.mkvslice.ui.filedetails.FileDetailsViewModel
-import com.splitandmerge.mkvslice.ui.jobs.JobsScreen
-import com.splitandmerge.mkvslice.ui.jobs.JobsScreenTablet
-import com.splitandmerge.mkvslice.ui.jobs.JobsViewModel
 import com.splitandmerge.mkvslice.ui.library.LibraryScreen
 import com.splitandmerge.mkvslice.ui.library.LibraryScreenTablet
 import com.splitandmerge.mkvslice.ui.library.LibraryViewModel
 import com.splitandmerge.mkvslice.ui.mergeconfig.MergeConfigScreen
+import com.splitandmerge.mkvslice.ui.mergeconfig.MergeConfigViewModel
 import com.splitandmerge.mkvslice.ui.mergeorder.MergeOrderScreen
 import com.splitandmerge.mkvslice.ui.mergeorder.MergeOrderViewModel
 import com.splitandmerge.mkvslice.ui.onboarding.OnboardingScreen
@@ -37,6 +44,7 @@ import com.splitandmerge.mkvslice.ui.oss.OssNoticesScreen
 import com.splitandmerge.mkvslice.ui.progress.JobProgressScreen
 import com.splitandmerge.mkvslice.ui.progress.JobProgressViewModel
 import com.splitandmerge.mkvslice.ui.result.MergeResultScreen
+import com.splitandmerge.mkvslice.ui.result.MergeResultViewModel
 import com.splitandmerge.mkvslice.ui.result.SplitResultScreen
 import com.splitandmerge.mkvslice.ui.settings.SettingsScreen
 import com.splitandmerge.mkvslice.ui.settings.SettingsViewModel
@@ -44,6 +52,7 @@ import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigScreen
 import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigScreenTablet
 import com.splitandmerge.mkvslice.ui.splitconfig.SplitConfigViewModel
 import com.splitandmerge.mkvslice.ui.splitconfirm.SplitConfirmScreen
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
@@ -53,6 +62,60 @@ class ScreenshotTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    private val mockContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private val mockSavedStateHandle = SavedStateHandle()
+    private val mockJobDao = mockk<JobDao>(relaxed = true)
+    private val mockTitleCleaner = mockk<TitleCleaner>(relaxed = true)
+    private val mockSettingsRepository = mockk<SettingsRepository>(relaxed = true)
+    private val mockOutputFolderValidator = mockk<OutputFolderValidator>(relaxed = true)
+    private val mockJobProgressTracker = mockk<JobProgressTracker>(relaxed = true)
+    private val mockFfprobeEngine = mockk<FfprobeEngine>(relaxed = true)
+    private val mockMergeValidator = mockk<com.splitandmerge.mkvslice.domain.merger.MergeValidator>(relaxed = true)
+    private val mockUpdateRepository = mockk<UpdateRepository>(relaxed = true)
+    private val mockCleanupRepository = mockk<com.splitandmerge.mkvslice.data.repository.CleanupRepository>(relaxed = true)
+
+    private val mockLibraryViewModel = LibraryViewModel(mockJobDao, mockContext)
+    private val mockFileDetailsViewModel = FileDetailsViewModel(mockFfprobeEngine)
+    private val mockSplitConfigViewModel = SplitConfigViewModel(
+        savedStateHandle = mockSavedStateHandle,
+        jobDao = mockJobDao,
+        titleCleaner = mockTitleCleaner,
+        settingsRepository = mockSettingsRepository,
+        outputFolderValidator = mockOutputFolderValidator,
+        context = mockContext
+    )
+    private val mockJobProgressViewModel = JobProgressViewModel(
+        savedStateHandle = mockSavedStateHandle,
+        jobDao = mockJobDao,
+        jobProgressTracker = mockJobProgressTracker,
+        context = mockContext
+    )
+    private val mockMergeOrderViewModel = MergeOrderViewModel(
+        context = mockContext,
+        ffprobeEngine = mockFfprobeEngine,
+        mergeValidator = mockMergeValidator
+    )
+    private val mockMergeConfigViewModel = MergeConfigViewModel(
+        jobDao = mockJobDao,
+        context = mockContext,
+        titleCleaner = mockTitleCleaner,
+        settingsRepository = mockSettingsRepository,
+        outputFolderValidator = mockOutputFolderValidator
+    )
+    private val mockMergeResultViewModel = MergeResultViewModel(
+        savedStateHandle = mockSavedStateHandle,
+        jobDao = mockJobDao,
+        ffprobeEngine = mockFfprobeEngine,
+        context = mockContext
+    )
+    private val mockSettingsViewModel = SettingsViewModel(
+        settingsRepository = mockSettingsRepository,
+        updateRepository = mockUpdateRepository,
+        outputFolderValidator = mockOutputFolderValidator,
+        context = mockContext
+    )
+    private val mockCleanupPatternsViewModel = CleanupPatternsViewModel(mockCleanupRepository)
 
     private fun saveScreenshot(name: String) {
         // Wait for Compose idle before capturing
@@ -97,11 +160,13 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 360 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 LibraryScreen(
-                    viewModel = LibraryViewModel(),
+                    viewModel = mockLibraryViewModel,
                     onNavigateToSettings = {},
-                    onStartSplitFlow = {},
+                    onStartSplitFlow = { _, _ -> },
                     onStartMergeFlow = {},
-                    onNavigateToJobDetail = {}
+                    onNavigateToJobDetail = {},
+                    onNavigateToSplitResult = {},
+                    onNavigateToMergeResult = {}
                 )
             }
         }
@@ -115,11 +180,13 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 800 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 LibraryScreenTablet(
-                    viewModel = LibraryViewModel(),
+                    viewModel = mockLibraryViewModel,
                     onNavigateToSettings = {},
-                    onStartSplitFlow = {},
+                    onStartSplitFlow = { _, _ -> },
                     onStartMergeFlow = {},
-                    onNavigateToJobDetail = {}
+                    onNavigateToJobDetail = {},
+                    onNavigateToSplitResult = {},
+                    onNavigateToMergeResult = {}
                 )
             }
         }
@@ -130,7 +197,7 @@ class ScreenshotTest {
     fun captureFileDetailsScreen() {
         composeTestRule.setContent {
             FileDetailsScreen(
-                viewModel = FileDetailsViewModel(),
+                viewModel = mockFileDetailsViewModel,
                 onBack = {},
                 onContinue = {}
             )
@@ -145,7 +212,7 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 360 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 SplitConfigScreen(
-                    viewModel = SplitConfigViewModel(),
+                    viewModel = mockSplitConfigViewModel,
                     onBack = {},
                     onConfirm = {}
                 )
@@ -161,7 +228,7 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 800 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 SplitConfigScreenTablet(
-                    viewModel = SplitConfigViewModel(),
+                    viewModel = mockSplitConfigViewModel,
                     onBack = {},
                     onConfirm = {}
                 )
@@ -174,7 +241,7 @@ class ScreenshotTest {
     fun captureSplitConfirmScreen() {
         composeTestRule.setContent {
             SplitConfirmScreen(
-                viewModel = SplitConfigViewModel(),
+                viewModel = mockSplitConfigViewModel,
                 onBack = {},
                 onConfirm = {}
             )
@@ -186,7 +253,7 @@ class ScreenshotTest {
     fun captureJobProgressScreen() {
         composeTestRule.setContent {
             JobProgressScreen(
-                viewModel = JobProgressViewModel(),
+                viewModel = mockJobProgressViewModel,
                 jobId = "2",
                 onNavigateToResult = {},
                 onCancelOrBack = {}
@@ -211,7 +278,7 @@ class ScreenshotTest {
     fun captureMergeOrderScreen() {
         composeTestRule.setContent {
             MergeOrderScreen(
-                viewModel = MergeOrderViewModel(),
+                viewModel = mockMergeOrderViewModel,
                 onBack = {},
                 onContinue = {}
             )
@@ -223,6 +290,7 @@ class ScreenshotTest {
     fun captureMergeConfigScreen() {
         composeTestRule.setContent {
             MergeConfigScreen(
+                viewModel = mockMergeConfigViewModel,
                 onBack = {},
                 onConfirm = {}
             )
@@ -234,7 +302,7 @@ class ScreenshotTest {
     fun captureMergeResultScreen() {
         composeTestRule.setContent {
             MergeResultScreen(
-                jobId = "2",
+                viewModel = mockMergeResultViewModel,
                 onNavigateHome = {}
             )
         }
@@ -242,45 +310,14 @@ class ScreenshotTest {
     }
 
     @Test
-    fun captureJobsScreenPhone() {
-        composeTestRule.setContent {
-            val config = LocalConfiguration.current
-            val overrideConfig = Configuration(config).apply { screenWidthDp = 360 }
-            CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
-                JobsScreen(
-                    viewModel = JobsViewModel(),
-                    onBack = {},
-                    onNavigateToJobDetail = {}
-                )
-            }
-        }
-        saveScreenshot("S14_jobs_history_phone")
-    }
-
-    @Test
-    fun captureJobsScreenTablet() {
-        composeTestRule.setContent {
-            val config = LocalConfiguration.current
-            val overrideConfig = Configuration(config).apply { screenWidthDp = 800 }
-            CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
-                JobsScreenTablet(
-                    viewModel = JobsViewModel(),
-                    onBack = {},
-                    onNavigateToJobDetail = {}
-                )
-            }
-        }
-        saveScreenshot("S14_jobs_history_tablet")
-    }
-
-    @Test
     fun captureSettingsScreen() {
         composeTestRule.setContent {
             SettingsScreen(
-                viewModel = SettingsViewModel(),
+                viewModel = mockSettingsViewModel,
                 onBack = {},
                 onNavigateToCleanupPatterns = {},
-                onNavigateToOssNotices = {}
+                onNavigateToOssNotices = {},
+                onNavigateToLogs = {}
             )
         }
         saveScreenshot("S15_settings")
@@ -293,7 +330,7 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 360 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 CleanupPatternsScreen(
-                    viewModel = CleanupPatternsViewModel(),
+                    viewModel = mockCleanupPatternsViewModel,
                     onBack = {}
                 )
             }
@@ -308,7 +345,7 @@ class ScreenshotTest {
             val overrideConfig = Configuration(config).apply { screenWidthDp = 800 }
             CompositionLocalProvider(LocalConfiguration provides overrideConfig) {
                 CleanupPatternsScreenTablet(
-                    viewModel = CleanupPatternsViewModel(),
+                    viewModel = mockCleanupPatternsViewModel,
                     onBack = {}
                 )
             }

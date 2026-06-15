@@ -144,4 +144,41 @@ class LibraryViewModelTest {
         viewModel.handleIntent(LibraryIntent.DeleteJob("job-to-delete"))
         coVerify { mockDao.deleteById("job-to-delete") }
     }
+
+    @Test
+    fun test_init_isInitialLoadTrue() = runTest {
+        val flow = kotlinx.coroutines.flow.MutableSharedFlow<List<JobEntity>>()
+        every { mockDao.observeAll() } returns flow
+        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val currentState = viewModel.state.value
+        assertEquals(true, currentState.isInitialLoad)
+        assertEquals(0, currentState.jobs.size)
+    }
+
+    @Test
+    fun test_afterFirstEmit_isInitialLoadFalse() = runTest {
+        val mockJobs = listOf(
+            JobEntity(
+                id = "1", type = JobType.SPLIT, 
+                createdAt = 1718150400000L, updatedAt = 1718150400000L, 
+                status = JobStatus.DONE, 
+                progressPct = 100, sourceUri = "", outputDirUri = "", 
+                outputBaseName = "Kantara Chapter 1 (2024)", outputContainer = ".mkv"
+            )
+        )
+        every { mockDao.observeAll() } returns flowOf(mockJobs)
+        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val stateVal = viewModel.state.first()
+        assertEquals(false, stateVal.isInitialLoad)
+        assertEquals(1, stateVal.jobs.size)
+    }
+
+    @Test
+    fun test_emptyList_isInitialLoadFalse_emptyState() = runTest {
+        every { mockDao.observeAll() } returns flowOf(emptyList())
+        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val stateVal = viewModel.state.first()
+        assertEquals(false, stateVal.isInitialLoad)
+        assertEquals(0, stateVal.jobs.size)
+    }
 }
