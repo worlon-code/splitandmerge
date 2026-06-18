@@ -8,12 +8,15 @@ import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.engine.EngineEvent
 import com.splitandmerge.mkvslice.engine.FfmpegEngine
 import com.splitandmerge.mkvslice.engine.FfprobeEngine
+import com.splitandmerge.mkvslice.data.settings.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -58,7 +61,8 @@ class Merger @Inject constructor(
     private val jobDao: JobDao,
     private val ffmpegEngine: FfmpegEngine,
     private val ffprobeEngine: FfprobeEngine,
-    private val mergeValidator: MergeValidator
+    private val mergeValidator: MergeValidator,
+    private val settingsRepository: SettingsRepository
 ) {
 
     suspend fun runMerge(jobId: String) {
@@ -66,6 +70,8 @@ class Merger @Inject constructor(
         val stagedFiles = mutableListOf<File>()
         val concatFile = File(context.cacheDir, "concat.txt")
         val tempOutputFile = File(context.cacheDir, "merge_tmp${job.outputContainer}")
+        var newFileRef: DocumentFile? = null
+        var newFileWasCreated = false
 
         // Speed tracking state — shared across all phases.
         var lastEmitMs = System.currentTimeMillis()
@@ -106,8 +112,39 @@ class Merger @Inject constructor(
             }
             val totalSizeRequired = partSizes.sum()
 
+            // Resolve inputs and output for fast path check
+            val settings = settingsRepository.settingsFlow.first()
+            val improveReliability = settings.improveReliability
+
+            val resolvedInputPaths = partUris.map { MergePathResolver.resolveUriToPath(context, it) }
+            val allInputsResolved = resolvedInputPaths.all { it != null }
+            val allInputsReadable = allInputsResolved && resolvedInputPaths.all { p ->
+                if (p == null) return@all false
+                val f = File(p)
+                if (!f.canRead()) {
+                    Timber.tag(TAG).w(
+                        "Fast-path input not readable: $p — falling back to staging"
+                    )
+                    return@all false
+                }
+                try {
+                    FileInputStream(f).use { it.read() }
+                    true
+                } catch (e: Exception) {
+                    Timber.tag(TAG).w(
+                        e, "Fast-path input read probe failed: $p — falling back to staging"
+                    )
+                    false
+                }
+            }
+            val resolvedOutputDirPath = MergePathResolver.resolveUriToPath(context, job.outputDirUri)
+            val outputResolved = resolvedOutputDirPath != null
+
+            val canFastPath = !improveReliability && allInputsResolved && allInputsReadable && outputResolved
+
             Timber.tag(TAG).i(
                 "job=$jobId parts=${partUris.size} totalSizeRequired=$totalSizeRequired " +
+                "canFastPath=$canFastPath " +
                 "cacheDir.usableSpace=${context.cacheDir.usableSpace}"
             )
 
@@ -127,13 +164,56 @@ class Merger @Inject constructor(
             }
             val outFileName = "${actualOutDirName}${job.outputContainer}"
 
+            val newFileLocal = outDir.createFile("video/x-matroska", outFileName)
+                ?: throw IllegalStateException("Could not create output file in SAF")
+            newFileRef = newFileLocal
+            newFileWasCreated = true
+            val newFile = newFileLocal
+
+            // Reconstruct candidate resolved output file path from tree dir
+            val resolvedOutputPath: String? = if (canFastPath) {
+                val actualFileName = newFile.name ?: outFileName
+                val candidate = File(
+                    resolvedOutputDirPath!!,
+                    "$actualOutDirName/$actualFileName"
+                ).absolutePath
+                if (File(candidate).parentFile?.exists() != true) {
+                    Timber.tag(TAG).w(
+                        "Fast-path candidate dir missing on disk: $candidate — falling back to staging"
+                    )
+                    null
+                } else {
+                    val parent = File(candidate).parentFile!!
+                    val probe = File(parent, ".v010_write_probe_${System.nanoTime()}")
+                    try {
+                        if (!probe.createNewFile()) {
+                            Timber.tag(TAG).w(
+                                "Fast-path output write probe could not create file in $parent — falling back to staging"
+                            )
+                            null
+                        } else {
+                            probe.delete()
+                            candidate
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).w(
+                            e, "Fast-path output write probe failed in $parent — falling back to staging"
+                        )
+                        try { probe.delete() } catch (_: Exception) {}
+                        null
+                    }
+                }
+            } else null
+
+            val effectiveCanFastPath = canFastPath && resolvedOutputPath != null
+
             // ── Storage pre-flight ────────────────────────────────────────────
             StoragePreflight.checkSpace(
                 context = context,
                 partSizes = partSizes,
-                inputsStaged = true,
-                outputStaged = true,
-                resolvedOutputPath = null
+                inputsStaged = !effectiveCanFastPath,
+                outputStaged = !effectiveCanFastPath,
+                resolvedOutputPath = resolvedOutputPath
             )
 
             if (tempOutputFile.exists()) tempOutputFile.delete()
@@ -149,12 +229,25 @@ class Merger @Inject constructor(
             // ════════════════════════════════════════════════════════════════
             // PHASE 1 — STAGING
             // ════════════════════════════════════════════════════════════════
-            var stagedBytesTotal = 0L
-            lastEmitMs = System.currentTimeMillis()
-            bytesSinceLastEmit = 0L
-            emaSpeedBytesPerSec = 0L
+            val localPaths = if (effectiveCanFastPath) {
+                writeProgress(MergeProgress(
+                    phase = MergePhase.STAGING,
+                    partIndex = null,
+                    totalParts = partUris.size,
+                    phaseBytesCopied = totalSizeRequired,
+                    phaseBytesTotal = totalSizeRequired,
+                    overallPct = 33,
+                    speedBytesPerSec = 0,
+                    etaSeconds = 0
+                ))
+                resolvedInputPaths.map { it!! }
+            } else {
+                var stagedBytesTotal = 0L
+                lastEmitMs = System.currentTimeMillis()
+                bytesSinceLastEmit = 0L
+                emaSpeedBytesPerSec = 0L
 
-            partUris.forEachIndexed { index, partUri ->
+                partUris.forEachIndexed { index, partUri ->
                     currentCoroutineContext().ensureActive()
 
                     val docFile = DocumentFile.fromSingleUri(context, Uri.parse(partUri))
@@ -220,8 +313,8 @@ class Merger @Inject constructor(
                         "size=${stagedFile.length()} diskFreeAfter=${context.cacheDir.usableSpace}"
                     )
                 }
-
-            val localPaths = stagedFiles.map { it.absolutePath }
+                stagedFiles.map { it.absolutePath }
+            }
 
             // ── Validate compatibility ────────────────────────────────────────
             mergeValidator.validate(localPaths)
@@ -245,8 +338,9 @@ class Merger @Inject constructor(
 
             Timber.tag(TAG).i("concat.txt contents:\n${concatFile.readText()}")
 
+            val finalConcatDest = if (effectiveCanFastPath) resolvedOutputPath!! else tempOutputFile.absolutePath
             Timber.tag(TAG).i(
-                "ffmpegOutputPath=${tempOutputFile.absolutePath} diskFree=${context.cacheDir.usableSpace}"
+                "ffmpegOutputPath=$finalConcatDest diskFree=${context.cacheDir.usableSpace}"
             )
 
             // ════════════════════════════════════════════════════════════════
@@ -258,7 +352,7 @@ class Merger @Inject constructor(
                 "-safe", "0",
                 "-i", concatFile.absolutePath,
                 "-c", "copy",
-                tempOutputFile.absolutePath
+                finalConcatDest
             )
 
             // Emit a start-of-concat progress immediately so UI flips.
@@ -273,12 +367,14 @@ class Merger @Inject constructor(
                     is EngineEvent.Progress -> {
                         val timeMs = (event.timeSeconds * 1000).toLong()
 
-                        // Sequential cleanup of staged parts (C2)
-                        while (deleteIndex < stagedFiles.size - 1) { // Never delete the last staged part here
-                            val safeBoundary = partEndTimesSeconds[deleteIndex] + cleanupGuardSeconds
-                            if (timeMs / 1000.0 < safeBoundary) break
-                            stagedFiles[deleteIndex].delete()
-                            deleteIndex++
+                        // Sequential cleanup of staged parts (C2) - only if staged
+                        if (!effectiveCanFastPath) {
+                            while (deleteIndex < stagedFiles.size - 1) { // Never delete the last staged part here
+                                val safeBoundary = partEndTimesSeconds[deleteIndex] + cleanupGuardSeconds
+                                if (timeMs / 1000.0 < safeBoundary) break
+                                stagedFiles[deleteIndex].delete()
+                                deleteIndex++
+                            }
                         }
 
                         val localPct = if (totalDurationMs > 0)
@@ -303,9 +399,10 @@ class Merger @Inject constructor(
                         )
                     }
                     is EngineEvent.Completed -> {
+                        val finalLength = if (effectiveCanFastPath) File(resolvedOutputPath!!).length() else tempOutputFile.length()
                         Timber.tag(TAG).i(
                             "FFmpeg exit=${event.exitCode} " +
-                            "outputPathLength=${tempOutputFile.length()} " +
+                            "outputPathLength=$finalLength " +
                             "diskFree=${context.cacheDir.usableSpace}"
                         )
                         if (event.exitCode != 0) {
@@ -321,86 +418,95 @@ class Merger @Inject constructor(
             // ════════════════════════════════════════════════════════════════
             // PHASE 3 — COPYING_TO_OUTPUT
             // ════════════════════════════════════════════════════════════════
-            val newFile = outDir.createFile("video/x-matroska", outFileName)
-                ?: throw IllegalStateException("Could not create output file in SAF")
+            if (!effectiveCanFastPath) {
+                val tmpSize = tempOutputFile.length()
+                Timber.tag(TAG).i(
+                    "SAF copy-out start: src=${tempOutputFile.absolutePath} " +
+                    "size=$tmpSize destUri=${newFile.uri}"
+                )
 
-            val tmpSize = tempOutputFile.length()
-            Timber.tag(TAG).i(
-                "SAF copy-out start: src=${tempOutputFile.absolutePath} " +
-                "size=$tmpSize destUri=${newFile.uri}"
-            )
+                // Emit phase-3 start immediately.
+                val startCopyPct = getOverallPct(MergePhase.COPYING_TO_OUTPUT, 0)
+                jobDao.updateProgress(jobId, JobStatus.RUNNING, startCopyPct, null, null, partUris.size, System.currentTimeMillis())
 
-            // Emit phase-3 start immediately.
-            val startCopyPct = getOverallPct(MergePhase.COPYING_TO_OUTPUT, 0)
-            jobDao.updateProgress(jobId, JobStatus.RUNNING, startCopyPct, null, null, partUris.size, System.currentTimeMillis())
+                lastEmitMs = System.currentTimeMillis()
+                bytesSinceLastEmit = 0L
+                emaSpeedBytesPerSec = 0L
 
-            lastEmitMs = System.currentTimeMillis()
-            bytesSinceLastEmit = 0L
-            emaSpeedBytesPerSec = 0L
+                context.contentResolver.openOutputStream(newFile.uri)?.use { outStream ->
+                    tempOutputFile.inputStream().use { inStream ->
+                        val buffer = ByteArray(COPY_BUFFER_SIZE)
+                        var bytesRead: Int
+                        var bytesCopied = 0L
+                        var cancelCheckBytes = 0L
+                        var nextLogThreshold = LOG_TICK_BYTES
 
-            context.contentResolver.openOutputStream(newFile.uri)?.use { outStream ->
-                tempOutputFile.inputStream().use { inStream ->
-                    val buffer = ByteArray(COPY_BUFFER_SIZE)
-                    var bytesRead: Int
-                    var bytesCopied = 0L
-                    var cancelCheckBytes = 0L
-                    var nextLogThreshold = LOG_TICK_BYTES
+                        while (inStream.read(buffer).also { bytesRead = it } >= 0) {
+                            outStream.write(buffer, 0, bytesRead)
+                            bytesCopied += bytesRead
+                            bytesSinceLastEmit += bytesRead
+                            cancelCheckBytes += bytesRead
 
-                    while (inStream.read(buffer).also { bytesRead = it } >= 0) {
-                        outStream.write(buffer, 0, bytesRead)
-                        bytesCopied += bytesRead
-                        bytesSinceLastEmit += bytesRead
-                        cancelCheckBytes += bytesRead
+                            if (cancelCheckBytes >= CANCEL_CHECK_BYTES) {
+                                currentCoroutineContext().ensureActive()
+                                cancelCheckBytes = 0L
+                            }
 
-                        if (cancelCheckBytes >= CANCEL_CHECK_BYTES) {
-                            currentCoroutineContext().ensureActive()
-                            cancelCheckBytes = 0L
+                            if (bytesCopied >= nextLogThreshold) {
+                                Timber.tag(TAG).d(
+                                    "SAF copy-out tick: bytesCopied=$bytesCopied " +
+                                    "diskFree=${context.cacheDir.usableSpace}"
+                                )
+                                nextLogThreshold += LOG_TICK_BYTES
+                            }
+
+                            val now = System.currentTimeMillis()
+                            val elapsedMs = now - lastEmitMs
+                            if (elapsedMs >= EMIT_INTERVAL_MS || bytesSinceLastEmit >= EMIT_INTERVAL_BYTES) {
+                                val speed = updateSpeed(bytesSinceLastEmit, elapsedMs)
+                                val localPct = if (tmpSize > 0)
+                                    ((100.0 * bytesCopied) / tmpSize).toInt().coerceIn(0, 100)
+                                else 0
+                                val overallPct = getOverallPct(MergePhase.COPYING_TO_OUTPUT, localPct)
+                                val remaining = if (tmpSize > bytesCopied) tmpSize - bytesCopied else 0L
+                                val eta = if (speed > 0) remaining / speed else 0L
+                                writeProgress(MergeProgress(
+                                    phase = MergePhase.COPYING_TO_OUTPUT,
+                                    partIndex = null,
+                                    totalParts = partUris.size,
+                                    phaseBytesCopied = bytesCopied,
+                                    phaseBytesTotal = tmpSize,
+                                    overallPct = overallPct,
+                                    speedBytesPerSec = speed,
+                                    etaSeconds = eta
+                                ))
+                                lastEmitMs = now
+                                bytesSinceLastEmit = 0L
+                            }
                         }
 
-                        if (bytesCopied >= nextLogThreshold) {
-                            Timber.tag(TAG).d(
-                                "SAF copy-out tick: bytesCopied=$bytesCopied " +
-                                "diskFree=${context.cacheDir.usableSpace}"
-                            )
-                            nextLogThreshold += LOG_TICK_BYTES
-                        }
-
-                        val now = System.currentTimeMillis()
-                        val elapsedMs = now - lastEmitMs
-                        if (elapsedMs >= EMIT_INTERVAL_MS || bytesSinceLastEmit >= EMIT_INTERVAL_BYTES) {
-                            val speed = updateSpeed(bytesSinceLastEmit, elapsedMs)
-                            val localPct = if (tmpSize > 0)
-                                ((100.0 * bytesCopied) / tmpSize).toInt().coerceIn(0, 100)
-                            else 0
-                            val overallPct = getOverallPct(MergePhase.COPYING_TO_OUTPUT, localPct)
-                            val remaining = if (tmpSize > bytesCopied) tmpSize - bytesCopied else 0L
-                            val eta = if (speed > 0) remaining / speed else 0L
-                            writeProgress(MergeProgress(
-                                phase = MergePhase.COPYING_TO_OUTPUT,
-                                partIndex = null,
-                                totalParts = partUris.size,
-                                phaseBytesCopied = bytesCopied,
-                                phaseBytesTotal = tmpSize,
-                                overallPct = overallPct,
-                                speedBytesPerSec = speed,
-                                etaSeconds = eta
-                            ))
-                            lastEmitMs = now
-                            bytesSinceLastEmit = 0L
-                        }
+                        Timber.tag(TAG).i(
+                            "SAF copy-out done: bytesCopied=$bytesCopied " +
+                            "diskFreeAfter=${context.cacheDir.usableSpace}"
+                        )
                     }
-
-                    Timber.tag(TAG).i(
-                        "SAF copy-out done: bytesCopied=$bytesCopied " +
-                        "diskFreeAfter=${context.cacheDir.usableSpace}"
-                    )
                 }
+            } else {
+                val finalCopyPct = getOverallPct(MergePhase.COPYING_TO_OUTPUT, 100)
+                jobDao.updateProgress(jobId, JobStatus.RUNNING, finalCopyPct, null, null, partUris.size, System.currentTimeMillis())
             }
 
             jobDao.updateProgress(jobId, JobStatus.DONE, 100, 0.0, 0, partUris.size, System.currentTimeMillis())
 
         } catch (e: Exception) {
             Timber.e(e, "Merge Job $jobId failed")
+            try {
+                if (newFileWasCreated && newFileRef != null) {
+                    newFileRef.delete()
+                }
+            } catch (cleanupEx: Exception) {
+                Timber.tag(TAG).w(cleanupEx, "Failed to delete newFile on error")
+            }
             val currentJob = jobDao.getById(jobId)
             if (currentJob?.status != JobStatus.CANCELLED) {
                 jobDao.updateProgress(

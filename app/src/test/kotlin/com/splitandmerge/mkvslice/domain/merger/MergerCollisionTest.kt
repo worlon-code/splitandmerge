@@ -29,6 +29,7 @@ class MergerCollisionTest {
     private val ffmpegEngine = mockk<FfmpegEngine>(relaxed = true)
     private val ffprobeEngine = mockk<FfprobeEngine>(relaxed = true)
     private val mergeValidator = mockk<MergeValidator>(relaxed = true)
+    private val settingsRepository = mockk<com.splitandmerge.mkvslice.data.settings.SettingsRepository>(relaxed = true)
 
     private lateinit var classUnderTest: Merger
 
@@ -53,10 +54,11 @@ class MergerCollisionTest {
             }
         })
 
+        every { settingsRepository.settingsFlow } returns flowOf(com.splitandmerge.mkvslice.data.settings.SettingsState())
         val mockUri = mockk<Uri>(relaxed = true)
         every { mockUri.scheme } returns "content"
         every { Uri.parse(any()) } returns mockUri
-        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator)
+        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository)
     }
 
     @After

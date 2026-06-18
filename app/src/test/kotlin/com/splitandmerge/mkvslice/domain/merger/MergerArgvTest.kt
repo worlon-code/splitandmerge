@@ -31,6 +31,7 @@ class MergerArgvTest {
     private val ffmpegEngine: FfmpegEngine = mockk(relaxed = true)
     private val ffprobeEngine: FfprobeEngine = mockk(relaxed = true)
     private val mergeValidator: MergeValidator = mockk(relaxed = true)
+    private val settingsRepository: com.splitandmerge.mkvslice.data.settings.SettingsRepository = mockk(relaxed = true)
     private lateinit var docFile: DocumentFile
 
     private lateinit var merger: Merger
@@ -39,7 +40,8 @@ class MergerArgvTest {
     fun setup() {
         context = mockk(relaxed = true)
         every { context.cacheDir } returns java.io.File(System.getProperty("java.io.tmpdir") ?: "/tmp")
-        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator)
+        every { settingsRepository.settingsFlow } returns kotlinx.coroutines.flow.flowOf(com.splitandmerge.mkvslice.data.settings.SettingsState())
+        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository)
         mockkStatic(android.util.Log::class)
         every { android.util.Log.i(any<String>(), any<String>()) } returns 0
         every { android.util.Log.d(any<String>(), any<String>()) } returns 0

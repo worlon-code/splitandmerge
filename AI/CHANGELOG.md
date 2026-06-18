@@ -7,6 +7,30 @@
 
 ## [Unreleased]
 
+## [0.0.10] — 2026-06-18
+
+🚀 NEW FEATURES
+- **Disk fast-path option for Merger**: Adds an opt-in fast-path merge optimization (via Settings → toggle "Improve reliability" OFF). When direct file access is possible, Merger skips copying split parts to internal cache and merging to cache, writing the final output directly to the destination folder.
+- **Pre-flight readability and writability probes**: Guard the fast-path gate with a 1-byte read test on inputs and a create/delete test on the output directory. On any probe failure (such as SAF-restricted folders), Merger gracefully and transparently degrades to standard, safe staging behavior instead of crashing.
+
+🔧 BUG FIXES
+- n/a (this release adds an opt-in feature; staged behavior is unchanged.)
+
+📦 TECHNICAL
+- `Merger` constructor now takes `SettingsRepository`. Existing tests updated; new `MergerFastPathTest` covers the four gate branches.
+
+⚠️ KNOWN ISSUES
+- K-018: ~4 s round-trip drift on long sources (deferred to v0.0.12).
+- K-019: Merger has filesystem side-effects that complicate unit testing; planned FileSystem-seam refactor in v0.0.11.
+- K-021: Merged MKV is ~571 KB smaller than sum-of-parts; likely benign header dedup, to be investigated.
+- K-022: Device verification used partition-wide `df`; switch to `du` on the app cache dir for future runs.
+
+🔍 VERIFICATION
+- Samsung M51 (RZ8N90X627R), Android 14, targetSdk 35.
+- Source: Perfect Crown S01E04 (4393 s, 0.96 GB), 3-part split.
+- Staged and fast-path runs produced byte-identical media streams (post-4KB SHA-256 match); container header differs by 75 bytes due to ffmpeg's per-mux random SegmentUID.
+- Fast-path probes correctly detected scoped-storage block on SAF-picked Download files and fell back to staged path.
+
 ## [0.0.9] — 2026-06-16
 
 🚀 NEW FEATURES

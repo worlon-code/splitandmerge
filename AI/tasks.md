@@ -105,6 +105,22 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | T-127 | DONE-v0.0.9 | FileDetailsViewModel UiState refactor (Loading/Success/Error) + LoadingArc + error card in FileDetailsScreen. | agent |
 | T-128 | DONE-v0.0.9 | Unit tests: LibraryViewModelTest (isInitialLoad), FileDetailsViewModelTest (all 3 UiState paths). | agent |
 
+## Release v0.0.10 — Merger Fast Path (scoped storage fallback)
+
+| ID | Status | Title | Owner |
+|---|---|---|---|
+| T-129 | DONE-v0.0.10 | Inject SettingsRepository to read improveReliability in Merger. | agent |
+| T-130 | DONE-v0.0.10 | Implement input-readability and output-writability probes in canFastPath gate. | agent |
+| T-131 | DONE-v0.0.10 | Add MergerFastPathTest verifying all 4 branches of fast-path gate. | agent |
+| T-132 | DONE-v0.0.10 | Verify v0.0.10 Step 3-v2 on-device; confirm graceful fallback in logcat. | agent |
+
+### Carried forward
+- **K-018** (ByParts drift / snap fix) -> Carried forward to v0.0.12.
+- **K-019** (Merger unit-test filesystem seams) -> Carried forward to v0.0.11.
+- **K-021** (MKV concat header dedup size delta) -> Carried forward to v0.0.11+.
+- **K-022** (Switch from df to du cache sampling in verification) -> Carried forward to v0.0.11+.
+- **Revisit Fast-Path**: Re-evaluate fast-path optimization after FileSystem seam is introduced in v0.0.11 (if no realistic targets exist, consider removing).
+
 ---
 
 ## Backlog (post-v1)
