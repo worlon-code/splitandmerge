@@ -7,6 +7,23 @@
 
 ## [Unreleased]
 
+## [0.0.10.1] — 2026-06-18
+
+🔧 HOTFIX
+- Release-build crash in SAF file picker. R8 was stripping FFmpegKit native binding classes, causing UnsatisfiedLinkError on JNI_OnLoad when the picker was opened from Split or Merge.
+
+📦 TECHNICAL
+- app/proguard-rules.pro: keep com.arthenica.** and com.antonkarpenko.** classes; keep all native-method classes globally. No source-code changes.
+- versionCode 10 → 11, versionName 0.0.10 → 0.0.10.1.
+
+🔍 VERIFICATION
+- Re-installed release APK on Samsung M51 (RZ8N90X627R).
+- Split → Merge round-trip on a 120s test MKV completed without crash; SAF permission prompt presents correctly.
+
+⚠️ AFFECTS
+- Supersedes v0.0.10 release build. Users on v0.0.10 should upgrade.
+- K-018 envelope clarified: round-trip drift is sub-1 % on real long sources; can be larger as a percentage on short or synthetic sources due to per-cut GOP overhead. Same root cause; planned audio-snap fix in v0.0.12.
+
 ## [0.0.10] — 2026-06-18
 
 🚀 NEW FEATURES

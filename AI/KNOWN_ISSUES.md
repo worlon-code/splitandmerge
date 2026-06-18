@@ -39,6 +39,7 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 
 | ID | Severity | Status | Title |
 |---|---|---|---|
+| K-023 | MAJOR | FIXED-IN-v0.0.10.1 | Release-build UnsatisfiedLinkError in SAF file picker due to R8 stripping FFmpegKit native binding classes. Fixed by adding ProGuard keep rules for com.arthenica.** and com.antonkarpenko.**. |
 | K-020 | MAJOR | FIXED-IN-v0.0.10 | Fast-path crash on scoped-storage SAF inputs. added input-readability probe (1-byte read) and output-writability probe (create/delete) inside Merger's canFastPath gate. On any probe failure, Merger logs a Timber warning and falls back to staging. |
 | K-017 | MINOR | FIXED-IN-v0.0.9 | Merge "Pick parts" flow showed no progress indicator while MergeOrderViewModel.addParts() ran ffprobe on each selected part. Fixed by adding `verifying: Boolean` to MergeOrderState and rendering LoadingArc + disabled action buttons in MergeOrderScreen. |
 | K-016 | MAJOR | FIXED-IN-v0.0.8 | SplitResultScreen showed hardcoded "Bahubali (2025).part1.mkv / part2 / part3" on every split regardless of the actual source. Fixed by introducing SplitResultViewModel that loads real PartEntity rows from JobDao. Also removed dead JobsScreen/JobsScreenTablet/JobsViewModel/Routes.JOBS scaffolding from Phase 3 that was never wired into AppNav. |

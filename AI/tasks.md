@@ -114,6 +114,12 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 | T-131 | DONE-v0.0.10 | Add MergerFastPathTest verifying all 4 branches of fast-path gate. | agent |
 | T-132 | DONE-v0.0.10 | Verify v0.0.10 Step 3-v2 on-device; confirm graceful fallback in logcat. | agent |
 
+## Release v0.0.10.1 — Hotfix
+
+| ID | Status | Title | Owner |
+|---|---|---|---|
+| T-133 | DONE-v0.0.10.1 | FFmpegKit ProGuard keep rules to fix release-build crash | agent |
+
 ### Carried forward
 - **K-018** (ByParts drift / snap fix) -> Carried forward to v0.0.12.
 - **K-019** (Merger unit-test filesystem seams) -> Carried forward to v0.0.11.
