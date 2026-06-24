@@ -31,7 +31,6 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 | K-008 | KNOWN | OPEN | Settings → Reliability → "Improve reliability on this device" only displays the OEM helper text on Xiaomi/OnePlus/Huawei/Realme; works on all OEMs. |
 | K-009 | KNOWN | OPEN | x86_64 emulator can't run the engine smoke test (no HEVC decoder on most images). Tests are gated with `assumeTrue` on `Build.SUPPORTED_64_BIT_ABIS.contains("arm64-v8a")`. CI emulator is x86_64 → engine smoke runs only on physical devices. |
 | K-018 | MINOR | OPEN | Round-trip drift on long sources. BySize and ByParts merges add ~4 s (~0.09%) to 4393 s source on M51. Audio/video/subs stay in sync. Planned fix in v0.0.12. |
-| K-019 | MINOR | OPEN | Merger unit-test seams. MergerFastPathTest uses real tmpdir filesystem, mockkConstructor(FileInputStream), hardcoded staged_part_N paths in assertions, println side-channel in Log.e mocks. Planned fix in v0.0.11. |
 | K-021 | MINOR | OPEN | Merged output ~571 KB smaller than sum of parts. 3-part input totals 1,029,345,683 bytes; merged output is 1,028,760,434 bytes (~571 KB delta). Likely cause: MKV container header dedup during concat. Planned investigation in v0.0.11+. |
 | K-022 | MINOR | OPEN | Use du instead of df for verification cache sampling. df samples partition-wide bytes, contaminated by background app I/O during Step 3-v2. Action: replace `df` with `du` via run-as in the verification protocol. Planned process improvement in v0.0.11+. |
 
@@ -39,6 +38,8 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 
 | ID | Severity | Status | Title |
 |---|---|---|---|
+| K-019 | MINOR | FIXED-IN-v0.0.11 | FileSystem-seam refactor (mockable Merger disk I/O) |
+| K-024 | MAJOR | FIXED-IN-v0.0.11 | androidTest constructor compile break (SettingsRepository in Merger ctor) |
 | K-023 | MAJOR | FIXED-IN-v0.0.10.1 | Release-build UnsatisfiedLinkError in SAF file picker due to R8 stripping FFmpegKit native binding classes. Fixed by adding ProGuard keep rules for com.arthenica.** and com.antonkarpenko.**. |
 | K-020 | MAJOR | FIXED-IN-v0.0.10 | Fast-path crash on scoped-storage SAF inputs. added input-readability probe (1-byte read) and output-writability probe (create/delete) inside Merger's canFastPath gate. On any probe failure, Merger logs a Timber warning and falls back to staging. |
 | K-017 | MINOR | FIXED-IN-v0.0.9 | Merge "Pick parts" flow showed no progress indicator while MergeOrderViewModel.addParts() ran ffprobe on each selected part. Fixed by adding `verifying: Boolean` to MergeOrderState and rendering LoadingArc + disabled action buttons in MergeOrderScreen. |

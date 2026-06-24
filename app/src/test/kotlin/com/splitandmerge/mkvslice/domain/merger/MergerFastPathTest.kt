@@ -15,14 +15,19 @@ import com.splitandmerge.mkvslice.engine.FfmpegEngine
 import com.splitandmerge.mkvslice.engine.FfprobeEngine
 import com.splitandmerge.mkvslice.engine.FormatInfo
 import com.splitandmerge.mkvslice.engine.ProbeResult
+import com.splitandmerge.mkvslice.platform.io.FileSystem
 import io.mockk.*
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.junit.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class MergerFastPathTest {
@@ -34,6 +39,7 @@ class MergerFastPathTest {
     private val ffprobeEngine = mockk<FfprobeEngine>(relaxed = true)
     private val mergeValidator = mockk<MergeValidator>(relaxed = true)
     private val settingsRepository = mockk<SettingsRepository>(relaxed = true)
+    private val fileSystem = mockk<FileSystem>(relaxed = true)
 
     private lateinit var classUnderTest: Merger
     private var capturedConcatContents: String? = null
@@ -43,8 +49,10 @@ class MergerFastPathTest {
     val tempFolder = TemporaryFolder()
 
     private val cacheDir get() = tempFolder.root
-    private lateinit var testOutputDir: File
-    private lateinit var testMergedDir: File
+    private val testOutputDir get() = File(tempFolder.root, "testOutputDir")
+    private val testMergedDir get() = File(testOutputDir, "merged")
+    private val tempOutputFile get() = File(cacheDir, "merge_tmp.mkv")
+    private val streams = mutableListOf<java.io.FileInputStream>()
 
     private lateinit var uriPart1: Uri
     private lateinit var uriPart2: Uri
@@ -75,20 +83,29 @@ class MergerFastPathTest {
         every { android.util.Log.i(any(), any()) } returns 0
         every { android.util.Log.w(any(), any<String>()) } returns 0
         every { android.util.Log.e(any(), any()) } answers {
-            println("LOG.E: ${firstArg<String>()} - ${secondArg<String>()}")
             0
         }
         every { android.util.Log.e(any(), any(), any()) } answers {
-            val t = thirdArg<Throwable>()
-            println("LOG.E WITH THROWABLE: ${firstArg<String>()} - ${secondArg<String>()}")
-            t.printStackTrace()
             0
         }
         every { android.util.Log.wtf(any(), any<String>()) } returns 0
 
-        every { context.cacheDir } returns cacheDir
         every { context.contentResolver } returns contentResolver
         every { context.getContentResolver() } returns contentResolver
+        every { context.cacheDir } returns tempFolder.root
+        every { contentResolver.openFileDescriptor(any(), "r") } answers {
+            val dummyFile = File(tempFolder.root, "dummy_part_${System.nanoTime()}.mkv")
+            dummyFile.writeText("dummy content")
+            dummyFile.deleteOnExit()
+            val fis = java.io.FileInputStream(dummyFile)
+            streams.add(fis)
+            val fd = fis.fd
+            val pfd = mockk<android.os.ParcelFileDescriptor>(relaxed = true)
+            every { pfd.fileDescriptor } returns fd
+            pfd
+        }
+
+        every { fileSystem.cacheDir() } returns tempFolder.root
 
         // Pre-create distinct Uri mock instances per string to avoid nested MockK every{} calls
         uriPart1 = mockUri("content://part1")
@@ -108,11 +125,8 @@ class MergerFastPathTest {
             uriMocks[uriStr] ?: mockk<Uri>(relaxed = true)
         }
 
-        // Setup real temporary output directory on disk for parent file existence checks
-        testOutputDir = File(cacheDir, "outputDir_${System.currentTimeMillis()}")
-        testMergedDir = File(testOutputDir, "merged")
-
-        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository)
+        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
+        testMergedDir.mkdirs()
     }
 
     @After
@@ -121,10 +135,9 @@ class MergerFastPathTest {
         unmockkStatic(Uri::class)
         unmockkObject(MergePathResolver)
         unmockkStatic(android.util.Log::class)
-
-        try {
-            unmockkConstructor(java.io.FileInputStream::class)
-        } catch (e: Exception) {}
+        
+        streams.forEach { try { it.close() } catch (_: Exception) {} }
+        streams.clear()
     }
 
     private fun setupMockJob(jobId: String): JobEntity {
@@ -173,14 +186,23 @@ class MergerFastPathTest {
         every { partFile1.length() } returns 1024L
         every { partFile2.length() } returns 2048L
 
-        every { DocumentFile.fromSingleUri(context, uriPart1) } returns partFile1
-        every { DocumentFile.fromSingleUri(context, uriPart2) } returns partFile2
+        every { DocumentFile.fromSingleUri(context, any()) } answers {
+            val uri = secondArg<Uri>()
+            when (uri.toString()) {
+                "content://part1" -> partFile1
+                "content://part2" -> partFile2
+                else -> null
+            }
+        }
 
         val baseOutDir = mockk<DocumentFile>(relaxed = true)
         val outDir = mockk<DocumentFile>(relaxed = true)
         val newFile = mockk<DocumentFile>(relaxed = true)
 
-        every { DocumentFile.fromTreeUri(context, uriOutputDir) } returns baseOutDir
+        every { DocumentFile.fromTreeUri(context, any()) } answers {
+            val uri = secondArg<Uri>()
+            if (uri.toString() == "content://outputDir") baseOutDir else null
+        }
         every { baseOutDir.createDirectory("merged") } returns outDir
         every { outDir.name } returns "merged"
         every { outDir.createFile("video/x-matroska", "merged.mkv") } returns newFile
@@ -189,13 +211,9 @@ class MergerFastPathTest {
 
         coEvery { ffprobeEngine.probe(any()) } returns ProbeResult(FormatInfo("", 1, "", 5.0, 0L, 0L), emptyList())
         every { ffmpegEngine.execute(any()) } answers {
-            val cmdList = firstArg<List<String>>()
-            val outPath = cmdList.last()
-            File(outPath).createNewFile()
-
             val concatFile = File(cacheDir, "concat.txt")
             capturedConcatContents = if (concatFile.exists()) concatFile.readText() else null
-            capturedTempOutputFileExists = File(cacheDir, "merge_tmp.mkv").exists()
+            capturedTempOutputFileExists = fileSystem.exists(tempOutputFile)
 
             flowOf(EngineEvent.Completed(0))
         }
@@ -216,32 +234,41 @@ class MergerFastPathTest {
         every { MergePathResolver.resolveUriToPath(context, "content://part2") } returns "/resolved/part2.mkv"
         every { MergePathResolver.resolveUriToPath(context, "content://outputDir") } returns testOutputDir.absolutePath
 
-        val pfd = mockk<android.os.ParcelFileDescriptor>(relaxed = true)
-        every { pfd.fileDescriptor } returns java.io.FileDescriptor()
-        every { contentResolver.openFileDescriptor(any(), any()) } returns pfd
 
-        mockkConstructor(java.io.FileInputStream::class)
-        every { anyConstructed<java.io.FileInputStream>().read(any<ByteArray>()) } returns -1
 
-        // Pre-create temp output file so Phase 3 copy-out does not fail
-        File(cacheDir, "merge_tmp.mkv").createNewFile()
+        // Mock FileSystem calls
+        every { fileSystem.exists(any()) } answers { firstArg<File>() == tempOutputFile }
+        every { fileSystem.delete(any()) } returns true
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.length(any()) } returns 1024L
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.openInput(any()) } returns ByteArrayInputStream(byteArrayOf(0, 1, 2, 3, 4))
+
+        val outputCapture = mutableListOf<File>()
+        every { fileSystem.openOutput(capture(outputCapture)) } returns ByteArrayOutputStream()
 
         // When
         classUnderTest.runMerge(jobId)
 
         // Then: Staging copying is executed (not skipped), so we open input streams
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart1, any()) }
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart2, any()) }
+        val uriCapture = mutableListOf<Uri>()
+        verify(exactly = 2) { contentResolver.openFileDescriptor(capture(uriCapture), any()) }
+        assertTrue(uriCapture.any { it.toString() == "content://part1" })
+        assertTrue(uriCapture.any { it.toString() == "content://part2" })
 
         // FFmpeg command receives concat list and temp output file
         val cmdSlot = slot<List<String>>()
         verify { ffmpegEngine.execute(capture(cmdSlot)) }
         val cmd = cmdSlot.captured
         assert(capturedConcatContents != null)
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
         assert(capturedTempOutputFileExists)
-        assert(cmd.contains(File(cacheDir, "merge_tmp.mkv").absolutePath))
+        assertTrue(cmd.contains(tempOutputFile.absolutePath))
+
+        verify(exactly = 2) { fileSystem.openOutput(any()) }
+        assertEquals(2, outputCapture.size)
+        assertTrue(outputCapture.any { it.name.startsWith("staged_part_") })
     }
 
     @Test
@@ -252,28 +279,29 @@ class MergerFastPathTest {
         // Given: settings.improveReliability = false
         every { settingsRepository.settingsFlow } returns flowOf(SettingsState(improveReliability = false))
 
-        // Create actual local files with non-zero content under tempFolder
-        val part1File = tempFolder.newFile("part1.mkv").apply {
-            writeBytes(byteArrayOf(0, 1, 2, 3, 4))
-        }
-        val part2File = tempFolder.newFile("part2.mkv").apply {
-            writeBytes(byteArrayOf(5, 6, 7, 8, 9))
-        }
-
         // All paths resolve to real files
-        every { MergePathResolver.resolveUriToPath(context, "content://part1") } returns part1File.absolutePath
-        every { MergePathResolver.resolveUriToPath(context, "content://part2") } returns part2File.absolutePath
+        every { MergePathResolver.resolveUriToPath(context, "content://part1") } returns "/resolved/part1.mkv"
+        every { MergePathResolver.resolveUriToPath(context, "content://part2") } returns "/resolved/part2.mkv"
         every { MergePathResolver.resolveUriToPath(context, "content://outputDir") } returns testOutputDir.absolutePath
 
-        // Create the directory on host so File.parentFile.exists() returns true
-        testMergedDir.mkdirs()
+        // Mock FileSystem calls
+        every { fileSystem.exists(any()) } answers {
+            val f = firstArg<File>()
+            f.absolutePath.contains("merged")
+        }
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.delete(any()) } returns true
+        every { fileSystem.openInput(any()) } returns ByteArrayInputStream(byteArrayOf(1))
+
+        val outputCapture = mutableListOf<File>()
+        every { fileSystem.openOutput(capture(outputCapture)) } returns ByteArrayOutputStream()
 
         // When
         classUnderTest.runMerge(jobId)
 
         // Then: Staging copy is skipped (no openFileDescriptor for inputs)
-        verify(exactly = 0) { contentResolver.openFileDescriptor(uriPart1, "r") }
-        verify(exactly = 0) { contentResolver.openFileDescriptor(uriPart2, "r") }
+        verify(exactly = 0) { contentResolver.openFileDescriptor(any(), any()) }
 
         // FFmpeg command receives resolved paths directly
         val cmdSlot = slot<List<String>>()
@@ -281,12 +309,14 @@ class MergerFastPathTest {
         val cmd = cmdSlot.captured
 
         assert(capturedConcatContents != null)
-        assert(capturedConcatContents!!.contains(part1File.absolutePath))
-        assert(capturedConcatContents!!.contains(part2File.absolutePath))
+        assertTrue(capturedConcatContents!!.contains("/resolved/part1.mkv"))
+        assertTrue(capturedConcatContents!!.contains("/resolved/part2.mkv"))
         assert(!capturedTempOutputFileExists)
 
         val expectedDest = File(testMergedDir, "merged.mkv").absolutePath
-        assert(cmd.contains(expectedDest))
+        assertTrue(cmd.contains(expectedDest))
+
+        verify(exactly = 0) { fileSystem.openOutput(any()) }
     }
 
     @Test
@@ -302,26 +332,34 @@ class MergerFastPathTest {
         every { MergePathResolver.resolveUriToPath(context, "content://part2") } returns null
         every { MergePathResolver.resolveUriToPath(context, "content://outputDir") } returns testOutputDir.absolutePath
 
-        val pfd = mockk<android.os.ParcelFileDescriptor>(relaxed = true)
-        every { pfd.fileDescriptor } returns java.io.FileDescriptor()
-        every { contentResolver.openFileDescriptor(any(), any()) } returns pfd
 
-        mockkConstructor(java.io.FileInputStream::class)
-        every { anyConstructed<java.io.FileInputStream>().read(any<ByteArray>()) } returns -1
 
-        // Pre-create temp output file so Phase 3 copy-out does not fail
-        File(cacheDir, "merge_tmp.mkv").createNewFile()
+        // Mock FileSystem calls
+        every { fileSystem.exists(any()) } answers { firstArg<File>() == tempOutputFile }
+        every { fileSystem.delete(any()) } returns true
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.length(any()) } returns 1024L
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.openInput(any()) } returns ByteArrayInputStream(byteArrayOf(0, 1, 2, 3, 4))
+
+        val outputCapture = mutableListOf<File>()
+        every { fileSystem.openOutput(capture(outputCapture)) } returns ByteArrayOutputStream()
 
         // When
         classUnderTest.runMerge(jobId)
 
         // Then: Stages files normally since fast-path is disabled
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart1, any()) }
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart2, any()) }
+        val uriCapture = mutableListOf<Uri>()
+        verify(exactly = 2) { contentResolver.openFileDescriptor(capture(uriCapture), any()) }
+        assertTrue(uriCapture.any { it.toString() == "content://part1" })
+        assertTrue(uriCapture.any { it.toString() == "content://part2" })
         assert(capturedConcatContents != null)
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
         assert(capturedTempOutputFileExists)
+
+        verify(exactly = 2) { fileSystem.openOutput(any()) }
+        assertEquals(2, outputCapture.size)
     }
 
     @Test
@@ -337,25 +375,33 @@ class MergerFastPathTest {
         every { MergePathResolver.resolveUriToPath(context, "content://part2") } returns "/resolved/part2.mkv"
         every { MergePathResolver.resolveUriToPath(context, "content://outputDir") } returns null
 
-        val pfd = mockk<android.os.ParcelFileDescriptor>(relaxed = true)
-        every { pfd.fileDescriptor } returns java.io.FileDescriptor()
-        every { contentResolver.openFileDescriptor(any(), any()) } returns pfd
 
-        mockkConstructor(java.io.FileInputStream::class)
-        every { anyConstructed<java.io.FileInputStream>().read(any<ByteArray>()) } returns -1
 
-        // Pre-create temp output file so Phase 3 copy-out does not fail
-        File(cacheDir, "merge_tmp.mkv").createNewFile()
+        // Mock FileSystem calls
+        every { fileSystem.exists(any()) } answers { firstArg<File>() == tempOutputFile }
+        every { fileSystem.delete(any()) } returns true
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.length(any()) } returns 1024L
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.openInput(any()) } returns ByteArrayInputStream(byteArrayOf(0, 1, 2, 3, 4))
+
+        val outputCapture = mutableListOf<File>()
+        every { fileSystem.openOutput(capture(outputCapture)) } returns ByteArrayOutputStream()
 
         // When
         classUnderTest.runMerge(jobId)
 
         // Then: Stages files normally
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart1, any()) }
-        verify(exactly = 1) { contentResolver.openFileDescriptor(uriPart2, any()) }
+        val uriCapture = mutableListOf<Uri>()
+        verify(exactly = 2) { contentResolver.openFileDescriptor(capture(uriCapture), any()) }
+        assertTrue(uriCapture.any { it.toString() == "content://part1" })
+        assertTrue(uriCapture.any { it.toString() == "content://part2" })
         assert(capturedConcatContents != null)
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
-        assert(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_0.mkv").absolutePath))
+        assertTrue(capturedConcatContents!!.contains(File(cacheDir, "staged_part_1.mkv").absolutePath))
         assert(capturedTempOutputFileExists)
+
+        verify(exactly = 2) { fileSystem.openOutput(any()) }
+        assertEquals(2, outputCapture.size)
     }
 }

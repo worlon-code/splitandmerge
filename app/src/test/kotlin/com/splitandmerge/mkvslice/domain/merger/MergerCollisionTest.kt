@@ -19,6 +19,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.junit.Test
 import java.io.File
 
@@ -30,6 +32,10 @@ class MergerCollisionTest {
     private val ffprobeEngine = mockk<FfprobeEngine>(relaxed = true)
     private val mergeValidator = mockk<MergeValidator>(relaxed = true)
     private val settingsRepository = mockk<com.splitandmerge.mkvslice.data.settings.SettingsRepository>(relaxed = true)
+    private val fileSystem = mockk<com.splitandmerge.mkvslice.platform.io.FileSystem>(relaxed = true)
+
+    @get:Rule
+    val tempFolder = TemporaryFolder()
 
     private lateinit var classUnderTest: Merger
 
@@ -47,27 +53,26 @@ class MergerCollisionTest {
         every { android.util.Log.e(any(), any(), any()) } returns 0
         every { android.util.Log.wtf(any(), any<String>()) } returns 0
 
-        timber.log.Timber.plant(object : timber.log.Timber.Tree() {
-            override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-                println("TIMBER LOG [$tag]: $message")
-                t?.printStackTrace()
-            }
-        })
-
         every { settingsRepository.settingsFlow } returns flowOf(com.splitandmerge.mkvslice.data.settings.SettingsState())
+        every { context.cacheDir } returns tempFolder.root
+        every { fileSystem.cacheDir() } returns tempFolder.root
+        every { fileSystem.exists(any()) } answers { firstArg<File>().exists() }
+        every { fileSystem.delete(any()) } answers { firstArg<File>().delete() }
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.openInput(any()) } returns java.io.ByteArrayInputStream(ByteArray(0))
+        every { fileSystem.openOutput(any()) } returns java.io.ByteArrayOutputStream()
         val mockUri = mockk<Uri>(relaxed = true)
         every { mockUri.scheme } returns "content"
         every { Uri.parse(any()) } returns mockUri
-        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository)
+        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
     }
 
     @After
     fun teardown() {
-        timber.log.Timber.uprootAll()
         unmockkStatic(DocumentFile::class)
         unmockkStatic(Uri::class)
         unmockkStatic(android.util.Log::class)
-        unmockkConstructor(java.io.FileInputStream::class)
     }
 
     @Test

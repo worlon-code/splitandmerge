@@ -9,6 +9,7 @@ import com.splitandmerge.mkvslice.engine.EngineEvent
 import com.splitandmerge.mkvslice.engine.FfmpegEngine
 import com.splitandmerge.mkvslice.engine.FfprobeEngine
 import com.splitandmerge.mkvslice.data.settings.SettingsRepository
+import com.splitandmerge.mkvslice.platform.io.FileSystem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -62,14 +63,15 @@ class Merger @Inject constructor(
     private val ffmpegEngine: FfmpegEngine,
     private val ffprobeEngine: FfprobeEngine,
     private val mergeValidator: MergeValidator,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val fileSystem: FileSystem
 ) {
 
     suspend fun runMerge(jobId: String) {
         val job = jobDao.getById(jobId) ?: throw IllegalArgumentException("Job $jobId not found")
         val stagedFiles = mutableListOf<File>()
-        val concatFile = File(context.cacheDir, "concat.txt")
-        val tempOutputFile = File(context.cacheDir, "merge_tmp${job.outputContainer}")
+        val concatFile = File(fileSystem.cacheDir(), "concat.txt")
+        val tempOutputFile = File(fileSystem.cacheDir(), "merge_tmp${job.outputContainer}")
         var newFileRef: DocumentFile? = null
         var newFileWasCreated = false
 
@@ -121,14 +123,14 @@ class Merger @Inject constructor(
             val allInputsReadable = allInputsResolved && resolvedInputPaths.all { p ->
                 if (p == null) return@all false
                 val f = File(p)
-                if (!f.canRead()) {
+                if (!fileSystem.canRead(f)) {
                     Timber.tag(TAG).w(
                         "Fast-path input not readable: $p — falling back to staging"
                     )
                     return@all false
                 }
                 try {
-                    FileInputStream(f).use { it.read() }
+                    fileSystem.openInput(f).use { it.read() }
                     true
                 } catch (e: Exception) {
                     Timber.tag(TAG).w(
@@ -145,7 +147,7 @@ class Merger @Inject constructor(
             Timber.tag(TAG).i(
                 "job=$jobId parts=${partUris.size} totalSizeRequired=$totalSizeRequired " +
                 "canFastPath=$canFastPath " +
-                "cacheDir.usableSpace=${context.cacheDir.usableSpace}"
+                "cacheDir.usableSpace=${fileSystem.cacheDir().usableSpace}"
             )
 
             val outDirUri = Uri.parse(job.outputDirUri)
@@ -177,29 +179,30 @@ class Merger @Inject constructor(
                     resolvedOutputDirPath!!,
                     "$actualOutDirName/$actualFileName"
                 ).absolutePath
-                if (File(candidate).parentFile?.exists() != true) {
+                val parent = File(candidate).parentFile
+                if (parent == null || !fileSystem.exists(parent)) {
                     Timber.tag(TAG).w(
                         "Fast-path candidate dir missing on disk: $candidate — falling back to staging"
                     )
                     null
                 } else {
-                    val parent = File(candidate).parentFile!!
-                    val probe = File(parent, ".v010_write_probe_${System.nanoTime()}")
+                    val parentNotNull = File(candidate).parentFile!!
+                    val probe = File(parentNotNull, ".v010_write_probe_${System.nanoTime()}")
                     try {
-                        if (!probe.createNewFile()) {
+                        if (!fileSystem.createNewFile(probe)) {
                             Timber.tag(TAG).w(
-                                "Fast-path output write probe could not create file in $parent — falling back to staging"
+                                "Fast-path output write probe could not create file in $parentNotNull — falling back to staging"
                             )
                             null
                         } else {
-                            probe.delete()
+                            fileSystem.delete(probe)
                             candidate
                         }
                     } catch (e: Exception) {
                         Timber.tag(TAG).w(
-                            e, "Fast-path output write probe failed in $parent — falling back to staging"
+                            e, "Fast-path output write probe failed in $parentNotNull — falling back to staging"
                         )
-                        try { probe.delete() } catch (_: Exception) {}
+                        try { fileSystem.delete(probe) } catch (_: Exception) {}
                         null
                     }
                 }
@@ -216,7 +219,7 @@ class Merger @Inject constructor(
                 resolvedOutputPath = resolvedOutputPath
             )
 
-            if (tempOutputFile.exists()) tempOutputFile.delete()
+            if (fileSystem.exists(tempOutputFile)) fileSystem.delete(tempOutputFile)
 
             fun getOverallPct(phase: MergePhase, phasePct: Int): Int {
                 return when (phase) {
@@ -254,14 +257,14 @@ class Merger @Inject constructor(
                     val partSize = docFile?.length() ?: 0L
                     Timber.tag(TAG).i("staging part $index uri=$partUri size=$partSize")
 
-                    val stagedFile = File(context.cacheDir, "staged_part_${index}.mkv")
-                    if (stagedFile.exists()) stagedFile.delete()
+                    val stagedFile = File(fileSystem.cacheDir(), "staged_part_${index}.mkv")
+                    if (fileSystem.exists(stagedFile)) fileSystem.delete(stagedFile)
                     stagedFiles.add(stagedFile)
 
                     val uri = Uri.parse(partUri)
                     context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
                         java.io.FileInputStream(pfd.fileDescriptor).use { inStream ->
-                            stagedFile.outputStream().use { outStream ->
+                            fileSystem.openOutput(stagedFile).use { outStream ->
                                 val buffer = ByteArray(COPY_BUFFER_SIZE)
                                 var bytesRead: Int
                                 var cancelCheckBytes = 0L
@@ -310,7 +313,7 @@ class Merger @Inject constructor(
 
                     Timber.tag(TAG).i(
                         "staged part $index -> ${stagedFile.absolutePath} " +
-                        "size=${stagedFile.length()} diskFreeAfter=${context.cacheDir.usableSpace}"
+                        "size=${fileSystem.length(stagedFile)} diskFreeAfter=${fileSystem.cacheDir().usableSpace}"
                     )
                 }
                 stagedFiles.map { it.absolutePath }
@@ -340,7 +343,7 @@ class Merger @Inject constructor(
 
             val finalConcatDest = if (effectiveCanFastPath) resolvedOutputPath!! else tempOutputFile.absolutePath
             Timber.tag(TAG).i(
-                "ffmpegOutputPath=$finalConcatDest diskFree=${context.cacheDir.usableSpace}"
+                "ffmpegOutputPath=$finalConcatDest diskFree=${fileSystem.cacheDir().usableSpace}"
             )
 
             // ════════════════════════════════════════════════════════════════
@@ -372,7 +375,7 @@ class Merger @Inject constructor(
                             while (deleteIndex < stagedFiles.size - 1) { // Never delete the last staged part here
                                 val safeBoundary = partEndTimesSeconds[deleteIndex] + cleanupGuardSeconds
                                 if (timeMs / 1000.0 < safeBoundary) break
-                                stagedFiles[deleteIndex].delete()
+                                fileSystem.delete(stagedFiles[deleteIndex])
                                 deleteIndex++
                             }
                         }
@@ -399,11 +402,11 @@ class Merger @Inject constructor(
                         )
                     }
                     is EngineEvent.Completed -> {
-                        val finalLength = if (effectiveCanFastPath) File(resolvedOutputPath!!).length() else tempOutputFile.length()
+                        val finalLength = if (effectiveCanFastPath) fileSystem.length(File(resolvedOutputPath!!)) else fileSystem.length(tempOutputFile)
                         Timber.tag(TAG).i(
                             "FFmpeg exit=${event.exitCode} " +
                             "outputPathLength=$finalLength " +
-                            "diskFree=${context.cacheDir.usableSpace}"
+                            "diskFree=${fileSystem.cacheDir().usableSpace}"
                         )
                         if (event.exitCode != 0) {
                             throw IllegalStateException(
@@ -419,7 +422,7 @@ class Merger @Inject constructor(
             // PHASE 3 — COPYING_TO_OUTPUT
             // ════════════════════════════════════════════════════════════════
             if (!effectiveCanFastPath) {
-                val tmpSize = tempOutputFile.length()
+                val tmpSize = fileSystem.length(tempOutputFile)
                 Timber.tag(TAG).i(
                     "SAF copy-out start: src=${tempOutputFile.absolutePath} " +
                     "size=$tmpSize destUri=${newFile.uri}"
@@ -434,7 +437,7 @@ class Merger @Inject constructor(
                 emaSpeedBytesPerSec = 0L
 
                 context.contentResolver.openOutputStream(newFile.uri)?.use { outStream ->
-                    tempOutputFile.inputStream().use { inStream ->
+                    fileSystem.openInput(tempOutputFile).use { inStream ->
                         val buffer = ByteArray(COPY_BUFFER_SIZE)
                         var bytesRead: Int
                         var bytesCopied = 0L
@@ -455,7 +458,7 @@ class Merger @Inject constructor(
                             if (bytesCopied >= nextLogThreshold) {
                                 Timber.tag(TAG).d(
                                     "SAF copy-out tick: bytesCopied=$bytesCopied " +
-                                    "diskFree=${context.cacheDir.usableSpace}"
+                                    "diskFree=${fileSystem.cacheDir().usableSpace}"
                                 )
                                 nextLogThreshold += LOG_TICK_BYTES
                             }
@@ -487,7 +490,7 @@ class Merger @Inject constructor(
 
                         Timber.tag(TAG).i(
                             "SAF copy-out done: bytesCopied=$bytesCopied " +
-                            "diskFreeAfter=${context.cacheDir.usableSpace}"
+                            "diskFreeAfter=${fileSystem.cacheDir().usableSpace}"
                         )
                     }
                 }
@@ -515,9 +518,9 @@ class Merger @Inject constructor(
                 jobDao.upsert(currentJob!!.copy(status = JobStatus.FAILED, errorMessage = e.message))
             }
         } finally {
-            stagedFiles.forEach { file -> if (file.exists()) file.delete() }
-            if (concatFile.exists()) concatFile.delete()
-            if (tempOutputFile.exists()) tempOutputFile.delete()
+            stagedFiles.forEach { file -> if (fileSystem.exists(file)) fileSystem.delete(file) }
+            if (fileSystem.exists(concatFile)) fileSystem.delete(concatFile)
+            if (fileSystem.exists(tempOutputFile)) fileSystem.delete(tempOutputFile)
         }
     }
 }

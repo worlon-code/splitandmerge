@@ -9,6 +9,8 @@ import com.antonkarpenko.ffmpegkit.FFmpegKitConfig
 import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.data.db.entity.JobEntity
 import com.splitandmerge.mkvslice.data.db.entity.PartEntity
+import com.splitandmerge.mkvslice.data.settings.SettingsRepository
+import com.splitandmerge.mkvslice.data.settings.SettingsState
 import com.splitandmerge.mkvslice.domain.merger.MergeValidator
 import com.splitandmerge.mkvslice.domain.merger.Merger
 import com.splitandmerge.mkvslice.domain.model.JobStatus
@@ -16,6 +18,10 @@ import com.splitandmerge.mkvslice.domain.model.JobType
 import com.splitandmerge.mkvslice.domain.model.PartStatus
 import com.splitandmerge.mkvslice.engine.impl.ProcessFfmpegEngine
 import com.splitandmerge.mkvslice.engine.impl.ProcessFfprobeEngine
+import com.splitandmerge.mkvslice.platform.io.RealFileSystem
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -43,7 +49,11 @@ class SafLifecycleTest {
         val probeEngine = ProcessFfprobeEngine(context)
         val validator = MergeValidator(probeEngine)
         
-        merger = Merger(context, jobDao, engine, probeEngine, validator)
+        val settingsRepository = mockk<SettingsRepository>(relaxed = true)
+        every { settingsRepository.settingsFlow } returns flowOf(SettingsState())
+        val fileSystem = RealFileSystem(context)
+        
+        merger = Merger(context, jobDao, engine, probeEngine, validator, settingsRepository, fileSystem)
 
         outDir = File(context.cacheDir, "test_out")
         if (!outDir.exists()) outDir.mkdirs()

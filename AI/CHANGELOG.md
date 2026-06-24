@@ -7,6 +7,30 @@
 
 ## [Unreleased]
 
+## [0.0.11] — 2026-06-24
+
+![🚀](https://fonts.gstatic.com/s/e/notoemoji/17.0/1f680/72.png) NEW FEATURES
+- (none this release — internal testability/refactor release)
+
+![🔧](https://fonts.gstatic.com/s/e/notoemoji/17.0/1f527/72.png) BUG FIXES
+- K-024: Fixed androidTest constructor compile break introduced when v0.0.10 added SettingsRepository to the Merger constructor. androidTest now compiles (compileDebugAndroidTestKotlin GREEN).
+
+![📦](https://fonts.gstatic.com/s/e/notoemoji/17.0/1f4e6/72.png) TECHNICAL
+- K-019: FileSystem-seam refactor — Merger disk I/O is now mockable. New FileSystem interface (8 File-typed methods: cacheDir, exists, canRead, length, openInput, openOutput, createNewFile, delete) + RealFileSystem delegate (java.io.File) + Hilt @Binds. Merger constructor takes FileSystem as the 7th param; in-scope disk I/O routed through it. DocumentFile/SAF/PFD reads unchanged.
+- Unit tests migrated off TemporaryFolder-hack + mockkConstructor to a mocked FileSystem (real TemporaryFolder.root backs cacheDir): MergerFastPathTest (4 cases), MergerArgvTest, MergerCollisionTest; RealFileSystemTest added.
+
+![⚠️](https://fonts.gstatic.com/s/e/notoemoji/17.0/26a0_fe0f/72.png) KNOWN ISSUES
+- K-018: round-trip GOP drift (v0.0.12 audio-snap) — OPEN.
+- K-021: ~571KB merged-vs-sum-of-parts header-dedup size delta — OPEN.
+- K-022: switch verification sampling from df to du — OPEN.
+
+![🔍](https://fonts.gstatic.com/s/e/notoemoji/17.0/1f50d/72.png) VERIFICATION
+- :app:assembleDebug (GREEN)
+- :app:lintDebug (GREEN)
+- :app:testDebugUnitTest (GREEN)
+- :app:assembleRelease (GREEN)
+- compileDebugAndroidTestKotlin (GREEN)
+
 ## [0.0.10.1] — 2026-06-18
 
 🔧 HOTFIX

@@ -31,6 +31,8 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
+import com.splitandmerge.mkvslice.data.settings.SettingsRepository
+import com.splitandmerge.mkvslice.platform.io.FileSystem
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -44,6 +46,8 @@ class MergerSequentialCleanupTest {
     @Inject lateinit var ffmpegEngine: FfmpegEngine
     @Inject lateinit var ffprobeEngine: FfprobeEngine
     @Inject lateinit var mergeValidator: MergeValidator
+    @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var fileSystem: FileSystem
 
     private lateinit var workingDir: File
     private lateinit var part1: File
@@ -180,7 +184,7 @@ class MergerSequentialCleanupTest {
             )
         )
 
-        val mergerWithMock = Merger(mockContext, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator)
+        val mergerWithMock = Merger(mockContext, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
         
         val staged0 = File(targetContext.cacheDir, "staged_part_0.mkv")
         val staged1 = File(targetContext.cacheDir, "staged_part_1.mkv")

@@ -120,12 +120,20 @@ Status: `TODO`, `IN-PROGRESS`, `BLOCKED`, `DONE-v<x.y.z>`.
 |---|---|---|---|
 | T-133 | DONE-v0.0.10.1 | FFmpegKit ProGuard keep rules to fix release-build crash | agent |
 
+## Release v0.0.11 — 2026-06-24
+
+| ID | Status | Title | Owner |
+|---|---|---|---|
+| K-019 | Done            | FileSystem-seam refactor (mockable Merger disk I/O) | agent |
+| K-024 | Done            | androidTest constructor unblock | agent |
+| T-134 | Planned-v0.0.11 | UI Automator split->merge round-trip test | agent |
+
+T-134 is PLANNED only and NOT implemented this release; UI Automator split->merge round-trip test, replaces the manual smoke test from v0.0.12 onward.
+
 ### Carried forward
-- **K-018** (ByParts drift / snap fix) -> Carried forward to v0.0.12.
-- **K-019** (Merger unit-test filesystem seams) -> Carried forward to v0.0.11.
-- **K-021** (MKV concat header dedup size delta) -> Carried forward to v0.0.11+.
-- **K-022** (Switch from df to du cache sampling in verification) -> Carried forward to v0.0.11+.
-- **Revisit Fast-Path**: Re-evaluate fast-path optimization after FileSystem seam is introduced in v0.0.11 (if no realistic targets exist, consider removing).
+- K-018 — round-trip GOP drift (v0.0.12 audio-snap) — OPEN
+- K-021 — ~571KB merged-vs-sum-of-parts header-dedup size delta — OPEN
+- K-022 — switch verification sampling from df to du — OPEN
 
 ---
 

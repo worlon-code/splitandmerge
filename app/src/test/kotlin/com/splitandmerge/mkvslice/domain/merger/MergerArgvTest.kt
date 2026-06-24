@@ -21,6 +21,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
 import org.junit.Before
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.junit.Test
 import java.io.File
 
@@ -32,16 +34,27 @@ class MergerArgvTest {
     private val ffprobeEngine: FfprobeEngine = mockk(relaxed = true)
     private val mergeValidator: MergeValidator = mockk(relaxed = true)
     private val settingsRepository: com.splitandmerge.mkvslice.data.settings.SettingsRepository = mockk(relaxed = true)
+    private val fileSystem: com.splitandmerge.mkvslice.platform.io.FileSystem = mockk(relaxed = true)
     private lateinit var docFile: DocumentFile
+
+    @get:Rule
+    val tempFolder = TemporaryFolder()
 
     private lateinit var merger: Merger
 
     @Before
     fun setup() {
         context = mockk(relaxed = true)
-        every { context.cacheDir } returns java.io.File(System.getProperty("java.io.tmpdir") ?: "/tmp")
+        every { context.cacheDir } returns tempFolder.root
+        every { fileSystem.cacheDir() } returns tempFolder.root
         every { settingsRepository.settingsFlow } returns kotlinx.coroutines.flow.flowOf(com.splitandmerge.mkvslice.data.settings.SettingsState())
-        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository)
+        every { fileSystem.exists(any()) } answers { firstArg<File>().exists() }
+        every { fileSystem.delete(any()) } answers { firstArg<File>().delete() }
+        every { fileSystem.createNewFile(any()) } returns true
+        every { fileSystem.canRead(any()) } returns true
+        every { fileSystem.openInput(any()) } returns java.io.ByteArrayInputStream(ByteArray(0))
+        every { fileSystem.openOutput(any()) } returns java.io.ByteArrayOutputStream()
+        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
         mockkStatic(android.util.Log::class)
         every { android.util.Log.i(any<String>(), any<String>()) } returns 0
         every { android.util.Log.d(any<String>(), any<String>()) } returns 0
