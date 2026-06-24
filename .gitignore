@@ -39,3 +39,7 @@ local_*
 tmp/
 # Local release scripts (not committed)
 scripts/release-*.ps1
+
+# Kotlin compiler daemon logs
+.kotlin/
+
