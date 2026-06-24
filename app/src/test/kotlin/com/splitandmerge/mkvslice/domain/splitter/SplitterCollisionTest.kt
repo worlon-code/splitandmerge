@@ -33,6 +33,7 @@ class SplitterCollisionTest {
     private val cutPlanner = mockk<CutPlanner>(relaxed = true)
     private val manifestWriter = mockk<ManifestWriter>(relaxed = true)
     private val jobProgressTracker = mockk<JobProgressTracker>(relaxed = true)
+    private val transportSplitter = mockk<com.splitandmerge.mkvslice.domain.transport.TransportSplitter>(relaxed = true)
 
     private lateinit var classUnderTest: Splitter
 
@@ -69,7 +70,7 @@ class SplitterCollisionTest {
             mockUri
         }
         classUnderTest = Splitter(
-            context, jobDao, ffprobeEngine, ffmpegEngine, cutPlanner, manifestWriter, jobProgressTracker
+            context, jobDao, ffprobeEngine, ffmpegEngine, cutPlanner, manifestWriter, jobProgressTracker, transportSplitter
         )
     }
 

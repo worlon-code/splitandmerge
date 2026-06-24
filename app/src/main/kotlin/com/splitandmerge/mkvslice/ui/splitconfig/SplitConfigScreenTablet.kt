@@ -82,61 +82,158 @@ fun SplitConfigScreenTablet(
                     .verticalScroll(scrollState)
                     .padding(24.dp)
             ) {
-                Text("Split Mode", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(8.dp))
-                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                    SegmentedButton(
-                        selected = state.mode == SplitMode.EXACT_PARTS,
-                        onClick = { viewModel.updateMode(SplitMode.EXACT_PARTS) },
-                        shape = SegmentedButtonDefaults.itemShape(index = 0, count = 3)
-                    ) {
-                        Text("Parts")
-                    }
-                    SegmentedButton(
-                        selected = state.mode == SplitMode.SIZE_CAP_ONLY,
-                        onClick = { viewModel.updateMode(SplitMode.SIZE_CAP_ONLY) },
-                        shape = SegmentedButtonDefaults.itemShape(index = 1, count = 3)
-                    ) {
-                        Text("Size Cap")
-                    }
-                    SegmentedButton(
-                        selected = state.mode == SplitMode.BOTH,
-                        onClick = { viewModel.updateMode(SplitMode.BOTH) },
-                        shape = SegmentedButtonDefaults.itemShape(index = 2, count = 3)
-                    ) {
-                        Text("Both")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                if (state.mode == SplitMode.EXACT_PARTS || state.mode == SplitMode.BOTH) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                ) {
                     Text(
-                        text = "Number of Parts: ${state.partsCount}",
+                        text = "Transport (byte-exact) split",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(1f)
                     )
-                    Slider(
-                        value = state.partsCount.toFloat(),
-                        onValueChange = { viewModel.updatePartsCount(it.toInt()) },
-                        valueRange = 2f..50f,
-                        steps = 47,
-                        modifier = Modifier.fillMaxWidth()
+                    androidx.compose.material3.Switch(
+                        checked = state.isByteSplit,
+                        onCheckedChange = { viewModel.updateByteSplit(it) }
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                if (state.mode == SplitMode.SIZE_CAP_ONLY || state.mode == SplitMode.BOTH) {
-                    OutlinedTextField(
-                        value = state.sizeCapGb.toString(),
-                        onValueChange = {
-                            it.toFloatOrNull()?.let { cap -> viewModel.updateSizeCap(cap) }
-                        },
-                        label = { Text("Size Cap per Part (GB)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (state.isByteSplit) {
+                    Text(
+                        text = "Warning: Byte-split parts are NOT individually playable. They carry the ordinary .mkv extension but cannot be opened by media players until merged.",
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text("Split Mode (Byte-exact)", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                        SegmentedButton(
+                            selected = state.mode == SplitMode.SIZE_CAP_ONLY,
+                            onClick = { viewModel.updateMode(SplitMode.SIZE_CAP_ONLY) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
+                        ) {
+                            Text("Size Cap")
+                        }
+                        SegmentedButton(
+                            selected = state.mode == SplitMode.EXACT_PARTS,
+                            onClick = { viewModel.updateMode(SplitMode.EXACT_PARTS) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
+                        ) {
+                            Text("Parts")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    if (state.mode == SplitMode.SIZE_CAP_ONLY) {
+                        val sizeCapError = viewModel.getByteSizeCapError()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            OutlinedTextField(
+                                value = state.byteSizeCapInput,
+                                onValueChange = { viewModel.updateByteSizeCapInput(it) },
+                                label = { Text("Max size per part") },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = sizeCapError != null,
+                                supportingText = sizeCapError?.let { { Text(it) } },
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            SingleChoiceSegmentedButtonRow(
+                                modifier = Modifier.width(130.dp)
+                            ) {
+                                SegmentedButton(
+                                    selected = state.byteSplitSizeUnit == SizeUnit.MB,
+                                    onClick = { viewModel.updateByteSplitSizeUnit(SizeUnit.MB) },
+                                    shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
+                                ) {
+                                    Text("MB")
+                                }
+                                SegmentedButton(
+                                    selected = state.byteSplitSizeUnit == SizeUnit.GB,
+                                    onClick = { viewModel.updateByteSplitSizeUnit(SizeUnit.GB) },
+                                    shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
+                                ) {
+                                    Text("GB")
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                    } else if (state.mode == SplitMode.EXACT_PARTS) {
+                        OutlinedTextField(
+                            value = if (state.partsCount > 0) state.partsCount.toString() else "",
+                            onValueChange = {
+                                val count = it.toIntOrNull() ?: 0
+                                viewModel.updatePartsCount(count)
+                            },
+                            label = { Text("Number of parts") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                } else {
+                    Text("Split Mode", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                        SegmentedButton(
+                            selected = state.mode == SplitMode.EXACT_PARTS,
+                            onClick = { viewModel.updateMode(SplitMode.EXACT_PARTS) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 3)
+                        ) {
+                            Text("Parts")
+                        }
+                        SegmentedButton(
+                            selected = state.mode == SplitMode.SIZE_CAP_ONLY,
+                            onClick = { viewModel.updateMode(SplitMode.SIZE_CAP_ONLY) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 3)
+                        ) {
+                            Text("Size Cap")
+                        }
+                        SegmentedButton(
+                            selected = state.mode == SplitMode.BOTH,
+                            onClick = { viewModel.updateMode(SplitMode.BOTH) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 2, count = 3)
+                        ) {
+                            Text("Both")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    if (state.mode == SplitMode.EXACT_PARTS || state.mode == SplitMode.BOTH) {
+                        Text(
+                            text = "Number of Parts: ${state.partsCount}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                        Slider(
+                            value = state.partsCount.toFloat(),
+                            onValueChange = { viewModel.updatePartsCount(it.toInt()) },
+                            valueRange = 2f..50f,
+                            steps = 47,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    if (state.mode == SplitMode.SIZE_CAP_ONLY || state.mode == SplitMode.BOTH) {
+                        OutlinedTextField(
+                            value = state.sizeCapGb.toString(),
+                            onValueChange = {
+                                it.toFloatOrNull()?.let { cap -> viewModel.updateSizeCap(cap) }
+                            },
+                            label = { Text("Size Cap per Part (GB)") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
 
                 OutlinedTextField(
@@ -207,7 +304,11 @@ fun SplitConfigScreenTablet(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "This will split the video into ${state.predictedPartCount} parts, with each part averaging approximately ${String.format("%.2f", state.predictedPartSizeGb)} GB.",
+                            text = if (viewModel.isConfigValid() && state.predictedPartCount > 0) {
+                                "This will split the video into ${state.predictedPartCount} parts, with each part averaging approximately ${String.format("%.2f", state.predictedPartSizeGb)} GB."
+                            } else {
+                                "Invalid or incomplete split configuration."
+                            },
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 15.sp,
                             lineHeight = 22.sp
@@ -219,6 +320,7 @@ fun SplitConfigScreenTablet(
                 
                 Button(
                     onClick = onConfirm,
+                    enabled = viewModel.isConfigValid(),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()

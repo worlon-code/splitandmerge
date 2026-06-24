@@ -1,7 +1,9 @@
-# Engine — FFmpeg Integration
+# Engine — FFmpeg & Transport Integration
 
-> The heart of the app. The single most-likely-to-break component if we're
-> not careful, and the single most-important to keep correct.
+> The heart of the app. Two distinct engines now coexist:
+> **FFmpeg Structural** (default — keyframe-aware, re-mux with `-c copy`) and
+> **Transport / Byte-exact** (opt-in — raw byte chop/concat, SHA-256 verified, no FFmpeg).
+> The single most-likely-to-break component if we're not careful.
 
 This file is the **operational** complement to
 [`analysis/02-TECHNICAL-DEEP-DIVE.md`](../analysis/02-TECHNICAL-DEEP-DIVE.md),
@@ -378,3 +380,107 @@ ecosystem evolves. Plan for:
   string interpolation.
 - ❌ Call `FFmpegKitConfig.closeFFmpegPipe` on `saf:<id>.<ext>` paths. The SAF descriptor lifecycle is native-managed.
 - ❌ Manually close SAF descriptors. Let FFmpegKit handle teardown automatically.
+
+---
+
+## 18. Transport Engine (Byte-exact Split / Merge) — v0.0.12+
+
+A pure-Kotlin, FFmpeg-free byte-chop/concat engine for users who need
+**true SHA-256 byte identity** between source and merged output. The FFmpeg
+engine remains the default; Transport mode is a **per-job opt-in toggle**
+on `SplitConfigScreen`.
+
+### 18.1 Why it exists
+
+FFmpeg concat re-muxes — it regenerates a random Matroska `SegmentUID`,
+`WritingApp`, and timestamps. The merged output is NOT byte-identical to the
+source even though media streams match. Transport mode chops raw bytes and
+binary-concats them back; the output literally IS the original bytes (exact
+SHA-256 match). Parts are **not individually playable**.
+
+### 18.2 Key source files
+
+| File | Role |
+|---|---|
+| `domain/transport/FrameCodec.kt` | 64-byte binary frame header encoder/decoder |
+| `domain/transport/TransportSplitter.kt` | Byte-exact splitter: reads SAF → writes N framed parts |
+| `domain/merger/PartModeDetector.kt` | Sniffs first 8 bytes (`MKVSLICE` magic) to detect byte parts |
+| `domain/merger/PreFlightEvaluator.kt` | Validates session compatibility, contiguity, duplicates |
+| `domain/merger/TransportMerger.kt` | Byte-exact merger: streams parts → SAF output with SHA-256 verification |
+| `domain/merger/Merger.kt` | Routes to `TransportMerger` when `PartModeDetector` returns `MKVSLICE` |
+
+### 18.3 Frame header (64 bytes, FrameCodec)
+
+Every byte-split part is prefixed with a 64-byte binary header:
+
+```
+Bytes  0..7   Magic: 'MKVSLICE' (ASCII, 0x4D4B56534C494345)
+Bytes  8..9   Version: 1 (UShort, big-endian)
+Bytes 10..11  partIndex (0-based, UShort, big-endian)
+Bytes 12..13  totalParts (UShort, big-endian)
+Bytes 14..21  payloadOffset (ULong, big-endian) — byte offset of this chunk in original
+Bytes 22..29  payloadSize (ULong, big-endian) — bytes in this chunk's payload
+Bytes 30..37  originalTotalSize (ULong, big-endian)
+Bytes 38..70  padding / reserved (zero-filled)
+```
+
+The LAST part also carries a 32-byte per-whole-file SHA-256 trailer written
+after the payload (appended, not in the header). Each part's payload SHA-256
+is computed per-part and stored in `PartEntity.partSha256`.
+
+### 18.4 Split algorithm (TransportSplitter)
+
+- Buffer size: **512 KB** (no full-file load; streams SAF → SAF).
+- Chunking: equal-sized chunks for `EXACT_PARTS`; `ceil(fileSize / cap)` chunks
+  for `SIZE_CAP_ONLY`. Last chunk gets the remainder (may be smaller).
+- SHA-256 computed **single-pass** during the read loop (both per-part
+  `MessageDigest` and whole-file `MessageDigest` update on the same buffer read).
+- Part naming: `<base>.part_<NN>_<TT>.mkv` (1-based, zero-padded, e.g. `part_01_03`).
+- On cancellation: all written parts are deleted via SAF (`DocumentFile.delete()`).
+- `splitFormat = "BYTE"` stored on `JobEntity`.
+
+### 18.5 Merge algorithm (TransportMerger)
+
+- `PartModeDetector` sniffs magic on first selected file. MKVSLICE → `TransportMerger`.
+- `PreFlightEvaluator` validates: session identity (`originalTotalSize` + `totalParts`
+  identical across all parts), contiguity (`payloadOffset` chain), no duplicates,
+  no missing parts, no truncation, no unknown version.
+- Output filename restored from the last part's session metadata (original source name).
+- Storage check: `OutputFolderValidator` against `originalTotalSize` before creating output.
+- Streams all payloads in `partIndex` order to a single SAF output stream; running
+  SHA-256 updated on every chunk.
+- **Fail-closed**: if any part is missing or pre-flight fails → FAILED, no output file created.
+- **Verify-keep**: if the file is fully written but SHA-256 / size mismatches → FAILED,
+  output file **KEPT** (never deleted); error message includes the output file path so
+  the user can locate it.
+- Cancellation mid-merge → output file deleted.
+
+### 18.6 Size cap input (SplitConfigScreen)
+
+The byte-exact size-cap field accepts **decimal input** (e.g. `0.3`, `1.5`):
+- Unit selector: **MB / GB** segmented toggle (default MB). `1 MB = 1 048 576 bytes`;
+  `1 GB = 1 073 741 824 bytes` (binary, 1024-based throughout).
+- Conversion: `BigDecimal(input) × factor`, `FLOOR` rounding, `longValueExact()`.
+- Validation: rejects empty, `.`, `abc`, `1.2.3`, `1e3`, `+N`, `-N`, floor-to-zero,
+  and Long overflow — Start/Continue disabled with inline error message.
+- Keyboard type: `KeyboardType.Decimal` (decimal point permitted).
+
+### 18.7 Detection decision summary
+
+| Signal | Route |
+|---|---|
+| All selected files have `MKVSLICE` magic + same session | `TransportMerger` |
+| Any file lacks magic OR sessions differ | BLOCK — user-facing error |
+| Mixed byte + normal parts | BLOCK — must pick one type |
+| Missing/extra/duplicate parts | BLOCK — exact error per case |
+| Unknown version byte | BLOCK — version not supported |
+| All files are valid EBML MKV (structural parts) | FFmpeg structural merge |
+| No MKVSLICE magic, no valid EBML | BLOCK — unrecognised format |
+
+### 18.8 What an agent must NOT do in the Transport engine
+
+- ❌ Re-encode, remux, or call FFmpeg in the Transport path — byte copy only.
+- ❌ Load an entire part into memory — stream in 512 KB chunks.
+- ❌ Delete the output file when the merge completes but verification fails.
+- ❌ Accept missing parts — fail closed.
+- ❌ Mix MB (binary) and MB (decimal) — stick to binary (1024-based) throughout.

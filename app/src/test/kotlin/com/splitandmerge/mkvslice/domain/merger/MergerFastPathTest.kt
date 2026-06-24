@@ -40,6 +40,8 @@ class MergerFastPathTest {
     private val mergeValidator = mockk<MergeValidator>(relaxed = true)
     private val settingsRepository = mockk<SettingsRepository>(relaxed = true)
     private val fileSystem = mockk<FileSystem>(relaxed = true)
+    private val partModeDetector = mockk<PartModeDetector>(relaxed = true)
+    private val transportMerger = mockk<TransportMerger>(relaxed = true)
 
     private lateinit var classUnderTest: Merger
     private var capturedConcatContents: String? = null
@@ -125,7 +127,7 @@ class MergerFastPathTest {
             uriMocks[uriStr] ?: mockk<Uri>(relaxed = true)
         }
 
-        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
+        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem, partModeDetector, transportMerger)
         testMergedDir.mkdirs()
     }
 

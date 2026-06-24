@@ -8,6 +8,14 @@ Format: `YYYY-MM-DD · phase · short title · ref(s)`.
 
 ---
 
+## 2026-06-25 — Release v0.0.12 (Transport Byte-Exact Split + Merge)
+
+- 2026-06-25 · Phase 1 · Transport byte-exact split engine: `FrameCodec` (64-byte binary header), `TransportSplitter` (512 KB streaming, single-pass SHA-256, `MKVSLICE` magic, per-part naming `part_NN_TT.mkv`, cancel cleanup, Room DB v5 `splitFormat`). · ref: AI/plans/2026-06-24-byte-merge-implementation.md
+- 2026-06-25 · Phase 2 · Transport byte-exact merge engine: `PartModeDetector` (8-byte magic sniff), `PreFlightEvaluator` (session/contiguity/duplicate/truncation/version checks), `TransportMerger` (streaming SAF concat + SHA-256 verify, fail-closed / verify-keep policy). `Merger.kt` routed to `TransportMerger` when MKVSLICE detected. `MergeOrderViewModel`/`MergeOrderScreen` skip ffprobe, show "Byte Merge Mode" chip. Room DB v5 `payloadOffset` + `partSha256` on PartEntity. · ref: same plan
+- 2026-06-25 · UX · Pre-release UX fixes (from on-device smoke): `MergeOrderScreen` "Byte Merge Mode" chip, per-part pre-flight warning rows, `MergeOrderViewModel.isByteMerge` state. · ref: UX-fix step
+- 2026-06-25 · UX · MB / GB unit selector for byte-exact size cap: `SizeUnit` enum, `byteSplitSizeUnit` state, segmented toggle on `SplitConfigScreen` + `SplitConfigScreenTablet`. · ref: MB/GB step
+- 2026-06-25 · UX · Decimal input for byte-exact size cap: `byteSizeCapInput: String` state, `parseTargetCapBytes()` / `getByteSizeCapError()` / `isConfigValid()` using `BigDecimal` + `FLOOR` rounding + Long overflow guard; `KeyboardType.Decimal` keyboard. · ref: decimal-input step
+
 ## 2026-06-16 — Release v0.0.9 (Loading primitives, Cleanup Patterns DB, OSS Notices, Adaptive Icon)
 
 - 2026-06-16 · Step 1 · Created LoadingArc, PulseDot, ShimmerSkeleton Compose primitives in `ui/components/`. · ref: AI/plans/2026-06-15-v0-0-9.md

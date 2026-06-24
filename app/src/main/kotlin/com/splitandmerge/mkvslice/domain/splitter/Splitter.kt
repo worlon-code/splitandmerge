@@ -34,12 +34,18 @@ class Splitter @Inject constructor(
     private val ffmpegEngine: FfmpegEngine,
     private val cutPlanner: CutPlanner,
     private val manifestWriter: ManifestWriter,
-    private val jobProgressTracker: JobProgressTracker
+    private val jobProgressTracker: JobProgressTracker,
+    private val transportSplitter: com.splitandmerge.mkvslice.domain.transport.TransportSplitter
 ) {
 
     suspend fun runSplit(jobId: String) = withContext(Dispatchers.IO) {
         val job = jobDao.getById(jobId) ?: return@withContext
         if (job.status == JobStatus.CANCELLED) return@withContext
+
+        if (job.splitFormat == "BYTE") {
+            transportSplitter.runSplit(jobId)
+            return@withContext
+        }
 
         try {
             jobProgressTracker.setPhaseHint(jobId, JobPhaseHint.Analyzing)

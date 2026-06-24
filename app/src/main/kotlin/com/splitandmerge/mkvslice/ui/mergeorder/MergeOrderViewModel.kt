@@ -12,6 +12,10 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.viewModelScope
 import com.splitandmerge.mkvslice.engine.FfprobeEngine
+import com.splitandmerge.mkvslice.domain.merger.PartModeDetector
+import com.splitandmerge.mkvslice.domain.merger.PreFlightEvaluator
+import com.splitandmerge.mkvslice.domain.merger.PartMode
+import com.splitandmerge.mkvslice.domain.merger.PreFlightResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,14 +36,18 @@ data class MergeOrderState(
     val compatibilityError: String? = null,
     val isLoading: Boolean = false,
     val verifying: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isByteMerge: Boolean = false,
+    val byteMergeStatusText: String? = null
 )
 
 @HiltViewModel
 class MergeOrderViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val ffprobeEngine: FfprobeEngine,
-    private val mergeValidator: com.splitandmerge.mkvslice.domain.merger.MergeValidator
+    private val mergeValidator: com.splitandmerge.mkvslice.domain.merger.MergeValidator,
+    private val partModeDetector: PartModeDetector,
+    private val preFlightEvaluator: PreFlightEvaluator
 ) : ViewModel() {
     private val _state = MutableStateFlow(MergeOrderState())
     val state: StateFlow<MergeOrderState> = _state.asStateFlow()
@@ -67,7 +75,14 @@ class MergeOrderViewModel @Inject constructor(
                     val docFile = DocumentFile.fromSingleUri(context, uri)
                     val name = docFile?.name ?: "Unknown Part"
                     val size = docFile?.length() ?: 0L
-                    val duration = ffprobeEngine.probe(uriStr).format.durationSeconds
+                    
+                    // Skip ffprobe check for byte-split parts to avoid errors/slowdowns
+                    val isByte = partModeDetector.detectMode(uriStr) == PartMode.MKVSLICE
+                    val duration = if (isByte) {
+                        0.0
+                    } else {
+                        ffprobeEngine.probe(uriStr).format.durationSeconds
+                    }
                     
                     MergePart(
                         id = java.util.UUID.randomUUID().toString(),
@@ -98,27 +113,62 @@ class MergeOrderViewModel @Inject constructor(
                 parts = list,
                 isCompatible = true,
                 compatibilityError = null,
-                isLoading = false
+                isLoading = false,
+                isByteMerge = false,
+                byteMergeStatusText = null
             )
             return
         }
         
         viewModelScope.launch {
-            try {
-                mergeValidator.validate(list.map { it.uriString })
-                _state.value = _state.value.copy(
-                    parts = list,
-                    isCompatible = true,
-                    compatibilityError = null,
-                    isLoading = false
-                )
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    parts = list,
-                    isCompatible = false,
-                    compatibilityError = e.message,
-                    isLoading = false
-                )
+            val partUris = list.map { it.uriString }
+            val hasByteParts = partUris.any { partModeDetector.detectMode(it) == PartMode.MKVSLICE }
+            
+            if (hasByteParts) {
+                val preFlight = preFlightEvaluator.evaluate(partUris)
+                when (preFlight) {
+                    is PreFlightResult.Ok -> {
+                        _state.value = _state.value.copy(
+                            parts = list,
+                            isCompatible = true,
+                            compatibilityError = null,
+                            isLoading = false,
+                            isByteMerge = true,
+                            byteMergeStatusText = "Completeness check passed"
+                        )
+                    }
+                    is PreFlightResult.Block -> {
+                        _state.value = _state.value.copy(
+                            parts = list,
+                            isCompatible = false,
+                            compatibilityError = preFlight.reason,
+                            isLoading = false,
+                            isByteMerge = true,
+                            byteMergeStatusText = null
+                        )
+                    }
+                }
+            } else {
+                try {
+                    mergeValidator.validate(partUris)
+                    _state.value = _state.value.copy(
+                        parts = list,
+                        isCompatible = true,
+                        compatibilityError = null,
+                        isLoading = false,
+                        isByteMerge = false,
+                        byteMergeStatusText = null
+                    )
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(
+                        parts = list,
+                        isCompatible = false,
+                        compatibilityError = e.message,
+                        isLoading = false,
+                        isByteMerge = false,
+                        byteMergeStatusText = null
+                    )
+                }
             }
         }
     }

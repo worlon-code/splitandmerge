@@ -35,6 +35,8 @@ class MergerArgvTest {
     private val mergeValidator: MergeValidator = mockk(relaxed = true)
     private val settingsRepository: com.splitandmerge.mkvslice.data.settings.SettingsRepository = mockk(relaxed = true)
     private val fileSystem: com.splitandmerge.mkvslice.platform.io.FileSystem = mockk(relaxed = true)
+    private val partModeDetector: PartModeDetector = mockk(relaxed = true)
+    private val transportMerger: TransportMerger = mockk(relaxed = true)
     private lateinit var docFile: DocumentFile
 
     @get:Rule
@@ -54,7 +56,7 @@ class MergerArgvTest {
         every { fileSystem.canRead(any()) } returns true
         every { fileSystem.openInput(any()) } returns java.io.ByteArrayInputStream(ByteArray(0))
         every { fileSystem.openOutput(any()) } returns java.io.ByteArrayOutputStream()
-        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
+        merger = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem, partModeDetector, transportMerger)
         mockkStatic(android.util.Log::class)
         every { android.util.Log.i(any<String>(), any<String>()) } returns 0
         every { android.util.Log.d(any<String>(), any<String>()) } returns 0

@@ -132,6 +132,39 @@ class SplitConfigViewModel @Inject constructor(
 }
 ```
 
+> **Note (v0.0.12 actual implementation):** The production `SplitConfigViewModel` uses a
+> flat `SplitConfigState` data class (not the sealed `SplitConfigUiState` above, which is
+> the design-spec pattern). The actual shipped state includes:
+>
+> ```kotlin
+> enum class SizeUnit { MB, GB }
+>
+> data class SplitConfigState(
+>     val uri: String = "",
+>     val filename: String = "",
+>     val mode: SplitMode = SplitMode.BOTH,
+>     val partsCount: Int = 3,
+>     val sizeCapGb: Float = 9.0f,          // structural split cap
+>     val byteSizeCapInput: String = "100", // byte-split cap as user text (decimal OK)
+>     val byteSplitSizeUnit: SizeUnit = SizeUnit.MB, // MB or GB (binary)
+>     val baseName: String = "",
+>     val outputFolder: String = "",
+>     val fileSizeBytes: Long = 0L,
+>     val fileDurationSec: Double = 0.0,
+>     val predictedPartCount: Int = 3,
+>     val predictedPartSizeGb: Float = 0f,
+>     val isByteSplit: Boolean = false,     // per-job Transport toggle
+> )
+> ```
+>
+> Key validation helpers exposed by the VM:
+> - `isByteSizeCapValid(): Boolean` — false when input is empty, non-numeric, floor-to-zero, or overflows Long.
+> - `getByteSizeCapError(): String?` — inline error string for UI display.
+> - `isConfigValid(): Boolean` — gate used by `startSplitJob` to prevent committing an invalid job.
+>
+> Byte-cap conversion: `BigDecimal(input) × factor` (`FLOOR` rounding, `longValueExact()`);
+> `1 MB = 1 048 576`, `1 GB = 1 073 741 824` (both binary/1024-based).
+
 ## 3. Compose collection
 
 ```kotlin

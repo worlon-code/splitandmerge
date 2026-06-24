@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.data.settings.SettingsRepository
 import com.splitandmerge.mkvslice.data.settings.SettingsState
+import com.splitandmerge.mkvslice.data.db.entity.JobEntity
 import com.splitandmerge.mkvslice.domain.cleanup.TitleCleaner
 import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidation
 import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidator
@@ -153,5 +154,155 @@ class SplitConfigViewModelTest {
         assertEquals(OutputFolderValidation.NotReachable, viewModel.validationResult.value)
         viewModel.onPickFolderAgain()
         assertNull(viewModel.validationResult.value)
+    }
+
+    @Test
+    fun testDecimalByteSizeCapValidationAndConversion() = runTest {
+        val capturedJobs = mutableListOf<JobEntity>()
+        io.mockk.coEvery { jobDao.upsert(capture(capturedJobs)) } returns Unit
+
+        val viewModel = SplitConfigViewModel(
+            savedStateHandle, jobDao, titleCleaner, settingsRepository, outputFolderValidator, context
+        )
+
+        // 1. Check default state is valid (100 MB)
+        viewModel.updateByteSplit(true)
+        viewModel.updateMode(com.splitandmerge.mkvslice.domain.model.SplitMode.SIZE_CAP_ONLY)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+
+        // (a) "1.5" + GB -> targetCapBytes == 1610612736
+        viewModel.updateByteSizeCapInput("1.5")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(1, capturedJobs.size)
+        assertEquals(1610612736L, capturedJobs[0].targetCapBytes)
+
+        // (b) "0.5" + MB -> targetCapBytes == 524288
+        viewModel.updateByteSizeCapInput("0.5")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.MB)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(2, capturedJobs.size)
+        assertEquals(524288L, capturedJobs[1].targetCapBytes)
+
+        // (c) FLOOR DISCRIMINATOR — "0.7" + GB -> targetCapBytes == 751619276
+        viewModel.updateByteSizeCapInput("0.7")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(3, capturedJobs.size)
+        assertEquals(751619276L, capturedJobs[2].targetCapBytes)
+
+        // (d) "2." + GB -> targetCapBytes == 2147483648
+        viewModel.updateByteSizeCapInput("2.")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(4, capturedJobs.size)
+        assertEquals(2147483648L, capturedJobs[3].targetCapBytes)
+
+        // (e) leading-dot ".5" + GB -> targetCapBytes == 536870912
+        viewModel.updateByteSizeCapInput(".5")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        assertNull(viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(5, capturedJobs.size)
+        assertEquals(536870912L, capturedJobs[4].targetCapBytes)
+
+        // (f) PREVIEW recompute — for "0.3" + GB against source size of 944,162,109 bytes:
+        // totalSize = 944,162,109 bytes. 0.3 GB = 322,122,547 bytes.
+        // 944,162,109 / 322,122,547 = 2.93 -> CEIL = 3 parts.
+        val customSavedState = SavedStateHandle(
+            mapOf(
+                "uri" to "content://video",
+                "filename" to "test.mkv",
+                "sizeBytes" to "944162109",
+                "durationSec" to "120.0"
+            )
+        )
+        val vm2 = SplitConfigViewModel(
+            customSavedState, jobDao, titleCleaner, settingsRepository, outputFolderValidator, context
+        )
+        vm2.updateByteSplit(true)
+        vm2.updateMode(com.splitandmerge.mkvslice.domain.model.SplitMode.SIZE_CAP_ONLY)
+        vm2.updateByteSplitSizeUnit(SizeUnit.GB)
+        vm2.updateByteSizeCapInput("0.3")
+        assertEquals(3, vm2.state.value.predictedPartCount)
+
+        // (g) FLOOR-TO-ZERO — "0.0000001" + MB (floors to 0) -> action DISABLED / invalid, not committed
+        viewModel.updateByteSizeCapInput("0.0000001")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.MB)
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Size must be greater than 0", viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(5, capturedJobs.size) // still 5, not committed
+
+        // (h) OVERFLOW — "99999999999" + GB -> action DISABLED / invalid, not committed
+        viewModel.updateByteSizeCapInput("99999999999")
+        viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Value is too large (overflows)", viewModel.getByteSizeCapError())
+        viewModel.startSplitJob(context)
+        assertEquals(5, capturedJobs.size) // still 5
+
+        // (i) BY-PARTS UNAFFECTED: count field still parses as Int, dot makes it invalid/0
+        viewModel.updateByteSplit(true)
+        viewModel.updateMode(com.splitandmerge.mkvslice.domain.model.SplitMode.EXACT_PARTS)
+        viewModel.updatePartsCount(3)
+        org.junit.Assert.assertTrue(viewModel.isConfigValid())
+        val partsVal = "3.5".toIntOrNull() ?: 0
+        viewModel.updatePartsCount(partsVal)
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+
+        // Reset mode for invalid checks
+        viewModel.updateMode(com.splitandmerge.mkvslice.domain.model.SplitMode.SIZE_CAP_ONLY)
+
+        // (j) INVALID INPUTS — assert EACH of these INDIVIDUALLY: "", ".", "abc", "1.2.3", "1e3", "+1.5", "0", "-1"
+        // ""
+        viewModel.updateByteSizeCapInput("")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Size cap cannot be empty", viewModel.getByteSizeCapError())
+
+        // "."
+        viewModel.updateByteSizeCapInput(".")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Please enter digits", viewModel.getByteSizeCapError())
+
+        // "abc"
+        viewModel.updateByteSizeCapInput("abc")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Please enter a valid decimal number", viewModel.getByteSizeCapError())
+
+        // "1.2.3"
+        viewModel.updateByteSizeCapInput("1.2.3")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Please enter a valid decimal number", viewModel.getByteSizeCapError())
+
+        // "1e3"
+        viewModel.updateByteSizeCapInput("1e3")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Scientific notation is not allowed", viewModel.getByteSizeCapError())
+
+        // "+1.5"
+        viewModel.updateByteSizeCapInput("+1.5")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Signs (+ or -) are not allowed", viewModel.getByteSizeCapError())
+
+        // "0"
+        viewModel.updateByteSizeCapInput("0")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Size must be greater than 0", viewModel.getByteSizeCapError())
+
+        // "-1"
+        viewModel.updateByteSizeCapInput("-1")
+        org.junit.Assert.assertFalse(viewModel.isConfigValid())
+        assertEquals("Signs (+ or -) are not allowed", viewModel.getByteSizeCapError())
     }
 }

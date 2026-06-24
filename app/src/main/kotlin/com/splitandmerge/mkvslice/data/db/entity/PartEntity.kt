@@ -29,4 +29,6 @@ data class PartEntity(
     val sizeBytes: Long? = null,        // null until written
     val sha256: String? = null,         // null in v1 (computed on demand)
     val status: PartStatus,
+    val byteOffset: Long? = null,
+    val byteSize: Long? = null,
 )

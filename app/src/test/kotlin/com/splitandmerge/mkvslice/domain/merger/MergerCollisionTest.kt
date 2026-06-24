@@ -33,6 +33,8 @@ class MergerCollisionTest {
     private val mergeValidator = mockk<MergeValidator>(relaxed = true)
     private val settingsRepository = mockk<com.splitandmerge.mkvslice.data.settings.SettingsRepository>(relaxed = true)
     private val fileSystem = mockk<com.splitandmerge.mkvslice.platform.io.FileSystem>(relaxed = true)
+    private val partModeDetector = mockk<PartModeDetector>(relaxed = true)
+    private val transportMerger = mockk<TransportMerger>(relaxed = true)
 
     @get:Rule
     val tempFolder = TemporaryFolder()
@@ -65,7 +67,7 @@ class MergerCollisionTest {
         val mockUri = mockk<Uri>(relaxed = true)
         every { mockUri.scheme } returns "content"
         every { Uri.parse(any()) } returns mockUri
-        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem)
+        classUnderTest = Merger(context, jobDao, ffmpegEngine, ffprobeEngine, mergeValidator, settingsRepository, fileSystem, partModeDetector, transportMerger)
     }
 
     @After
@@ -125,7 +127,7 @@ class MergerCollisionTest {
         every { finalOutFile.uri } returns Uri.parse("content://out")
 
         // Mock the copy operations and engine
-        val cacheDir = File(System.getProperty("java.io.tmpdir"))
+        val cacheDir = File(System.getProperty("java.io.tmpdir") ?: "")
         every { context.cacheDir } returns cacheDir
         every { context.contentResolver.openOutputStream(any()) } returns java.io.ByteArrayOutputStream()
         

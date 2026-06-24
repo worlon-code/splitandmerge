@@ -103,6 +103,12 @@ Notes / edge cases
   Output / Summary), sticky bottom bar with Cancel + Continue.
 - **Notes:** Live recompute on every change. Container locked to `.mkv` when
   bitmap subs present. "Edit cleanup rules" navigates to S15a.
+  **v0.0.12:** Per-job **Transport (byte-exact) split** toggle at the top of
+  the mode card. When on: BOTH mode not available; size-cap field accepts
+  **decimal input** (e.g. `0.3 GB`) with a **MB / GB unit selector**
+  (segmented toggle, default MB, binary units). Inline error shown for invalid
+  input; Start/Continue disabled until valid. Warning chip displayed: "Byte
+  parts are NOT individually playable".
 
 ### S6 — Split Confirmation
 
@@ -143,6 +149,10 @@ Notes / edge cases
   sticky Cancel + Continue.
 - **Notes:** When a sibling `*.split.json` exists, skip this screen and go
   to S11 with all parts pre-ordered.
+  **v0.0.12:** When `PartModeDetector` returns `MKVSLICE` for the selected
+  files, a **"Byte Merge Mode" chip** is shown and the drag-reorder list is
+  replaced with a pre-flight validation summary (session match, contiguity,
+  missing-part warnings). FFprobe is NOT run on byte parts.
 
 ### S11 — Merge Configuration
 

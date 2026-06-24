@@ -1,5 +1,6 @@
 package com.splitandmerge.mkvslice.data.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.splitandmerge.mkvslice.domain.model.JobStatus
@@ -27,4 +28,5 @@ data class JobEntity(
     val speedMbs: Double? = null,       // Realtime processing speed in MB/s or 'x'
     val etaSeconds: Int? = null,        // Estimated time remaining
     val totalParts: Int? = null,        // Actual calculated parts by CutPlanner
+    @ColumnInfo(defaultValue = "STRUCTURAL") val splitFormat: String = "STRUCTURAL",
 )

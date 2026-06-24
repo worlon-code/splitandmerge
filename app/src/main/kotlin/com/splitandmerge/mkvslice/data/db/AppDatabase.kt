@@ -13,7 +13,7 @@ import com.splitandmerge.mkvslice.data.db.entity.CleanupPatternEntity
         PartEntity::class,
         CleanupPatternEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

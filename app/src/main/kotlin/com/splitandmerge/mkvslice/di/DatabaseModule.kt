@@ -8,6 +8,7 @@ import com.splitandmerge.mkvslice.data.db.AppDatabase
 import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.data.db.CleanupPatternDao
 import com.splitandmerge.mkvslice.data.db.migrations.Migration_3_4
+import com.splitandmerge.mkvslice.data.db.migrations.Migration_4_5
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "mkvslice_db"
         )
-        .addMigrations(Migration_3_4)
+        .addMigrations(Migration_3_4, Migration_4_5)
         .addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)

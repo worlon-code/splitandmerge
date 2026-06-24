@@ -35,6 +35,8 @@ class MergeOrderViewModelTest {
     private lateinit var mockContext: Context
     private lateinit var mockFfprobeEngine: FfprobeEngine
     private lateinit var mockMergeValidator: MergeValidator
+    private val mockPartModeDetector = mockk<com.splitandmerge.mkvslice.domain.merger.PartModeDetector>(relaxed = true)
+    private val mockPreFlightEvaluator = mockk<com.splitandmerge.mkvslice.domain.merger.PreFlightEvaluator>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -42,6 +44,8 @@ class MergeOrderViewModelTest {
         mockContext = mockk(relaxed = true)
         mockFfprobeEngine = mockk()
         mockMergeValidator = mockk(relaxed = true)
+        
+        every { mockPartModeDetector.detectMode(any()) } returns com.splitandmerge.mkvslice.domain.merger.PartMode.OTHER
 
         mockkStatic(Uri::class)
         val uriMap = mutableMapOf<String, Uri>()
@@ -87,7 +91,7 @@ class MergeOrderViewModelTest {
             mockProbeResult
         }
 
-        val viewModel = MergeOrderViewModel(mockContext, mockFfprobeEngine, mockMergeValidator)
+        val viewModel = MergeOrderViewModel(mockContext, mockFfprobeEngine, mockMergeValidator, mockPartModeDetector, mockPreFlightEvaluator)
 
         // Start addParts
         viewModel.addParts(listOf("content://uri1", "content://uri2"))
@@ -112,7 +116,7 @@ class MergeOrderViewModelTest {
             throw RuntimeException("Probe failed!")
         }
 
-        val viewModel = MergeOrderViewModel(mockContext, mockFfprobeEngine, mockMergeValidator)
+        val viewModel = MergeOrderViewModel(mockContext, mockFfprobeEngine, mockMergeValidator, mockPartModeDetector, mockPreFlightEvaluator)
 
         // Start addParts
         viewModel.addParts(listOf("content://uri1"))

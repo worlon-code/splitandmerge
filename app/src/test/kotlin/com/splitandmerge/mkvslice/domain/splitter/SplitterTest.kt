@@ -34,6 +34,7 @@ class SplitterTest {
     private val cutPlanner = CutPlanner()
     private val manifestWriter = mockk<ManifestWriter>(relaxed = true)
     private val jobProgressTracker = mockk<JobProgressTracker>(relaxed = true)
+    private val transportSplitter = mockk<com.splitandmerge.mkvslice.domain.transport.TransportSplitter>(relaxed = true)
 
     private lateinit var splitter: Splitter
 
@@ -46,7 +47,8 @@ class SplitterTest {
             ffmpegEngine = ffmpegEngine,
             cutPlanner = cutPlanner,
             manifestWriter = manifestWriter,
-            jobProgressTracker = jobProgressTracker
+            jobProgressTracker = jobProgressTracker,
+            transportSplitter = transportSplitter
         )
     }
 

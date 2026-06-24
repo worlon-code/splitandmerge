@@ -193,6 +193,8 @@ data class JobEntity(
     val targetCapBytes: Long? = null,
     val ceilingCapBytes: Long? = null,
     val manifestPath: String? = null,
+    // v0.0.12 — byte-exact Transport split
+    val splitFormat: String? = null,    // "BYTE" | null (null → structural FFmpeg)
 )
 
 enum class JobType { SPLIT, MERGE }
@@ -218,6 +220,9 @@ data class PartEntity(
     val sizeBytes: Long? = null,        // null until written
     val sha256: String? = null,         // null in v1 (computed on demand)
     val status: PartStatus,
+    // v0.0.12 — byte-exact Transport split
+    val payloadOffset: Long? = null,    // byte offset of this chunk in the original file
+    val partSha256: String? = null,     // per-part payload SHA-256 (hex)
 )
 
 enum class PartStatus { PENDING, RUNNING, DONE, FAILED }
@@ -266,6 +271,13 @@ Stored under `com.splitandmerge.mkvslice.preferences_pb`:
   and recreate.
 - Migration tests: one test per `Migration_<from>_<to>` in
   `app/src/androidTest/.../MigrationTest.kt`.
+
+| Version | Change | Migration |
+|---|---|---|
+| v1 → v2 | Real-time metrics on JobEntity | Migration_1_2 |
+| v2 → v3 | MergeOrder/MergeConfig columns | Migration_2_3 |
+| v3 → v4 | `cleanup_patterns` table | Migration_3_4 |
+| v4 → v5 | `jobs.splitFormat TEXT`, `parts.payloadOffset INTEGER`, `parts.partSha256 TEXT` | Migration_4_5 |
 
 ## 3. JSON shapes
 

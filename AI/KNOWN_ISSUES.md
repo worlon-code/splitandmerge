@@ -30,14 +30,15 @@ Status legend: `OPEN`, `IN-PROGRESS`, `FIXED-IN-vX.Y.Z`.
 | K-007 | MAJOR | OPEN | Stitch design pack: `mergeorder_light/` not yet generated. Re-prompt scheduled. |
 | K-008 | KNOWN | OPEN | Settings → Reliability → "Improve reliability on this device" only displays the OEM helper text on Xiaomi/OnePlus/Huawei/Realme; works on all OEMs. |
 | K-009 | KNOWN | OPEN | x86_64 emulator can't run the engine smoke test (no HEVC decoder on most images). Tests are gated with `assumeTrue` on `Build.SUPPORTED_64_BIT_ABIS.contains("arm64-v8a")`. CI emulator is x86_64 → engine smoke runs only on physical devices. |
-| K-018 | MINOR | OPEN | Round-trip drift on long sources. BySize and ByParts merges add ~4 s (~0.09%) to 4393 s source on M51. Audio/video/subs stay in sync. Planned fix in v0.0.12. |
-| K-021 | MINOR | OPEN | Merged output ~571 KB smaller than sum of parts. 3-part input totals 1,029,345,683 bytes; merged output is 1,028,760,434 bytes (~571 KB delta). Likely cause: MKV container header dedup during concat. Planned investigation in v0.0.11+. |
+| K-021 | MINOR | OPEN | Merged output ~571 KB smaller than sum of parts. 3-part input totals 1,029,345,683 bytes; merged output is 1,028,760,434 bytes (~571 KB delta). Likely cause: MKV container header dedup during concat. Applies to FFmpeg structural merge only; Transport byte-exact merge is byte-identical. Planned investigation in v0.0.11+. |
 | K-022 | MINOR | OPEN | Use du instead of df for verification cache sampling. df samples partition-wide bytes, contaminated by background app I/O during Step 3-v2. Action: replace `df` with `du` via run-as in the verification protocol. Planned process improvement in v0.0.11+. |
+| K-025 | KNOWN | OPEN | Byte-split parts (`part_NN_TT.mkv`) carry an `.mkv` extension but are NOT individually playable — they are raw binary chunks with a 64-byte `MKVSLICE` frame header prefix. Players will attempt to open them and show garbage or errors. User is warned in the Split Config screen. No fix planned; this is an architectural consequence of byte-exact split. |
 
 ## Resolved
 
 | ID | Severity | Status | Title |
 |---|---|---|---|
+| K-018 | MINOR | FIXED-IN-v0.0.12 | Round-trip drift — superseded by Transport byte-exact engine for SHA-256 identity use-cases. FFmpeg structural merge drift is a known limitation of the FFmpeg path (audio-snap deferred to v1+). |
 | K-019 | MINOR | FIXED-IN-v0.0.11 | FileSystem-seam refactor (mockable Merger disk I/O) |
 | K-024 | MAJOR | FIXED-IN-v0.0.11 | androidTest constructor compile break (SettingsRepository in Merger ctor) |
 | K-023 | MAJOR | FIXED-IN-v0.0.10.1 | Release-build UnsatisfiedLinkError in SAF file picker due to R8 stripping FFmpegKit native binding classes. Fixed by adding ProGuard keep rules for com.arthenica.** and com.antonkarpenko.**. |

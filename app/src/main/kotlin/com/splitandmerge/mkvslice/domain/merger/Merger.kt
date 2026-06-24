@@ -64,11 +64,23 @@ class Merger @Inject constructor(
     private val ffprobeEngine: FfprobeEngine,
     private val mergeValidator: MergeValidator,
     private val settingsRepository: SettingsRepository,
-    private val fileSystem: FileSystem
+    private val fileSystem: FileSystem,
+    private val partModeDetector: PartModeDetector,
+    private val transportMerger: TransportMerger
 ) {
 
     suspend fun runMerge(jobId: String) {
         val job = jobDao.getById(jobId) ?: throw IllegalArgumentException("Job $jobId not found")
+        val parts = jobDao.getPartsForJob(jobId)
+        val partUris = parts.mapNotNull { it.sourceUri }.filter { it.isNotBlank() }
+
+        // Upfront Sniff Magic check & routing
+        val hasByteParts = partUris.any { partModeDetector.detectMode(it) == PartMode.MKVSLICE }
+        if (hasByteParts) {
+            transportMerger.runMerge(jobId)
+            return
+        }
+
         val stagedFiles = mutableListOf<File>()
         val concatFile = File(fileSystem.cacheDir(), "concat.txt")
         val tempOutputFile = File(fileSystem.cacheDir(), "merge_tmp${job.outputContainer}")
