@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -21,6 +22,7 @@ interface SettingsRepository {
     suspend fun setImproveReliability(improve: Boolean)
     suspend fun setKeepScreenOn(keep: Boolean)
     suspend fun setDefaultOutputFolderUri(uri: String)
+    suspend fun setLastOfferedVersionCode(versionCode: Int)
 }
 
 @Singleton
@@ -34,6 +36,7 @@ class DataStoreSettingsRepository @Inject constructor(
         val IMPROVE_RELIABILITY = booleanPreferencesKey("improve_reliability")
         val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
         val DEFAULT_OUTPUT_FOLDER_URI = stringPreferencesKey("default_output_folder_uri")
+        val LAST_OFFERED_VERSION_CODE = intPreferencesKey("last_offered_version_code")
     }
 
     override val settingsFlow: Flow<SettingsState> = dataStore.data
@@ -56,7 +59,8 @@ class DataStoreSettingsRepository @Inject constructor(
                 defaultCapGb = preferences[PreferencesKeys.DEFAULT_CAP_GB] ?: 9.0,
                 improveReliability = preferences[PreferencesKeys.IMPROVE_RELIABILITY] ?: true,
                 keepScreenOn = preferences[PreferencesKeys.KEEP_SCREEN_ON] ?: false,
-                defaultOutputFolderUri = preferences[PreferencesKeys.DEFAULT_OUTPUT_FOLDER_URI] ?: ""
+                defaultOutputFolderUri = preferences[PreferencesKeys.DEFAULT_OUTPUT_FOLDER_URI] ?: "",
+                lastOfferedVersionCode = preferences[PreferencesKeys.LAST_OFFERED_VERSION_CODE] ?: 0
             )
         }
 
@@ -87,6 +91,12 @@ class DataStoreSettingsRepository @Inject constructor(
     override suspend fun setDefaultOutputFolderUri(uri: String) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.DEFAULT_OUTPUT_FOLDER_URI] = uri
+        }
+    }
+
+    override suspend fun setLastOfferedVersionCode(versionCode: Int) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.LAST_OFFERED_VERSION_CODE] = versionCode
         }
     }
 }

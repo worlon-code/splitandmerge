@@ -12,6 +12,13 @@ import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.model.JobType
 import com.splitandmerge.mkvslice.domain.model.PartStatus
 import com.splitandmerge.mkvslice.service.JobService
+import com.splitandmerge.mkvslice.data.db.DefaultTrackFileResultDao
+import com.splitandmerge.mkvslice.domain.defaulttracks.FlagJournal
+import com.splitandmerge.mkvslice.domain.defaulttracks.RollbackResult
+import com.splitandmerge.mkvslice.platform.io.FileSystem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
@@ -38,8 +45,84 @@ data class LibraryState(
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val jobDao: JobDao,
+    private val defaultTrackFileResultDao: DefaultTrackFileResultDao,
+    private val fileSystem: FileSystem,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
+
+    data class OrphanJournal(
+        val cacheFile: java.io.File,
+        val jobId: String,
+        val fileIndex: Int,
+        val displayName: String,
+        val uri: String
+    )
+
+    private val _orphanJournals = MutableStateFlow<List<OrphanJournal>>(emptyList())
+    val orphanJournals: StateFlow<List<OrphanJournal>> = _orphanJournals
+
+    private val dismissedJournals = mutableSetOf<String>()
+
+    fun checkForOrphanJournals() {
+        viewModelScope.launch {
+            val hasRunningJob = state.value.jobs.any { it.status == JobStatus.RUNNING }
+            if (hasRunningJob) {
+                _orphanJournals.value = emptyList()
+                return@launch
+            }
+
+            val cacheDir = context.cacheDir
+            val files = cacheDir.listFiles { _, name ->
+                name.startsWith("defaulttracks_") && name.endsWith(".journal")
+            } ?: emptyArray()
+
+            val list = mutableListOf<OrphanJournal>()
+            for (file in files) {
+                if (dismissedJournals.contains(file.name)) continue
+                val parts = file.name.removePrefix("defaulttracks_").removeSuffix(".journal").split("_")
+                if (parts.size == 2) {
+                    val jobId = parts[0]
+                    val fileIndex = parts[1].toIntOrNull() ?: 0
+                    val results = defaultTrackFileResultDao.getResultsForJob(jobId)
+                    val matchedRow = results.getOrNull(fileIndex)
+                    if (matchedRow != null) {
+                        list.add(OrphanJournal(file, jobId, fileIndex, matchedRow.displayName, matchedRow.uri))
+                    } else {
+                        list.add(OrphanJournal(file, jobId, fileIndex, "File #$fileIndex (Job $jobId)", ""))
+                    }
+                }
+            }
+            _orphanJournals.value = list
+        }
+    }
+
+    fun performRollback(orphan: OrphanJournal) {
+        viewModelScope.launch {
+            val journal = FlagJournal(context.cacheDir, orphan.jobId, orphan.fileIndex)
+            val fd = fileSystem.openFileDescriptor(orphan.uri, "rw")
+            if (fd != null) {
+                val result = withContext(Dispatchers.IO) {
+                    fd.use {
+                        journal.rollback(fd)
+                    }
+                }
+                if (result is RollbackResult.SUCCESS) {
+                    timber.log.Timber.d("Rollback successful for ${orphan.displayName}")
+                } else {
+                    timber.log.Timber.e("Rollback failed/refused for ${orphan.displayName}")
+                }
+            } else {
+                timber.log.Timber.e("Failed to open file descriptor for rollback")
+            }
+            dismissedJournals.add(orphan.cacheFile.name)
+            checkForOrphanJournals()
+        }
+    }
+
+    fun dismissOrphanDialog(orphan: OrphanJournal) {
+        dismissedJournals.add(orphan.cacheFile.name)
+        checkForOrphanJournals()
+    }
 
     sealed class NavCommand {
         object DoNothing : NavCommand()
@@ -87,6 +170,10 @@ class LibraryViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    init {
+        checkForOrphanJournals()
+    }
 
     fun handleIntent(intent: LibraryIntent) {
         viewModelScope.launch {

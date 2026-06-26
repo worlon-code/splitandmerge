@@ -13,4 +13,5 @@ interface FileSystem {
     fun openOutput(file: File): OutputStream
     fun createNewFile(file: File): Boolean
     fun delete(file: File): Boolean
+    fun openFileDescriptor(uri: String, mode: String): FileDescriptorWrapper?
 }

@@ -49,6 +49,7 @@ class SplitSmokeTest {
 
     @Test
     fun splitCreatesPartsAndManifest() = runTest(timeout = kotlin.time.Duration.parse("15m")) {
+        org.junit.Assume.assumeTrue("Skipping: Dridam.mkv fixture is not present on the device", sourceMp4.exists())
         // Enqueue a split job
         val jobId = UUID.randomUUID().toString()
         jobDao.upsert(

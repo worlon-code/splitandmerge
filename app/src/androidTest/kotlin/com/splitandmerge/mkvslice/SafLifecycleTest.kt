@@ -13,6 +13,8 @@ import com.splitandmerge.mkvslice.data.settings.SettingsRepository
 import com.splitandmerge.mkvslice.data.settings.SettingsState
 import com.splitandmerge.mkvslice.domain.merger.MergeValidator
 import com.splitandmerge.mkvslice.domain.merger.Merger
+import com.splitandmerge.mkvslice.domain.merger.PartModeDetector
+import com.splitandmerge.mkvslice.domain.merger.TransportMerger
 import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.model.JobType
 import com.splitandmerge.mkvslice.domain.model.PartStatus
@@ -53,7 +55,9 @@ class SafLifecycleTest {
         every { settingsRepository.settingsFlow } returns flowOf(SettingsState())
         val fileSystem = RealFileSystem(context)
         
-        merger = Merger(context, jobDao, engine, probeEngine, validator, settingsRepository, fileSystem)
+        val partModeDetector = mockk<PartModeDetector>(relaxed = true)
+        val transportMerger = mockk<TransportMerger>(relaxed = true)
+        merger = Merger(context, jobDao, engine, probeEngine, validator, settingsRepository, fileSystem, partModeDetector, transportMerger)
 
         outDir = File(context.cacheDir, "test_out")
         if (!outDir.exists()) outDir.mkdirs()

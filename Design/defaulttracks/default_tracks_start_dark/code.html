@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow - Default Tracks</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#2b292c",
+                    "error-container": "#93000a",
+                    "surface-bright": "#3a393b",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-highest": "#363436",
+                    "on-tertiary-fixed": "#321200",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#000000",
+                    "secondary-container": "#4d4079",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-high": "#2b292c",
+                    "tertiary-container": "#ffb68c",
+                    "inverse-surface": "#e6e1e4",
+                    "on-primary": "#003731",
+                    "on-surface": "#e6e1e4",
+                    "on-secondary": "#34275e",
+                    "secondary": "#cdbdff",
+                    "background": "#000000",
+                    "surface-dim": "#141315",
+                    "primary": "#9ff2e2",
+                    "surface-container-lowest": "#0f0e10",
+                    "primary-container": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "outline-variant": "#49454f",
+                    "on-tertiary-fixed-variant": "#6c3a19",
+                    "tertiary": "#ffdbc9",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "on-secondary-fixed": "#1f1048",
+                    "outline": "#889390",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4b3e76",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-secondary-container": "#bfaff0",
+                    "on-tertiary-container": "#7a4524",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-container": "#005d52",
+                    "surface-variant": "#363436",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "on-error": "#690005",
+                    "surface-container-low": "#1c1b1d",
+                    "on-background": "#e6e1e4",
+                    "inverse-primary": "#016b5f",
+                    "primary-fixed": "#9ff2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "headline-lg-mobile": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-sm": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e6e1e4;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-symbols {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container-high transition-colors rounded-full active:opacity-80">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">Default Tracks</h1>
+</div>
+<div class="flex items-center">
+<button class="p-2 hover:bg-surface-container-high transition-colors rounded-full active:opacity-80">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-72 z-40 bg-surface-container-low border-r border-outline-variant hidden md:flex flex-col py-6 gap-2">
+<div class="px-6 mb-8">
+<span class="font-headline-md text-headline-md text-primary font-bold">VideoFlow Pro</span>
+</div>
+<nav class="flex flex-col">
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4 font-body-lg text-body-lg" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="hidden md:inline">Split</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4 font-body-lg text-body-lg" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="hidden md:inline">Merge</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 transition-all duration-200 flex items-center gap-4 font-body-lg text-body-lg" href="#">
+<span class="material-symbols-outlined filled-symbols" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="hidden md:inline">Queue</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4 font-body-lg text-body-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="hidden md:inline">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-grow pt-24 pb-24 md:pl-72 flex items-center justify-center">
+<div class="w-full max-w-md px-margin-mobile flex flex-col items-center text-center">
+<!-- Hero Block -->
+<div class="relative mb-8">
+<div class="w-24 h-24 rounded-full bg-secondary-container flex items-center justify-center animate-pulse-slow">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-size: 64px;">flag</span>
+</div>
+<!-- Ambient Glow Decoration -->
+<div class="absolute -inset-4 bg-primary/5 blur-3xl -z-10 rounded-full"></div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-3">Set default audio &amp; subtitles</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-12 max-w-xs mx-auto leading-relaxed">
+                Pick a video or a folder. We'll read every track and let you choose the default audio, subtitle, and forced flag — then apply it to all similar files. No re-encoding; only the track flags change.
+            </p>
+<!-- Action Buttons -->
+<div class="w-full space-y-4">
+<button class="flex items-center justify-center gap-3 w-full h-12 rounded-full bg-surface-container-high text-on-surface font-body-lg hover:bg-surface-bright transition-colors active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined text-primary">video_file</span>
+                    Pick a file
+                </button>
+<button class="flex items-center justify-center gap-3 w-full h-12 rounded-full bg-surface-container-high text-on-surface font-body-lg hover:bg-surface-bright transition-colors active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+                    Pick a folder
+                </button>
+</div>
+<!-- Footnote -->
+<p class="font-label-md text-label-md text-on-surface-variant mt-8 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">info</span>
+                MKV files only.
+            </p>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container rounded-t-xl border-t border-outline-variant flex justify-around items-center h-20 pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-all duration-100 active:scale-95" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-all duration-100 active:scale-95" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md mt-1">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-all duration-100 active:scale-95" href="#">
+<span class="material-symbols-outlined filled-symbols" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-label-md text-label-md mt-1">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-all duration-100 active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<!-- Contextual FAB (Suppressed based on Rules - Transactional Start State) -->
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('opacity-70');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('opacity-70');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('opacity-70');
+            });
+        });
+
+        // Determine active navigation - In this context, let's assume 'Queue' is the active section 
+        // as we are "setting up" a workflow that leads to a processing queue.
+    </script>
+</body></html>

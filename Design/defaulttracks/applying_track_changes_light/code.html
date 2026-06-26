@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow - Applying Changes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#2b292c",
+                        "error-container": "#93000a",
+                        "surface-bright": "#3a393b",
+                        "tertiary-fixed": "#ffdbc9",
+                        "surface-container-highest": "#363436",
+                        "on-tertiary-fixed": "#321200",
+                        "on-primary-fixed-variant": "#005047",
+                        "surface": "#141315",
+                        "secondary-container": "#4d4079",
+                        "inverse-on-surface": "#313032",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-high": "#2b292c",
+                        "tertiary-container": "#ffb68c",
+                        "inverse-surface": "#e6e1e4",
+                        "on-primary": "#003731",
+                        "on-surface": "#e6e1e4",
+                        "on-secondary": "#34275e",
+                        "secondary": "#cdbdff",
+                        "background": "#141315",
+                        "surface-dim": "#141315",
+                        "primary": "#9ff2e2",
+                        "surface-container-lowest": "#0f0e10",
+                        "primary-container": "#83d5c6",
+                        "surface-tint": "#83d5c6",
+                        "outline-variant": "#49454f",
+                        "on-tertiary-fixed-variant": "#6c3a19",
+                        "tertiary": "#ffdbc9",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "on-secondary-fixed": "#1f1048",
+                        "outline": "#889390",
+                        "secondary-fixed": "#e8deff",
+                        "on-secondary-fixed-variant": "#4b3e76",
+                        "primary-fixed-dim": "#83d5c6",
+                        "on-secondary-container": "#bfaff0",
+                        "on-tertiary-container": "#7a4524",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-container": "#005d52",
+                        "surface-variant": "#363436",
+                        "tertiary-fixed-dim": "#ffb68c",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1c1b1d",
+                        "on-background": "#e6e1e4",
+                        "inverse-primary": "#016b5f",
+                        "primary-fixed": "#9ff2e2",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#502405"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "headline-lg-mobile": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"],
+                        "code-sm": ["JetBrains Mono"],
+                        "headline-sm": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-lg": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes progress-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .progress-bar-animate::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: progress-shimmer 1.5s infinite;
+        }
+        @keyframes spin-custom {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-fast {
+            animation: spin-custom 1s linear infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body-md overflow-hidden">
+<!-- Top App Bar (Top-level destination check: Suppression logic - This is a task-focused sub-page/progress screen, but JSON includes TopAppBar for context. We render it as requested.) -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">arrow_back</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">Applying changes</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full">more_vert</button>
+</header>
+<main class="flex-1 mt-16 mb-20 flex flex-col items-center">
+<!-- Linear Progress Indicator -->
+<div class="w-full h-1 bg-surface-container overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full w-[58%] bg-primary progress-bar-animate"></div>
+</div>
+<div class="w-full max-w-4xl px-margin-mobile md:px-margin-desktop py-lg space-y-lg">
+<!-- Status Header -->
+<div class="space-y-base">
+<h2 class="font-headline-md text-headline-md text-on-surface">Updating 31 files…</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">18 done · 0 failed</p>
+</div>
+<!-- Live List Section -->
+<div class="bg-surface-container border border-outline-variant rounded-xl overflow-hidden">
+<div class="divide-y divide-outline-variant">
+<!-- Row 1: Completed -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md font-code-sm text-code-sm">S01E02.mkv</span>
+</div>
+<span class="text-on-surface-variant text-xs font-label-md">Completed</span>
+</div>
+<!-- Row 2: Completed -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md font-code-sm text-code-sm">S01E03.mkv</span>
+</div>
+<span class="text-on-surface-variant text-xs font-label-md">Completed</span>
+</div>
+<!-- Row 3: Processing -->
+<div class="flex items-center justify-between p-md bg-secondary-container/20">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary animate-spin-fast">sync</span>
+<span class="font-label-md text-label-md font-code-sm text-code-sm text-primary">S01E04.mkv</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-primary text-xs font-label-md">Encoding...</span>
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[45%]"></div>
+</div>
+</div>
+</div>
+<!-- Row 4: Queued -->
+<div class="flex items-center justify-between p-md opacity-60">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">schedule</span>
+<span class="font-label-md text-label-md font-code-sm text-code-sm">S01E05.mkv</span>
+</div>
+<span class="text-on-surface-variant text-xs font-label-md">Queued</span>
+</div>
+<!-- Row 5: Queued -->
+<div class="flex items-center justify-between p-md opacity-60">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">schedule</span>
+<span class="font-label-md text-label-md font-code-sm text-code-sm">S01E06.mkv</span>
+</div>
+<span class="text-on-surface-variant text-xs font-label-md">Queued</span>
+</div>
+</div>
+</div>
+<!-- Bento-style System Health (Visual interest) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="bg-surface-container border border-outline-variant p-md rounded-xl space-y-sm">
+<p class="text-on-surface-variant font-label-md text-label-md">CPU Usage</p>
+<p class="text-headline-sm font-headline-sm text-primary">82%</p>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82%]"></div>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant p-md rounded-xl space-y-sm">
+<p class="text-on-surface-variant font-label-md text-label-md">RAM Allocated</p>
+<p class="text-headline-sm font-headline-sm text-secondary">4.2GB</p>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[65%]"></div>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant p-md rounded-xl space-y-sm">
+<p class="text-on-surface-variant font-label-md text-label-md">Temp</p>
+<p class="text-headline-sm font-headline-sm text-tertiary">64°C</p>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[40%]"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions & Navigation Shell -->
+<div class="fixed bottom-0 w-full z-50">
+<!-- Cancel Action Area -->
+<div class="bg-surface/90 backdrop-blur-md px-margin-mobile py-sm border-t border-outline-variant flex flex-col items-center gap-xs">
+<p class="font-label-md text-label-md text-on-surface-variant text-[10px] uppercase tracking-wider">Finished files are already saved.</p>
+<button class="w-full md:w-auto md:px-xl py-2 rounded-full border border-outline text-primary font-label-md text-label-md hover:bg-surface-bright active:scale-95 transition-all">
+                Cancel
+            </button>
+</div>
+<!-- Bottom Navigation Bar (Semantic Mapping: 'Queue' active as we are in a progress/list state) -->
+<nav class="bg-surface-container border-t border-outline-variant h-20 flex justify-around items-center pb-safe md:hidden">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-colors active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-colors active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</div>
+<!-- ACTIVE: Queue -->
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-label-md text-label-md">Queue</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright transition-colors active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+</div>
+<!-- Desktop Navigation Drawer -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-72 z-40 bg-surface-container-low border-r border-outline-variant hidden md:flex flex-col py-6 gap-2">
+<div class="px-6 mb-8">
+<span class="font-headline-md text-headline-md text-primary font-bold">VideoFlow Pro</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-body-lg text-body-lg">Split</span>
+</div>
+<div class="text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-body-lg text-body-lg">Merge</span>
+</div>
+<!-- ACTIVE: Queue -->
+<div class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 flex items-center gap-4 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-body-lg text-body-lg">Queue</span>
+</div>
+<div class="text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</div>
+</div>
+</aside>
+<!-- Ambient background shader -->
+<div class="fixed inset-0 -z-10 pointer-events-none opacity-20">
+
+</div>
+<script>
+        // Micro-interaction: Mocking the real-time update of progress
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressFill = document.querySelector('.progress-bar-animate');
+            let width = 58;
+            setInterval(() => {
+                if (width < 98) {
+                    width += 0.1;
+                    progressFill.style.width = width + '%';
+                }
+            }, 500);
+        });
+    </script>
+</body></html>

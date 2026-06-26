@@ -16,8 +16,8 @@ android {
         applicationId = "com.splitandmerge.mkvslice"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "0.0.12"
+        versionCode = 14
+        versionName = "0.0.13"
 
         testInstrumentationRunner = "com.splitandmerge.mkvslice.HiltTestRunner"
         vectorDrawables {
@@ -28,7 +28,7 @@ android {
             abiFilters.add("arm64-v8a")
         }
 
-        buildConfigField("String", "UPDATE_CHECK_URL", "\"https://raw.githubusercontent.com/splitandmerge/mkvslice-releases/main/\"")
+        buildConfigField("String", "UPDATE_CHECK_URL", "\"https://raw.githubusercontent.com/worlon-code/splitandmerge/main/\"")
     }
 
     signingConfigs {

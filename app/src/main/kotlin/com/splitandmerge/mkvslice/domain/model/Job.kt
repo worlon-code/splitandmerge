@@ -2,7 +2,8 @@ package com.splitandmerge.mkvslice.domain.model
 
 enum class JobType {
     SPLIT,
-    MERGE
+    MERGE,
+    SET_DEFAULT_TRACKS
 }
 
 enum class JobStatus {

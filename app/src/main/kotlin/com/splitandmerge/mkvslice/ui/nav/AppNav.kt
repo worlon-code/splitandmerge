@@ -68,6 +68,7 @@ fun AppNav(
                     onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
                     onStartSplitFlow = { uri, filename -> navController.navigate(Routes.fileDetails(uri, filename)) },
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
+                    onStartDefaultTracksFlow = { navController.navigate(Routes.DEFAULT_TRACKS_FLOW) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
                     },
@@ -84,6 +85,7 @@ fun AppNav(
                     onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
                     onStartSplitFlow = { uri, filename -> navController.navigate(Routes.fileDetails(uri, filename)) },
                     onStartMergeFlow = { navController.navigate(Routes.MERGE_ORDER) },
+                    onStartDefaultTracksFlow = { navController.navigate(Routes.DEFAULT_TRACKS_FLOW) },
                     onNavigateToJobDetail = { jobId ->
                         navController.navigate(Routes.jobProgress(jobId))
                     },
@@ -286,6 +288,14 @@ fun AppNav(
 
         composable(Routes.OSS_NOTICES) {
             OssNoticesScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.DEFAULT_TRACKS_FLOW) {
+            val defaultTracksViewModel: com.splitandmerge.mkvslice.ui.defaulttracks.DefaultTracksViewModel = hiltViewModel()
+            com.splitandmerge.mkvslice.ui.defaulttracks.DefaultTracksFlowScreen(
+                viewModel = defaultTracksViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

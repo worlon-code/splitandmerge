@@ -9,5 +9,6 @@ data class SettingsState(
     val defaultCapGb: Double = 9.0,
     val improveReliability: Boolean = true,
     val keepScreenOn: Boolean = false,
-    val defaultOutputFolderUri: String = ""
+    val defaultOutputFolderUri: String = "",
+    val lastOfferedVersionCode: Int = 0
 )

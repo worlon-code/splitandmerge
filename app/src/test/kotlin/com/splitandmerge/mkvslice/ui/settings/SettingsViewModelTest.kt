@@ -44,7 +44,7 @@ class SettingsViewModelTest {
         every { settingsRepository.settingsFlow } returns flowOf(
             com.splitandmerge.mkvslice.data.settings.SettingsState()
         )
-        every { updateRepository.state } returns kotlinx.coroutines.flow.MutableStateFlow(UpdateState())
+        every { updateRepository.state } returns kotlinx.coroutines.flow.MutableStateFlow(UpdateState.Idle)
         io.mockk.mockkStatic(Uri::class)
         val uriMap = mutableMapOf<String, Uri>()
         every { Uri.parse(any()) } answers {

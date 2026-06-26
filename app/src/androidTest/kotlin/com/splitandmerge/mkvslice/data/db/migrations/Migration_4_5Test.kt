@@ -5,7 +5,7 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.splitandmerge.mkvslice.data.db.AppDatabase
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,8 +57,8 @@ class Migration_4_5Test {
         val partsCursor = db.query("SELECT id, byteOffset, byteSize FROM parts WHERE id = 'part-1'")
         partsCursor.moveToFirst()
         assertEquals("part-1", partsCursor.getString(0))
-        assert(partsCursor.isNull(1))
-        assert(partsCursor.isNull(2))
+        assertTrue(partsCursor.isNull(1))
+        assertTrue(partsCursor.isNull(2))
         partsCursor.close()
     }
 }

@@ -30,6 +30,7 @@ d r i d a m . m k v
 *.mp4
 *.avi
 *.mov
+*.apk
 
 # Agent scratch / temporary files
 tmp_*

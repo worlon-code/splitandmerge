@@ -52,6 +52,7 @@ $jsonObj = @{
     sha256 = $hash
     apkUrl = "https://github.com/worlon-code/splitandmerge/releases/download/$tagName/app-release.apk"
     changelog = $changelogArray
+    sizeBytes = $apkSize
 }
 
 $jsonPath = "videosplitter-version.json"
@@ -61,6 +62,8 @@ Write-Host "Generated $jsonPath with SHA-256: $hash"
 
 # 5. Push to git
 Write-Host "Pushing commits and tags to origin..."
+git add $jsonPath
+git commit -m "chore: Update manifest $jsonPath for release $tagName" --allow-empty
 git push origin main --tags
 
 # 6. Create GitHub Release using gh CLI

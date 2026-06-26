@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Splitter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#8f4c36",
+                        "secondary-fixed": "#e8deff",
+                        "primary-container": "#006b5f",
+                        "on-background": "#e0e3e1",
+                        "on-tertiary-container": "#ffcebf",
+                        "surface-container": "#1c201f",
+                        "surface-dim": "#101413",
+                        "background": "#000000",
+                        "surface-container-high": "#272b2a",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#9ff2e2",
+                        "surface-bright": "#363a39",
+                        "tertiary-fixed-dim": "#ffb59e",
+                        "surface-container-low": "#181c1b",
+                        "on-tertiary-fixed": "#390b00",
+                        "surface-container-highest": "#313634",
+                        "on-primary-fixed": "#00201c",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#4e2ca9",
+                        "on-secondary-container": "#bda8ff",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#cdbdff",
+                        "surface-tint": "#83d5c6",
+                        "on-tertiary": "#55200d",
+                        "inverse-surface": "#e0e3e1",
+                        "outline": "#889390",
+                        "surface-variant": "#313634",
+                        "inverse-on-surface": "#2d3130",
+                        "on-surface-variant": "#bec9c5",
+                        "surface-container-lowest": "#0b0f0e",
+                        "primary": "#83d5c6",
+                        "on-tertiary-fixed-variant": "#723521",
+                        "inverse-primary": "#006b5f",
+                        "on-primary": "#003731",
+                        "on-surface": "#e0e3e1",
+                        "tertiary": "#ffb59e",
+                        "on-secondary-fixed": "#20005f",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "outline-variant": "#3e4946",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#83d5c6",
+                        "secondary-container": "#4e2ca9",
+                        "on-primary-fixed-variant": "#005047",
+                        "surface": "#101413",
+                        "on-primary-container": "#95e8d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "8dp",
+                        "tablet_margin": "24dp",
+                        "phone_margin": "16dp",
+                        "list_padding": "12dp",
+                        "touch_target_min": "48dp"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Roboto Flex"],
+                        "title-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-lg": ["Roboto Flex"],
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-md": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e0e3e1;
+            font-family: 'Roboto Flex', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .progress-shimmer {
+            background: linear-gradient(90deg, rgba(131, 213, 198, 0.2) 25%, rgba(131, 213, 198, 0.5) 50%, rgba(131, 213, 198, 0.2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- CenterAlignedTopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container/80 backdrop-blur-md flex items-center justify-between px-4 h-16">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">search</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-on-surface">Video Splitter</h1>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">more_vert</span>
+</button>
+</header>
+<main class="flex-grow pt-20 pb-24 px-4 max-w-2xl mx-auto w-full">
+<!-- Hero Actions: Grid of Three Action Tiles -->
+<section class="grid grid-cols-3 gap-2 mb-8">
+<button class="flex flex-col items-center justify-center gap-2 py-5 bg-primary-container text-on-primary-container rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[28px]">content_cut</span>
+<span class="font-label-md text-label-md text-center leading-tight">Split a video</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 py-5 bg-primary-container text-on-primary-container rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[28px]">merge</span>
+<span class="font-label-md text-label-md text-center leading-tight">Merge parts</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 py-5 bg-secondary-container text-on-secondary-container rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[28px]">flag</span>
+<span class="font-label-md text-label-md text-center leading-tight px-1">Set default tracks</span>
+</button>
+</section>
+<!-- Recent Jobs Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-title-lg text-title-lg text-on-surface">Recent jobs</h2>
+<button class="text-primary font-label-md text-label-md px-3 py-1 rounded-full hover:bg-primary/10">View all</button>
+</div>
+<div class="space-y-3">
+<!-- Running Job: Baahubali -->
+<div class="bg-surface-container-high rounded-2xl p-4 flex flex-col gap-3 border border-outline-variant/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container">movie</span>
+</div>
+<div>
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Baahubali.mp4</h3>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Running • 42%</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">pause</span>
+</div>
+<div class="w-full h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary progress-shimmer" style="width: 42%"></div>
+</div>
+</div>
+<!-- Queued Job: Kantara -->
+<div class="bg-surface-container-low rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">schedule</span>
+</div>
+<div>
+<h3 class="font-body-lg text-body-lg text-on-surface">Kantara_Final.mkv</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Queued • 1.2 GB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<!-- Done Job: Karuppu -->
+<div class="bg-surface-container-low rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h3 class="font-body-lg text-body-lg text-on-surface">Karuppu_Cut_01.mp4</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Done • 15m ago</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">open_in_new</span>
+</div>
+<!-- Failed Job: Devara -->
+<div class="bg-surface-container-low rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container">error</span>
+</div>
+<div>
+<h3 class="font-body-lg text-body-lg text-on-surface">Devara_Trailer.mov</h3>
+<span class="font-label-sm text-label-sm text-error">Failed • Codec mismatch</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">refresh</span>
+</div>
+<!-- Cancelled Job: Salaar -->
+<div class="bg-surface-container-low rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10 opacity-60">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">block</span>
+</div>
+<div>
+<h3 class="font-body-lg text-body-lg text-on-surface">Salaar_Rough.mp4</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cancelled</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Extended FAB -->
+<button class="fixed bottom-24 right-4 flex items-center gap-3 px-5 h-14 bg-primary-container text-on-primary-container rounded-2xl shadow-xl hover:shadow-2xl transition-all active:scale-95 group">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md font-bold uppercase tracking-widest">New job</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-low flex justify-around items-center px-4 py-3 border-t border-outline-variant shadow-sm">
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 Active: scale-95 transition-transform duration-100">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="merge">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+<!-- Ambient background element for AMOLED depth -->
+<div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+<div class="absolute -top-1/4 -right-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-secondary-container/5 blur-[120px] rounded-full"></div>
+</div>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body></html>

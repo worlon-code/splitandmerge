@@ -3,6 +3,7 @@ package com.splitandmerge.mkvslice.ui.nav
 object Routes {
     const val ONBOARDING = "onboarding"
     const val LIBRARY = "library"
+    const val DEFAULT_TRACKS_FLOW = "default_tracks_flow"
     const val FILE_DETAILS = "file_details?uri={uri}&filename={filename}"
     const val SPLIT_CONFIG = "split_config?uri={uri}&filename={filename}&sizeBytes={sizeBytes}&durationSec={durationSec}"
     const val SPLIT_CONFIRM = "split_confirm"

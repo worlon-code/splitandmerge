@@ -1,6 +1,7 @@
 package com.splitandmerge.mkvslice.platform.io
 
 import android.content.Context
+import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileInputStream
@@ -29,4 +30,18 @@ class RealFileSystem @Inject constructor(
     override fun createNewFile(file: File): Boolean = file.createNewFile()
 
     override fun delete(file: File): Boolean = file.delete()
+
+    override fun openFileDescriptor(uri: String, mode: String): FileDescriptorWrapper? {
+        return try {
+            val parsedUri = if (uri.startsWith("content://") || uri.startsWith("file://")) {
+                android.net.Uri.parse(uri)
+            } else {
+                android.net.Uri.fromFile(File(uri))
+            }
+            val pfd = context.contentResolver.openFileDescriptor(parsedUri, mode) ?: return null
+            RealFileDescriptorWrapper(pfd)
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

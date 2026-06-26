@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow Pro — Track Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#2b292c",
+                    "error-container": "#93000a",
+                    "surface-bright": "#3a393b",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-highest": "#363436",
+                    "on-tertiary-fixed": "#321200",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#141315",
+                    "secondary-container": "#4d4079",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-high": "#2b292c",
+                    "tertiary-container": "#ffb68c",
+                    "inverse-surface": "#e6e1e4",
+                    "on-primary": "#003731",
+                    "on-surface": "#e6e1e4",
+                    "on-secondary": "#34275e",
+                    "secondary": "#cdbdff",
+                    "background": "#141315",
+                    "surface-dim": "#141315",
+                    "primary": "#9ff2e2",
+                    "surface-container-lowest": "#0f0e10",
+                    "primary-container": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "outline-variant": "#49454f",
+                    "on-tertiary-fixed-variant": "#6c3a19",
+                    "tertiary": "#ffdbc9",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "on-secondary-fixed": "#1f1048",
+                    "outline": "#889390",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4b3e76",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-secondary-container": "#bfaff0",
+                    "on-tertiary-container": "#7a4524",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-container": "#005d52",
+                    "surface-variant": "#363436",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "on-error": "#690005",
+                    "surface-container-low": "#1c1b1d",
+                    "on-background": "#e6e1e4",
+                    "inverse-primary": "#016b5f",
+                    "primary-fixed": "#9ff2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "headline-lg-mobile": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-sm": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000; /* AMOLED Dark Variant */
+            color: #e6e1e4;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for technical density */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #49454f; border-radius: 2px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-black text-primary border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-high transition-colors rounded-full">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold">VideoFlow</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-high transition-colors rounded-full">more_vert</button>
+</div>
+</header>
+<!-- Sidebar (Desktop Navigation) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-72 z-40 bg-surface-container-low border-r border-outline-variant flex-col py-6 gap-2 pt-20">
+<div class="px-6 mb-4">
+<span class="text-primary font-headline-md text-headline-md">VideoFlow Pro</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-body-lg text-body-lg">Split</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-body-lg text-body-lg">Merge</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-body-lg text-body-lg">Queue</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-20 pb-40 md:ml-72 px-margin-mobile md:px-margin-desktop min-h-screen">
+<!-- File Header -->
+<section class="mb-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<span class="font-label-md text-label-md text-primary bg-primary-container/10 px-2 py-0.5 rounded border border-primary-container/20">FILE_ID: VX-9902</span>
+<h2 class="font-headline-lg text-headline-lg mt-2 tracking-tight">s04e12_final_render_v4.mkv</h2>
+<p class="text-on-surface-variant font-code-sm text-code-sm mt-1">/projects/archive/high_priority/media_assets/</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-xl font-label-md text-label-md flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                        Apply to all similar files
+                    </button>
+</div>
+</div>
+</section>
+<!-- Bento Grid Editor -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Audio Track Selector -->
+<div class="lg:col-span-7 bg-surface-container rounded-xl border border-outline-variant p-md">
+<div class="flex items-center justify-between mb-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">audiotrack</span>
+<h3 class="font-headline-sm text-headline-sm">Audio Streams</h3>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">4 STREAMS DETECTED</span>
+</div>
+<div class="space-y-sm">
+<!-- Audio Track Item -->
+<label class="group flex items-center justify-between p-md bg-black border border-outline-variant rounded-lg cursor-pointer hover:border-primary transition-colors">
+<div class="flex items-center gap-4">
+<input checked="" class="w-5 h-5 text-primary bg-black border-outline focus:ring-primary" name="audio-track" type="radio"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">English (United States)</span>
+<span class="bg-primary-container text-on-primary-container text-[10px] px-1.5 py-0.5 rounded font-label-md">DEFAULT</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">FLAC | 5.1 Surround | 24-bit | 48kHz</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-code-sm text-code-sm text-primary block">348 MB</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block">ID: 0:1</span>
+</div>
+</label>
+<!-- Audio Track Item (Pending Change) -->
+<label class="group flex items-center justify-between p-md bg-black border border-primary rounded-lg cursor-pointer transition-colors relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex items-center gap-4">
+<input class="w-5 h-5 text-primary bg-black border-outline focus:ring-primary" name="audio-track" type="radio"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">Japanese (Director's Cut)</span>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-1.5 py-0.5 rounded font-label-md">NEW SELECTION</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">DTS-HD MA | 2.0 Stereo | 24-bit | 48kHz</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-code-sm text-code-sm text-primary block">212 MB</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block">ID: 0:2</span>
+</div>
+</label>
+<!-- Audio Track Item -->
+<label class="group flex items-center justify-between p-md bg-black border border-outline-variant rounded-lg cursor-pointer hover:border-primary transition-colors">
+<div class="flex items-center gap-4">
+<input class="w-5 h-5 text-primary bg-black border-outline focus:ring-primary" name="audio-track" type="radio"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">Commentary (Producer)</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">AAC | 2.0 Stereo | 128kbps | 44.1kHz</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-code-sm text-code-sm text-primary block">45 MB</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block">ID: 0:3</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Metadata & Technical Readout -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<div class="bg-surface-container rounded-xl border border-outline-variant p-md flex-1">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h3 class="font-headline-sm text-headline-sm">Stream Analysis</h3>
+</div>
+<div class="space-y-4 font-code-sm text-code-sm">
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<span class="text-on-surface-variant uppercase">Container</span>
+<span class="text-on-surface">Matroska (MKV) v4</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<span class="text-on-surface-variant uppercase">Video Codec</span>
+<span class="text-on-surface">H.265 (HEVC) Main 10@L4.1</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<span class="text-on-surface-variant uppercase">Resolution</span>
+<span class="text-on-surface">3840 x 2160 (16:9)</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<span class="text-on-surface-variant uppercase">Frame Rate</span>
+<span class="text-on-surface">23.976 fps</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<span class="text-on-surface-variant uppercase">Color Space</span>
+<span class="text-on-surface">YUV 4:2:0 (10-bit) BT.2020</span>
+</div>
+<div class="mt-4 p-3 bg-black rounded border border-outline-variant text-[10px] leading-relaxed text-primary/70">
+                            FFMPEG PARAMS: -i $INPUT -map 0:v -map 0:a:1 -c:v copy -c:a flac -disposition:a:0 default
+                        </div>
+</div>
+</div>
+<!-- Subtle Animation Background Component -->
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant overflow-hidden relative">
+
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="font-label-md text-label-md text-primary tracking-widest uppercase">Real-time Stream Mapping</span>
+</div>
+</div>
+</div>
+<!-- Subtitle Track Selector -->
+<div class="lg:col-span-12 bg-surface-container rounded-xl border border-outline-variant p-md">
+<div class="flex items-center justify-between mb-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">subtitles</span>
+<h3 class="font-headline-sm text-headline-sm">Subtitle Tracks</h3>
+</div>
+<div class="flex gap-2">
+<button class="text-primary font-code-sm text-code-sm px-2 py-1 border border-primary/20 rounded hover:bg-primary/10 transition-colors">Select All</button>
+<button class="text-on-surface-variant font-code-sm text-code-sm px-2 py-1 border border-outline-variant rounded hover:bg-surface-bright transition-colors">Clear</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm">
+<!-- Subtitle Chip-style Radio -->
+<label class="flex items-center gap-3 p-3 bg-black border border-primary rounded-lg cursor-pointer">
+<input checked="" class="rounded bg-black border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">English (SDH)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">SRT | Internal</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3 bg-black border border-outline-variant rounded-lg cursor-pointer hover:border-primary transition-colors">
+<input class="rounded bg-black border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">French (Forced)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">ASS | Internal</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3 bg-black border border-outline-variant rounded-lg cursor-pointer hover:border-primary transition-colors">
+<input class="rounded bg-black border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Spanish (Latam)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">SRT | External</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Actions Bar (Above Nav) -->
+<div class="fixed bottom-20 w-full md:left-72 md:w-[calc(100%-18rem)] z-40 bg-black/80 backdrop-blur-md border-t border-outline-variant p-4">
+<div class="max-w-screen-xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Estimated Output Size</span>
+<span class="font-code-sm text-code-sm text-primary">12.4 GB (-1.2 GB delta)</span>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="px-6 py-2 rounded-full border border-outline-variant font-label-md text-label-md text-on-surface hover:bg-surface-bright transition-colors">Discard</button>
+<button class="px-8 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save_as</span>
+                    Commit Tracks
+                </button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container border-t border-outline-variant flex justify-around items-center h-20 pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 scale-95" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for radio/checkbox focus states
+        document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', (e) => {
+                // Potential logic for updating UI states based on selection
+                console.log('Track selection updated:', e.target.name);
+            });
+        });
+
+        // Atmospheric effect for the "Commit" button
+        const commitBtn = document.querySelector('button.bg-primary');
+        if (commitBtn) {
+            commitBtn.addEventListener('mouseenter', () => {
+                commitBtn.style.boxShadow = '0 0 15px rgba(159, 242, 226, 0.3)';
+            });
+            commitBtn.addEventListener('mouseleave', () => {
+                commitBtn.style.boxShadow = 'none';
+            });
+        }
+    </script>
+</body></html>

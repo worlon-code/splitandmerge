@@ -7,7 +7,6 @@ import com.splitandmerge.mkvslice.data.settings.SettingsRepository
 import com.splitandmerge.mkvslice.data.settings.ThemeMode
 import com.splitandmerge.mkvslice.data.update.UpdateRepository
 import com.splitandmerge.mkvslice.data.update.UpdateState
-import com.splitandmerge.mkvslice.data.update.Phase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -68,26 +67,29 @@ class SettingsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             updateRepository.state.collectLatest { updateState ->
-                val pct = if (updateState.totalBytes > 0) {
-                    (updateState.downloadedBytes * 100 / updateState.totalBytes).toInt()
-                } else 0
+                val checking = updateState is UpdateState.Checking
+                val available = updateState is UpdateState.Available
                 
-                val message = when (updateState.phase) {
-                    Phase.Idle -> ""
-                    Phase.Checking -> "Checking…"
-                    Phase.UpToDate -> "You have the latest version (v${BuildConfig.VERSION_NAME})."
-                    Phase.AvailableButDebug -> "Update v${updateState.manifest?.version} available — install disabled in debug build."
-                    Phase.AvailableReady -> "Update v${updateState.manifest?.version} available."
-                    Phase.Downloading -> "Downloading… $pct%"
-                    Phase.Verifying -> "Verifying…"
-                    Phase.ReadyToInstall -> "Installing…"
-                    Phase.InstallLaunched -> "Installation started…"
-                    Phase.Error -> updateState.errorMessage ?: "Update failed"
+                val message = when (updateState) {
+                    is UpdateState.Idle -> ""
+                    is UpdateState.Checking -> "Checking…"
+                    is UpdateState.UpToDate -> "You have the latest version (v${BuildConfig.VERSION_NAME})."
+                    is UpdateState.Available -> "Update v${updateState.versionName} available."
+                    is UpdateState.Downloading -> {
+                        val pct = (updateState.progress * 100).toInt()
+                        "Downloading… $pct%"
+                    }
+                    is UpdateState.Verifying -> "Verifying…"
+                    is UpdateState.NeedsInstallPermission -> "Install permission required."
+                    is UpdateState.ReadyToInstall -> "Ready to install."
+                    is UpdateState.Installing -> "Installing update…"
+                    is UpdateState.Installed -> "Installation complete."
+                    is UpdateState.Error -> updateState.reason
                 }
 
                 _state.value = _state.value.copy(
-                    checkingForUpdates = updateState.phase == Phase.Checking,
-                    updateAvailable = updateState.phase == Phase.AvailableReady,
+                    checkingForUpdates = checking,
+                    updateAvailable = available,
                     updateMessage = message
                 )
             }
@@ -113,8 +115,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun updateOutputFolder(folder: String) {
-        // Default-folder picker has no known source; require 1 GB minimum.
-        // Per-job space check runs again at split/merge time.
         val needed = 1024L * 1024L * 1024L
         val result = outputFolderValidator.validate(folder, needed, assumePermissionPersisted = false)
         _validationResult.value = result
@@ -159,9 +159,23 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun downloadUpdate(available: UpdateState.Available) {
+        viewModelScope.launch {
+            updateRepository.downloadUpdate(available)
+        }
+    }
+
+    fun checkInstallPermission() {
+        updateRepository.checkInstallPermissionAfterGrant()
+    }
+
+    fun launchInstallSettings() {
+        updateRepository.launchInstallSettings()
+    }
+
     fun installUpdate() {
         viewModelScope.launch {
-            updateRepository.downloadAndInstall()
+            updateRepository.installUpdate()
         }
     }
 }

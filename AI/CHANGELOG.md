@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+## [0.0.13] — 2026-06-27
+
+🚀 NEW FEATURES
+- **Set Default Tracks**: A new surgical flow that allows users to analyze, modify, and apply default/forced/enabled flags for audio and subtitle tracks on multiple MKV files in-place without re-encoding.
+- **In-App Update Checker**: Added a secure update mechanism inside Settings that checks for updates via HTTPS, downloads APK files off-thread to a private cache, verifies SHA-256 + certificate signatures, and installs updates using PackageInstaller.
+
+🔧 BUG FIXES
+- **Settings screen crash**: Fixed a runtime crash on minified release builds by adding appropriate ProGuard keep rules for Retrofit, Hilt, and kotlinx.serialization update-related classes.
+- **Android 13+ BroadcastReceiver SecurityException**: Replaced manual registration with ContextCompat.registerReceiver using ContextCompat.RECEIVER_NOT_EXPORTED for internal ACTION_INSTALL_STATUS broadcasts.
+
+📦 TECHNICAL
+- Added `domain/defaulttracks/` engine package including matcher, normalizer, editor, journal, and verifier components.
+- Added `data/update/` package including integrity verifier, metadata lookup, and session installer components.
+- Room DB migrated v5 → v6: Added `default_track_file_results` table for Default Tracks tracking.
+- Pinned `release-assets.githubusercontent.com` and `objects.githubusercontent.com` to the update download allowed hosts list.
+
 ## [0.0.12] — 2026-06-25
 
 🚀 NEW FEATURES

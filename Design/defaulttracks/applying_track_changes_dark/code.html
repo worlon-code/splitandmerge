@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow - Applying Defaults</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#2b292c",
+                        "error-container": "#93000a",
+                        "surface-bright": "#3a393b",
+                        "tertiary-fixed": "#ffdbc9",
+                        "surface-container-highest": "#363436",
+                        "on-tertiary-fixed": "#321200",
+                        "on-primary-fixed-variant": "#005047",
+                        "surface": "#000000", /* AMOLED Black override */
+                        "secondary-container": "#4d4079",
+                        "inverse-on-surface": "#313032",
+                        "on-primary-fixed": "#00201c",
+                        "surface-container-high": "#2b292c",
+                        "tertiary-container": "#ffb68c",
+                        "inverse-surface": "#e6e1e4",
+                        "on-primary": "#003731",
+                        "on-surface": "#e6e1e4",
+                        "on-secondary": "#34275e",
+                        "secondary": "#cdbdff",
+                        "background": "#000000", /* AMOLED Black */
+                        "surface-dim": "#141315",
+                        "primary": "#9ff2e2",
+                        "surface-container-lowest": "#0f0e10",
+                        "primary-container": "#83d5c6",
+                        "surface-tint": "#83d5c6",
+                        "outline-variant": "#49454f",
+                        "on-tertiary-fixed-variant": "#6c3a19",
+                        "tertiary": "#ffdbc9",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "on-secondary-fixed": "#1f1048",
+                        "outline": "#889390",
+                        "secondary-fixed": "#e8deff",
+                        "on-secondary-fixed-variant": "#4b3e76",
+                        "primary-fixed-dim": "#83d5c6",
+                        "on-secondary-container": "#bfaff0",
+                        "on-tertiary-container": "#7a4524",
+                        "on-surface-variant": "#bec9c5",
+                        "on-primary-container": "#005d52",
+                        "surface-variant": "#363436",
+                        "tertiary-fixed-dim": "#ffb68c",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1c1b1d",
+                        "on-background": "#e6e1e4",
+                        "inverse-primary": "#016b5f",
+                        "primary-fixed": "#9ff2e2",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#502405"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Roboto Flex"],
+                        "headline-lg": ["Roboto Flex"],
+                        "body-md": ["Roboto Flex"],
+                        "code-sm": ["JetBrains Mono"],
+                        "headline-sm": ["Roboto Flex"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-lg": ["Roboto Flex"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e6e1e4;
+            font-family: 'Roboto Flex', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .progress-bar-fill {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Custom scrollbar for terminal-like list */
+        .monospace-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .monospace-scroll::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        .monospace-scroll::-webkit-scrollbar-thumb {
+            background: #49454f;
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="dark overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary dark:text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary">VideoFlow</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">more_vert</button>
+</header>
+<!-- Side Navigation (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-72 z-40 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant flex-col py-6 gap-2">
+<div class="px-6 mb-8">
+<span class="font-headline-md text-headline-md text-primary">VideoFlow Pro</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 flex items-center gap-4 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-body-lg text-body-lg">Split</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-body-lg text-body-lg">Merge</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-body-lg text-body-lg">Queue</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant mx-3 my-1 px-4 py-3 flex items-center gap-4 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-16 pb-20 md:pb-0 md:pl-72 h-screen flex flex-col bg-surface">
+<div class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-lg max-w-4xl mx-auto w-full">
+<!-- Progress Section -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Applying System Defaults</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Batch processing 24 files in workspace...</p>
+</div>
+<span class="font-label-md text-label-md text-primary">74%</span>
+</div>
+<!-- Determinate LinearProgressIndicator -->
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="progress-bar-fill bg-primary h-full" style="width: 74%;"></div>
+</div>
+</section>
+<!-- Monospace File List (Bento-style container) -->
+<div class="bg-surface-container rounded-xl border border-outline-variant flex flex-col h-[442px] overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-high">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Process Log</span>
+<span class="font-code-sm text-code-sm text-primary">v2.4.1-stable</span>
+</div>
+<div class="monospace-scroll overflow-y-auto p-md space-y-2 font-code-sm text-code-sm">
+<!-- Success Items -->
+<div class="flex items-center gap-3 text-primary/80">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="opacity-50">[08:42:01]</span>
+<span>SUCCESS: Applied bitrate_mask to vf_render_01.mp4</span>
+</div>
+<div class="flex items-center gap-3 text-primary/80">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="opacity-50">[08:42:04]</span>
+<span>SUCCESS: Metadata injection complete for raw_source_A.mov</span>
+</div>
+<div class="flex items-center gap-3 text-primary/80">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="opacity-50">[08:42:15]</span>
+<span>SUCCESS: Audio normalization (Lufs -14) applied to master_st.wav</span>
+</div>
+<div class="flex items-center gap-3 text-primary/80">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="opacity-50">[08:43:02]</span>
+<span>SUCCESS: Re-encoding stream 0:1 using H.265 defaults</span>
+</div>
+<!-- Active Item -->
+<div class="flex items-center gap-3 text-secondary animate-pulse">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span class="opacity-50">[08:44:10]</span>
+<span>PROCESSING: Analyzing structural integrity of b-roll_sequence_04.mkv...</span>
+</div>
+<!-- Pending Items -->
+<div class="flex items-center gap-3 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>
+<span class="opacity-50">[--:--:--]</span>
+<span>PENDING: finalize_io_pipeline</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>
+<span class="opacity-50">[--:--:--]</span>
+<span>PENDING: clean_temp_cache</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[16px]">hourglass_empty</span>
+<span class="opacity-50">[--:--:--]</span>
+<span>PENDING: generate_checksum_report</span>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="mt-lg flex justify-center">
+<button class="border border-outline px-8 py-2.5 rounded-full font-label-md text-label-md text-primary hover:bg-primary/10 transition-colors active:scale-95 duration-100 ease-in-out uppercase tracking-widest">
+                    Cancel
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container dark:bg-surface-container border-t border-outline-variant dark:border-outline-variant flex justify-around items-center h-20 pb-safe rounded-t-xl">
+<button class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-full px-5 py-1 scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-5 py-1 hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-5 py-1 hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-label-md text-label-md">Queue</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-5 py-1 hover:bg-surface-bright dark:hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction: Simulate log scrolling/updating
+        const scrollContainer = document.querySelector('.monospace-scroll');
+        if (scrollContainer) {
+            setInterval(() => {
+                const isAtBottom = scrollContainer.scrollHeight - scrollContainer.scrollTop <= scrollContainer.clientHeight + 50;
+                if (isAtBottom) {
+                    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                }
+            }, 1000);
+        }
+    </script>
+</body></html>

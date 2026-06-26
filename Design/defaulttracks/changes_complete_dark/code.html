@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow - Processing Complete</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#2b292c",
+                    "error-container": "#93000a",
+                    "surface-bright": "#3a393b",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-highest": "#363436",
+                    "on-tertiary-fixed": "#321200",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#000000",
+                    "secondary-container": "#4d4079",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-high": "#2b292c",
+                    "tertiary-container": "#ffb68c",
+                    "inverse-surface": "#e6e1e4",
+                    "on-primary": "#003731",
+                    "on-surface": "#e6e1e4",
+                    "on-secondary": "#34275e",
+                    "secondary": "#cdbdff",
+                    "background": "#000000",
+                    "surface-dim": "#141315",
+                    "primary": "#9ff2e2",
+                    "surface-container-lowest": "#0f0e10",
+                    "primary-container": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "outline-variant": "#49454f",
+                    "on-tertiary-fixed-variant": "#6c3a19",
+                    "tertiary": "#ffdbc9",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "on-secondary-fixed": "#1f1048",
+                    "outline": "#889390",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4b3e76",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-secondary-container": "#bfaff0",
+                    "on-tertiary-container": "#7a4524",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-container": "#005d52",
+                    "surface-variant": "#363436",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "on-error": "#690005",
+                    "surface-container-low": "#1c1b1d",
+                    "on-background": "#e6e1e4",
+                    "inverse-primary": "#016b5f",
+                    "primary-fixed": "#9ff2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "headline-lg-mobile": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-sm": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e6e1e4;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for technical feel */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #141315; }
+        ::-webkit-scrollbar-thumb { background: #49454f; border-radius: 2px; }
+
+        @keyframes check-pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-check {
+            animation: check-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">VideoFlow</h1>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">more_vert</button>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-72 z-40 bg-surface-container-low border-r border-outline-variant hidden md:flex flex-col py-6 gap-2">
+<div class="px-6 mb-8 mt-16">
+<span class="font-headline-md text-headline-md text-primary">VideoFlow Pro</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-4 text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-body-lg text-body-lg">Split</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-body-lg text-body-lg">Merge</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 flex items-center gap-4 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-body-lg text-body-lg">Queue</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="min-h-screen pt-20 pb-40 px-margin-mobile md:pl-80 md:pr-margin-desktop max-w-7xl mx-auto">
+<!-- Hero Success Area -->
+<section class="flex flex-col items-center justify-center py-12 md:py-20 text-center">
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-primary opacity-20 blur-3xl rounded-full"></div>
+<div class="relative w-24 h-24 md:w-32 md:h-32 bg-primary text-on-primary rounded-full flex items-center justify-center animate-check shadow-[0_0_40px_rgba(159,242,226,0.3)]">
+<span class="material-symbols-outlined text-5xl md:text-7xl" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Process Completed</h2>
+<p class="text-on-surface-variant max-w-md">Your batch video operations have been executed successfully. All assets are optimized and stored in the primary queue.</p>
+</section>
+<!-- Bento Summary Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Primary Summary Card -->
+<div class="md:col-span-8 bg-surface-container border border-outline-variant rounded-xl p-6 flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Execution Summary</h3>
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider">JOB_ID: VF-99284-B</span>
+</div>
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">SUCCESS</span>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-surface-container-low p-4 border border-outline-variant rounded-lg">
+<span class="block text-on-surface-variant font-label-md text-label-md mb-1">Duration</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">12:42</span>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant rounded-lg">
+<span class="block text-on-surface-variant font-label-md text-label-md mb-1">Files Processed</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">24</span>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant rounded-lg">
+<span class="block text-on-surface-variant font-label-md text-label-md mb-1">Data Volume</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">8.4 GB</span>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant rounded-lg">
+<span class="block text-on-surface-variant font-label-md text-label-md mb-1">Saved Space</span>
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">1.2 GB</span>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-4">
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-4 uppercase">Node Distribution</h4>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 45%"></div>
+<div class="h-full bg-secondary" style="width: 30%"></div>
+<div class="h-full bg-tertiary-container" style="width: 25%"></div>
+</div>
+<div class="flex flex-wrap gap-4 mt-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Encoding: 45%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Metadata: 30%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">VFX Overlay: 25%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Sidebar Card -->
+<div class="md:col-span-4 bg-surface-container border border-outline-variant rounded-xl p-6 flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Storage Info</h3>
+<div class="flex flex-col gap-4">
+<div class="flex gap-4 items-center">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">cloud_done</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md text-on-surface truncate">S3_Production_V3</p>
+<p class="font-code-sm text-code-sm text-on-surface-variant">Last sync: 2m ago</p>
+</div>
+</div>
+<div class="bg-surface-container-highest rounded-lg p-3">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Vault Usage</span>
+<span class="font-label-md text-label-md text-on-surface">82%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[82%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6">
+<button class="w-full py-3 border border-outline-variant text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-bright transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">download</span>
+                        Export Logs
+                    </button>
+</div>
+</div>
+<!-- Log Stream Area (Wide) -->
+<div class="md:col-span-12 bg-surface-container border border-outline-variant rounded-xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Terminal Output</h3>
+<div class="flex gap-2">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+</div>
+</div>
+<div class="bg-black p-4 rounded-lg font-code-sm text-code-sm overflow-x-auto space-y-2 max-h-48 overflow-y-auto">
+<div class="flex gap-4">
+<span class="text-on-surface-variant opacity-40">10:22:04</span>
+<span class="text-primary">[INFO]</span>
+<span class="text-on-surface-variant">Initializing render worker node_04...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-on-surface-variant opacity-40">10:22:15</span>
+<span class="text-primary">[INFO]</span>
+<span class="text-on-surface-variant">Handshake successful. Allocating 4GB VRAM.</span>
+</div>
+<div class="flex gap-4">
+<span class="text-on-surface-variant opacity-40">10:25:31</span>
+<span class="text-secondary">[TASK]</span>
+<span class="text-on-surface-variant">Merging tracks A-01 and B-44...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-on-surface-variant opacity-40">10:34:42</span>
+<span class="text-primary">[INFO]</span>
+<span class="text-on-surface-variant">All tasks in buffer 0x4f executed.</span>
+</div>
+<div class="flex gap-4">
+<span class="text-on-surface-variant opacity-40">10:34:44</span>
+<span class="text-primary-container font-bold">[SUCCESS]</span>
+<span class="text-primary-container">Process terminated with exit code 0.</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Bar -->
+<div class="fixed bottom-20 md:bottom-0 md:ml-72 left-0 right-0 z-40 bg-surface/80 backdrop-blur-md px-margin-mobile md:px-margin-desktop py-4 flex justify-end items-center">
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-headline-sm text-headline-sm font-bold shadow-lg shadow-primary/20 active:opacity-80 transition-opacity flex items-center gap-2">
+            Done
+            <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container border-t border-outline-variant flex justify-around items-center h-20 pb-safe md:hidden rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright duration-100 ease-in-out">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright duration-100 ease-in-out">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 duration-100 ease-in-out scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-label-md text-label-md">Queue</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright duration-100 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<script>
+        // Simple micro-interaction for the "Done" button
+        const doneBtn = document.querySelector('button.bg-primary');
+        doneBtn.addEventListener('mousedown', () => {
+            doneBtn.style.transform = 'scale(0.95)';
+        });
+        doneBtn.addEventListener('mouseup', () => {
+            doneBtn.style.transform = 'scale(1)';
+        });
+        doneBtn.addEventListener('mouseleave', () => {
+            doneBtn.style.transform = 'scale(1)';
+        });
+    </script>
+</body></html>

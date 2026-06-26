@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow Pro - File Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#2b292c",
+                    "error-container": "#93000a",
+                    "surface-bright": "#3a393b",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-highest": "#363436",
+                    "on-tertiary-fixed": "#321200",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#141315",
+                    "secondary-container": "#4d4079",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-high": "#2b292c",
+                    "tertiary-container": "#ffb68c",
+                    "inverse-surface": "#e6e1e4",
+                    "on-primary": "#003731",
+                    "on-surface": "#e6e1e4",
+                    "on-secondary": "#34275e",
+                    "secondary": "#cdbdff",
+                    "background": "#141315",
+                    "surface-dim": "#141315",
+                    "primary": "#9ff2e2",
+                    "surface-container-lowest": "#0f0e10",
+                    "primary-container": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "outline-variant": "#49454f",
+                    "on-tertiary-fixed-variant": "#6c3a19",
+                    "tertiary": "#ffdbc9",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "on-secondary-fixed": "#1f1048",
+                    "outline": "#889390",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4b3e76",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-secondary-container": "#bfaff0",
+                    "on-tertiary-container": "#7a4524",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-container": "#005d52",
+                    "surface-variant": "#363436",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "on-error": "#690005",
+                    "surface-container-low": "#1c1b1d",
+                    "on-background": "#e6e1e4",
+                    "inverse-primary": "#016b5f",
+                    "primary-fixed": "#9ff2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "headline-lg-mobile": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-sm": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #141315;
+            color: #e6e1e4;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #49454f;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(43, 41, 44, 0.7);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="overflow-hidden h-screen flex flex-col">
+<!-- Navigation Drawer (Side Rail Variant) -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-20 lg:w-72 z-40 bg-surface-container-low border-r border-outline-variant flex flex-col py-6 gap-2">
+<div class="px-6 mb-8 hidden lg:block">
+<h1 class="font-headline-md text-headline-md text-primary">VideoFlow Pro</h1>
+</div>
+<div class="px-4 mb-8 lg:hidden flex justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">movie</span>
+</div>
+<nav class="flex flex-col gap-1">
+<!-- Split (Active Logic: Assuming Queue is active for processing) -->
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="hidden lg:inline font-body-lg text-body-lg">Split</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="hidden lg:inline font-body-lg text-body-lg">Merge</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="hidden lg:inline font-body-lg text-body-lg">Queue</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="hidden lg:inline font-body-lg text-body-lg">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-20 lg:ml-72 flex flex-1 h-screen overflow-hidden">
+<!-- Middle Pane: File List (360dp) -->
+<section class="w-[360px] flex flex-col border-r border-outline-variant bg-surface">
+<header class="p-lg flex flex-col gap-md border-b border-outline-variant">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Queue Manager</h2>
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</div>
+<!-- Preference Summary Chip -->
+<div class="bg-surface-container-high rounded-xl p-md border border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-sm">auto_fix_high</span>
+<p class="font-label-md text-label-md text-on-surface-variant">Applied: JPN Audio, ENG Subs</p>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-sm flex flex-col gap-xs">
+<!-- File Item (Selected) -->
+<div class="bg-surface-container-highest rounded-xl p-md border border-primary flex items-center gap-md">
+<input checked="" class="w-5 h-5 rounded border-outline-variant bg-surface text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-body-md text-body-md text-on-surface truncate">Perfect Crown S01E02.mkv</p>
+<div class="flex items-center gap-xs mt-1">
+<span class="px-1.5 py-0.5 rounded-sm bg-secondary-container text-on-secondary-container font-code-sm text-code-sm">READY</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">1.4 GB</span>
+</div>
+</div>
+</div>
+<!-- Repeat File Items -->
+<script>
+                    const files = [
+                        { name: "Perfect Crown S01E03.mkv", status: "PENDING", size: "1.2 GB" },
+                        { name: "Perfect Crown S01E04.mkv", status: "PENDING", size: "1.5 GB" },
+                        { name: "Perfect Crown S01E05.mkv", status: "PENDING", size: "1.3 GB" },
+                        { name: "Perfect Crown S01E06.mkv", status: "ERROR", size: "0.9 GB", color: "text-error" },
+                        { name: "Perfect Crown S01E07.mkv", status: "READY", size: "1.4 GB" },
+                        { name: "Perfect Crown S01E08.mkv", status: "READY", size: "1.4 GB" },
+                        { name: "Perfect Crown S01E09.mkv", status: "READY", size: "1.4 GB" },
+                        { name: "Perfect Crown S01E10.mkv", status: "READY", size: "1.6 GB" },
+                    ];
+                    document.write(files.map(f => `
+                        <div class="hover:bg-surface-container-high rounded-xl p-md border border-transparent transition-colors flex items-center gap-md">
+                            <input type="checkbox" class="w-5 h-5 rounded border-outline-variant bg-surface text-primary focus:ring-primary">
+                            <div class="flex-1 overflow-hidden">
+                                <p class="font-body-md text-body-md text-on-surface truncate">${f.name}</p>
+                                <div class="flex items-center gap-xs mt-1">
+                                    <span class="px-1.5 py-0.5 rounded-sm bg-surface-variant text-on-surface-variant font-code-sm text-code-sm ${f.color || ''}">${f.status}</span>
+                                    <span class="font-code-sm text-code-sm text-on-surface-variant">${f.size}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join(''));
+                </script>
+</div>
+</section>
+<!-- Right Pane: Track Editor (Flex Width) -->
+<section class="flex-1 flex flex-col bg-surface-container-low overflow-y-auto custom-scrollbar">
+<div class="p-lg max-w-3xl mx-auto w-full flex flex-col gap-lg">
+<!-- Hero Section -->
+<div class="flex flex-col items-center text-center gap-md py-lg border-b border-outline-variant">
+<div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">movie</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Perfect Crown S01E02</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Matroska Video Container • H.265 Source</p>
+</div>
+<!-- AssistChips Strip -->
+<div class="flex flex-wrap justify-center gap-sm">
+<div class="px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span class="font-label-md text-label-md">HEVC</span>
+</div>
+<div class="px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">hd</span>
+<span class="font-label-md text-label-md">1080p</span>
+</div>
+<div class="px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">audiotrack</span>
+<span class="font-label-md text-label-md">2 audio</span>
+</div>
+<div class="px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">subtitles</span>
+<span class="font-label-md text-label-md">2 subs</span>
+</div>
+</div>
+</div>
+<!-- Audio Tracks Card -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">interpreter_mode</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Audio Selection</h4>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="flex items-center justify-between p-md rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-center gap-md">
+<input class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary" name="audio" type="radio"/>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">English (AAC 2.0)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Track #1 • Stream ID 0:1</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-md text-label-md">DEFAULT</span>
+</label>
+<label class="flex items-center justify-between p-md rounded-lg bg-surface-container-highest border border-outline-variant cursor-pointer">
+<div class="flex items-center gap-md">
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary" name="audio" type="radio"/>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Japanese (FLAC 5.1)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Track #2 • Stream ID 0:2</span>
+</div>
+</div>
+</label>
+</div>
+</div>
+<!-- Subtitles Card -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">closed_caption</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Subtitles</h4>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-high px-3 py-1.5 rounded-full border border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface-variant">Forced Only</span>
+<button class="w-10 h-5 rounded-full bg-outline relative transition-colors">
+<span class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full"></span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="flex items-center gap-md p-md rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<input class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary" name="sub" type="radio"/>
+<span class="font-body-lg text-body-lg text-on-surface">None</span>
+</label>
+<label class="flex items-center gap-md p-md rounded-lg bg-surface-container-highest border border-outline-variant cursor-pointer">
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary" name="sub" type="radio"/>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">English Full (SRT)</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Internal • External available</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Apply to all similar files button -->
+<button class="w-full py-4 rounded-full bg-secondary-container text-on-secondary-container font-headline-sm text-headline-sm hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-md">
+<span class="material-symbols-outlined">auto_fix_high</span>
+                    Apply to all similar files
+                </button>
+<div class="h-32"></div> <!-- Spacer for sticky bar -->
+</div>
+</section>
+<!-- Sticky Bottom Bar -->
+<footer class="fixed bottom-0 right-0 left-20 lg:left-72 h-20 bg-surface-container border-t border-outline-variant flex items-center justify-between px-lg z-50">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant">31 files selected for processing</p>
+</div>
+<button class="bg-primary text-on-primary px-xl py-3 rounded-full font-headline-sm text-headline-sm flex items-center gap-sm shadow-lg hover:brightness-110 active:scale-95 transition-all">
+                Apply (31)
+                <span class="material-symbols-outlined">play_arrow</span>
+</button>
+</footer>
+</main>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', (e) => {
+                // Visual feedback only
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                el.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body></html>

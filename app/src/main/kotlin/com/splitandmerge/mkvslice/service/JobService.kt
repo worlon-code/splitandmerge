@@ -23,6 +23,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
+import com.splitandmerge.mkvslice.domain.defaulttracks.DefaultTracksEngine
+import com.splitandmerge.mkvslice.domain.defaulttracks.model.EditSpec
+import com.splitandmerge.mkvslice.data.db.DefaultTrackFileResultDao
+import com.splitandmerge.mkvslice.data.db.entity.DefaultTrackFileResultEntity
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.long
+import kotlinx.serialization.json.boolean
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.isActive
@@ -39,12 +52,15 @@ class JobService : Service() {
     @Inject lateinit var ffmpegEngine: FfmpegEngine
     @Inject lateinit var startupReadyDeferred: CompletableDeferred<Unit>
     @Inject lateinit var jobProgressTracker: JobProgressTracker
+    @Inject lateinit var defaultTracksEngine: DefaultTracksEngine
+    @Inject lateinit var defaultTrackFileResultDao: DefaultTrackFileResultDao
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
     private var wakeLock: PowerManager.WakeLock? = null
 
     private var isProcessing = false
     private var currentJobId: String? = null
+    private var currentJobType: com.splitandmerge.mkvslice.domain.model.JobType? = null
 
     /** Per-job coroutine handle — cancelled and joined by [cancelCurrentJob] (A3). */
     private var currentJobCoroutine: Job? = null
@@ -86,7 +102,13 @@ class JobService : Service() {
                 }
 
                 currentJobId = nextJob.id
-                updateNotification("Processing: ${nextJob.outputBaseName}", 0)
+                currentJobType = nextJob.type
+                val processingText = when (nextJob.type) {
+                    com.splitandmerge.mkvslice.domain.model.JobType.SPLIT -> "Processing: ${nextJob.outputBaseName}"
+                    com.splitandmerge.mkvslice.domain.model.JobType.MERGE -> "Merging: ${nextJob.outputBaseName}"
+                    com.splitandmerge.mkvslice.domain.model.JobType.SET_DEFAULT_TRACKS -> "Setting defaults: ${nextJob.outputBaseName}"
+                }
+                updateNotification(processingText, 0)
 
                 // Store per-job coroutine handle so cancelCurrentJob() can join it (A3).
                 currentJobCoroutine = serviceScope.launch {
@@ -95,6 +117,8 @@ class JobService : Service() {
                             splitter.runSplit(nextJob.id)
                         } else if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.MERGE) {
                             merger.runMerge(nextJob.id)
+                        } else if (nextJob.type == com.splitandmerge.mkvslice.domain.model.JobType.SET_DEFAULT_TRACKS) {
+                            runDefaultTracksJob(nextJob.id)
                         }
                     } catch (e: Exception) {
                         Timber.e(e, "Job failed")
@@ -103,11 +127,76 @@ class JobService : Service() {
 
                 currentJobCoroutine?.join()
                 currentJobId = null
+                currentJobType = null
                 currentJobCoroutine = null
             }
 
             stopProcessing()
         }
+    }
+
+    private suspend fun runDefaultTracksJob(jobId: String) {
+        val rows = defaultTrackFileResultDao.getResultsForJob(jobId)
+        val totalRows = rows.size
+        if (totalRows == 0) {
+            jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.DONE, 100, null, null, 0, System.currentTimeMillis())
+            return
+        }
+
+        jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.RUNNING, 0, null, null, totalRows, System.currentTimeMillis())
+
+        try {
+            rows.forEachIndexed { index, row ->
+                if (!kotlin.coroutines.coroutineContext.isActive) {
+                    throw CancellationException("Job was cancelled")
+                }
+
+                if (row.status != "PENDING") {
+                    return@forEachIndexed
+                }
+
+                val progressPct = (index * 100) / totalRows
+                jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.RUNNING, progressPct, null, null, totalRows, System.currentTimeMillis())
+                updateNotification("Setting defaults: ${row.displayName}", progressPct)
+
+                val spec = deserializeEditSpec(row.appliedSpecJson)
+
+                val result = defaultTracksEngine.processFile(row.uri, spec, jobId, index)
+
+                val updatedRow = row.copy(
+                    status = result.status,
+                    reason = result.reason,
+                    writeStrategy = result.writeStrategy
+                )
+                defaultTrackFileResultDao.insert(updatedRow)
+            }
+
+            jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.DONE, 100, null, null, totalRows, System.currentTimeMillis())
+        } catch (e: CancellationException) {
+            withContext(NonCancellable) {
+                val remainingRows = defaultTrackFileResultDao.getResultsForJob(jobId)
+                val updatedRows = remainingRows.map { r ->
+                    if (r.status == "PENDING") {
+                        r.copy(status = "SKIPPED", reason = "canceled")
+                    } else {
+                        r
+                    }
+                }
+                defaultTrackFileResultDao.insertAll(updatedRows)
+                jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.CANCELLED, 100, null, null, totalRows, System.currentTimeMillis())
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Error running default tracks job")
+            jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.FAILED, 100, null, null, totalRows, System.currentTimeMillis())
+        }
+    }
+
+    private fun deserializeEditSpec(jsonString: String): EditSpec {
+        val json = Json.parseToJsonElement(jsonString).jsonObject
+        val audio = json["defaultAudioTrackNumber"]?.jsonPrimitive?.long ?: 0L
+        val sub = json["defaultSubtitleTrackNumber"]?.jsonPrimitive?.longOrNull
+        val forced = json["forcedSubtitle"]?.jsonPrimitive?.boolean ?: false
+        return EditSpec(audio, sub, forced)
     }
 
     private fun stopProcessing() {
@@ -178,8 +267,15 @@ class JobService : Service() {
             this, 1, cancelIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        val title = when (currentJobType) {
+            com.splitandmerge.mkvslice.domain.model.JobType.SPLIT -> "Splitting Video"
+            com.splitandmerge.mkvslice.domain.model.JobType.MERGE -> "Merging Videos"
+            com.splitandmerge.mkvslice.domain.model.JobType.SET_DEFAULT_TRACKS -> "Setting Default Tracks"
+            else -> "Video Splitter"
+        }
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Video Splitter")
+            .setContentTitle(title)
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_popup_sync)
             .setOngoing(true)

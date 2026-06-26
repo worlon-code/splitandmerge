@@ -59,7 +59,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalContext
 import com.splitandmerge.mkvslice.data.settings.ThemeMode
-import com.splitandmerge.mkvslice.data.update.Phase
+import com.splitandmerge.mkvslice.data.update.UpdateState
 import androidx.compose.material3.LinearProgressIndicator
 import com.splitandmerge.mkvslice.ui.components.FolderValidationDialog
 import timber.log.Timber
@@ -245,6 +245,7 @@ fun SettingsScreen(
                 val observer = LifecycleEventObserver { _, event ->
                     if (event == Lifecycle.Event.ON_RESUME) {
                         viewModel.checkBatteryOptimizations()
+                        viewModel.checkInstallPermission()
                     }
                 }
                 lifecycleOwner.lifecycle.addObserver(observer)
@@ -341,26 +342,76 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = state.updateMessage, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
-                    if (updateState.phase == Phase.Downloading) {
-                        val progress = if (updateState.totalBytes > 0) {
-                            updateState.downloadedBytes.toFloat() / updateState.totalBytes.toFloat()
-                        } else 0f
-                        Spacer(modifier = Modifier.height(8.dp))
-                        LinearProgressIndicator(
-                            progress = { progress },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else if (updateState.phase == Phase.Verifying || updateState.phase == Phase.ReadyToInstall) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    when (val currentUpdate = updateState) {
+                        is UpdateState.Available -> {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text("New Version: v${currentUpdate.versionName}", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            val sizeMb = currentUpdate.size.toDouble() / (1024.0 * 1024.0)
+                            Text("Size: %.2f MB".format(sizeMb), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            
+                            if (currentUpdate.changelog.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Changelog:", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                currentUpdate.changelog.forEach { bullet ->
+                                    Text("• $bullet", fontSize = 12.sp, modifier = Modifier.padding(start = 8.dp))
+                                }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { viewModel.downloadUpdate(currentUpdate) },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Download")
+                            }
+                        }
+                        is UpdateState.Downloading -> {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            LinearProgressIndicator(
+                                progress = { currentUpdate.progress },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        is UpdateState.Verifying -> {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                        is UpdateState.NeedsInstallPermission -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { viewModel.launchInstallSettings() },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Grant Install Permission")
+                            }
+                        }
+                        is UpdateState.ReadyToInstall -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { viewModel.installUpdate() },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Install Now")
+                            }
+                        }
+                        is UpdateState.Installing -> {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                        else -> {
+                            // Idle, Checking, UpToDate, Installed, Error
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val isBusy = state.checkingForUpdates ||
-                            updateState.phase == Phase.Downloading ||
-                            updateState.phase == Phase.Verifying ||
-                            updateState.phase == Phase.ReadyToInstall
+                    val isBusy = updateState is UpdateState.Checking ||
+                            updateState is UpdateState.Downloading ||
+                            updateState is UpdateState.Verifying ||
+                            updateState is UpdateState.Installing
 
                     Button(
                         onClick = { viewModel.checkForUpdates() },
@@ -368,22 +419,11 @@ fun SettingsScreen(
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        if (state.checkingForUpdates) {
+                        if (updateState is UpdateState.Checking) {
                             CircularProgressIndicator(modifier = Modifier.width(20.dp), color = MaterialTheme.colorScheme.onPrimary)
                             Spacer(modifier = Modifier.width(8.dp))
                         }
                         Text("Check for updates")
-                    }
-
-                    if (updateState.phase == Phase.AvailableReady) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = { viewModel.installUpdate() },
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Install now")
-                        }
                     }
                 }
             }

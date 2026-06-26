@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CallMerge
 import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,6 +69,7 @@ fun LibraryScreen(
     onNavigateToSettings: () -> Unit,
     onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
+    onStartDefaultTracksFlow: () -> Unit,
     onNavigateToJobDetail: (String) -> Unit,
     onNavigateToSplitResult: (String) -> Unit,
     onNavigateToMergeResult: (String) -> Unit
@@ -123,6 +125,17 @@ fun LibraryScreen(
         },
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.End) {
+                FloatingActionButton(
+                    onClick = onStartDefaultTracksFlow,
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Flag, contentDescription = "Set Default Tracks")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Set defaults")
+                    }
+                }
                 FloatingActionButton(
                     onClick = onStartMergeFlow,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -211,6 +224,32 @@ fun LibraryScreen(
             onRetry = { viewModel.handleIntent(LibraryIntent.RetryJob(detailSheetJob!!.id)) },
             onDelete = { viewModel.handleIntent(LibraryIntent.DeleteJob(detailSheetJob!!.id)) },
             onDismiss = { detailSheetJob = null }
+        )
+    }
+
+    val orphanJournals by viewModel.orphanJournals.collectAsState()
+    if (orphanJournals.isNotEmpty()) {
+        val orphan = orphanJournals.first()
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { viewModel.dismissOrphanDialog(orphan) },
+            title = { Text("Interrupted Change Detected") },
+            text = {
+                Text("An interrupted change was detected for:\n\n${orphan.displayName}\n\nWould you like to roll back this change to its original state?")
+            },
+            confirmButton = {
+                androidx.compose.material3.Button(
+                    onClick = { viewModel.performRollback(orphan) }
+                ) {
+                    Text("Rollback")
+                }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(
+                    onClick = { viewModel.dismissOrphanDialog(orphan) }
+                ) {
+                    Text("Dismiss")
+                }
+            }
         )
     }
 }

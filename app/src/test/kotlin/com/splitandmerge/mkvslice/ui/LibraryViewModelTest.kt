@@ -32,11 +32,14 @@ class LibraryViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private val mockDao = mockk<JobDao>(relaxed = true)
+    private val mockDefaultTrackFileResultDao = mockk<com.splitandmerge.mkvslice.data.db.DefaultTrackFileResultDao>(relaxed = true)
+    private val mockFileSystem = mockk<com.splitandmerge.mkvslice.platform.io.FileSystem>(relaxed = true)
     private val mockContext = mockk<Context>(relaxed = true)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        every { mockContext.cacheDir } returns java.io.File(".")
     }
 
     @After
@@ -56,7 +59,7 @@ class LibraryViewModelTest {
             )
         )
         every { mockDao.observeAll() } returns flowOf(mockJobs)
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         val jobs = viewModel.jobs.first()
         assertNotNull(jobs)
         assertEquals(1, jobs.size)
@@ -92,7 +95,7 @@ class LibraryViewModelTest {
         coEvery { mockDao.getById("failed-1") } returns failedJob
         every { mockDao.observeAll() } returns flowOf(emptyList())
 
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
 
         // Test RUNNING -> Progress
         viewModel.handleIntent(LibraryIntent.RowTapped("run-1"))
@@ -130,7 +133,7 @@ class LibraryViewModelTest {
         coEvery { mockDao.getPartsForJob("old-merge") } returns listOf(oldPart)
         every { mockDao.observeAll() } returns flowOf(emptyList())
 
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         viewModel.handleIntent(LibraryIntent.RetryJob("old-merge"))
 
         coVerify { mockDao.upsert(any()) }
@@ -140,7 +143,7 @@ class LibraryViewModelTest {
     @Test
     fun testDeleteJobIntentDeletesRow() = runTest {
         every { mockDao.observeAll() } returns flowOf(emptyList())
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         viewModel.handleIntent(LibraryIntent.DeleteJob("job-to-delete"))
         coVerify { mockDao.deleteById("job-to-delete") }
     }
@@ -149,7 +152,7 @@ class LibraryViewModelTest {
     fun test_init_isInitialLoadTrue() = runTest {
         val flow = kotlinx.coroutines.flow.MutableSharedFlow<List<JobEntity>>()
         every { mockDao.observeAll() } returns flow
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         val currentState = viewModel.state.value
         assertEquals(true, currentState.isInitialLoad)
         assertEquals(0, currentState.jobs.size)
@@ -167,7 +170,7 @@ class LibraryViewModelTest {
             )
         )
         every { mockDao.observeAll() } returns flowOf(mockJobs)
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         val stateVal = viewModel.state.first()
         assertEquals(false, stateVal.isInitialLoad)
         assertEquals(1, stateVal.jobs.size)
@@ -176,7 +179,7 @@ class LibraryViewModelTest {
     @Test
     fun test_emptyList_isInitialLoadFalse_emptyState() = runTest {
         every { mockDao.observeAll() } returns flowOf(emptyList())
-        val viewModel = LibraryViewModel(mockDao, mockContext)
+        val viewModel = LibraryViewModel(mockDao, mockDefaultTrackFileResultDao, mockFileSystem, mockContext)
         val stateVal = viewModel.state.first()
         assertEquals(false, stateVal.isInitialLoad)
         assertEquals(0, stateVal.jobs.size)

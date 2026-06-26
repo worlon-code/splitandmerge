@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Utility - Video Splitter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#006b5f",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#9ff2e2",
+                    "on-primary-container": "#00201c",
+                    "secondary": "#4e2ca9",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#e8deff",
+                    "on-secondary-container": "#19005a",
+                    "tertiary": "#8f4c36",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#ffdbd0",
+                    "on-tertiary-container": "#390b00",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#410002",
+                    "background": "#fbfdfa",
+                    "on-background": "#191c1b",
+                    "surface": "#fbfdfa",
+                    "on-surface": "#191c1b",
+                    "surface-variant": "#dbe5e1",
+                    "on-surface-variant": "#3f4946",
+                    "outline": "#6f7976",
+                    "outline-variant": "#bec9c5",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f0f5f2",
+                    "surface-container": "#ebf0ed",
+                    "surface-container-high": "#e5eae7",
+                    "surface-container-highest": "#dfe4e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "8px",
+                    "tablet_margin": "24px",
+                    "phone_margin": "16px",
+                    "list_padding": "12px",
+                    "touch_target_min": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Roboto Flex"],
+                    "title-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-lg": ["Roboto Flex"],
+                    "label-sm": ["JetBrains Mono"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #fbfdfa;
+            color: #191c1b;
+            -webkit-font-smoothing: antialiased;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c5;
+            border-radius: 10px;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container flex justify-between items-center px-phone_margin h-touch_target_min w-full">
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<h1 class="font-title-lg text-title-lg text-on-surface font-bold">Video Splitter</h1>
+<div class="flex items-center">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-phone_margin max-w-screen-xl mx-auto">
+<!-- Primary Actions - Updated to 3-column Grid -->
+<section class="grid grid-cols-3 gap-3 mb-8">
+<button class="flex flex-col items-center justify-center gap-2 py-6 rounded-xl bg-primary-container text-on-primary-container transition-transform active:scale-95 duration-100 hover:brightness-105">
+<span class="material-symbols-outlined text-[28px]">content_cut</span>
+<span class="font-label-sm text-label-sm tracking-tight text-center px-1">Split a video</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 py-6 rounded-xl bg-primary-container text-on-primary-container transition-transform active:scale-95 duration-100 hover:brightness-105">
+<span class="material-symbols-outlined text-[28px]">merge</span>
+<span class="font-label-sm text-label-sm tracking-tight text-center px-1">Merge parts</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 py-6 rounded-xl bg-secondary-container text-on-secondary-container transition-transform active:scale-95 duration-100 hover:brightness-105">
+<span class="material-symbols-outlined text-[28px]">flag</span>
+<span class="font-label-sm text-label-sm tracking-tight text-center px-1">Set default tracks</span>
+</button>
+</section>
+<!-- Recent Jobs Header -->
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Recent jobs</h2>
+<button class="text-primary font-label-md px-4 py-2 hover:bg-primary/10 rounded-full transition-colors">View all</button>
+</div>
+<!-- Jobs Grid/List -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- Job: Baahubali (Running) -->
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center text-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cinematic still showing a high-tech video production interface with glowing waveforms and digital timelines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOSpHJ-iFUMUvA6oeB0mzHUSraCo1I6lHH6aPqT0vveL0BNKbDZAYt8RleJDaeL81RmhuV0nUpb929tP21-ex-wYIcrN4eWLQjSVk49Z4eVNKHeePKN4URnBWRbI0OKV1sK8F2mt6aTnTenYHObjlNlVyQbMV_UqTI9tfhuBglFl1nyGFW5holSF4rE_PE2mFOm_wqEwDL1dFd6CZ1uX9Ssa_fDy4O1aC6lPrnkI8aLGoJnDxayeE5GiLhG7G5Fjs9YGGDpqtJxryf"/>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">Baahubali_4K_Main</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">HEVC • 60FPS • 4.2GB</p>
+</div>
+</div>
+<span class="text-primary material-symbols-outlined animate-spin" style="animation-duration: 3s">sync</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-sm text-on-surface-variant">
+<span>Running</span>
+<span>65%</span>
+</div>
+<div class="w-full h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary transition-all duration-500 ease-out" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<!-- Job: Kantara (Queued) -->
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant hover:border-on-surface-variant transition-colors cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Kantara_Forest_Scene</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">AVC • 30FPS • 1.8GB</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-variant text-on-surface-variant rounded">QUEUED</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">format_list_numbered</span>
+<span class="font-label-sm text-label-sm">Position #2 in queue</span>
+</div>
+</div>
+<!-- Job: Karuppu (Done) -->
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant hover:border-primary transition-colors cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Karuppu_Vellai_Final</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">H.264 • 24FPS • 850MB</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-primary-container text-on-primary-container rounded">DONE</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 font-label-md text-primary bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors border border-primary/20">Open Folder</button>
+<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+<!-- Job: Devara (Failed) -->
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant hover:border-error transition-colors cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined">error</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Devara_Trailer_Cut</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">RAW • 60FPS • 12GB</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-error-container text-on-error-container rounded">FAILED</span>
+</div>
+<p class="font-label-sm text-error mb-3">Error: Storage space insufficient (Required: 24GB)</p>
+<button class="w-full py-2 font-label-md text-error bg-error-container/50 rounded-lg hover:bg-error-container transition-colors">Retry Job</button>
+</div>
+<!-- Job: Salaar (Cancelled) -->
+<div class="bg-surface-container-high rounded-xl p-4 border border-outline-variant hover:border-on-surface-variant transition-colors cursor-pointer opacity-70">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">cancel</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Salaar_Ceasefire_BGM</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">FLAC • 48KHZ • 140MB</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-variant text-on-surface-variant rounded">CANCELLED</span>
+</div>
+<div class="flex justify-end">
+<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Extended FAB -->
+<button class="fixed bottom-24 right-6 flex items-center gap-3 px-5 h-14 rounded-2xl bg-primary text-on-primary shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 group z-50">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md">New job</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-low border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-weight="fill">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg px-3 py-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg px-3 py-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="font-label-md text-label-md">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg px-3 py-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<script>
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('mousedown', function() {
+                this.classList.add('scale-95');
+            });
+            elem.addEventListener('mouseup', function() {
+                this.classList.remove('scale-95');
+            });
+            elem.addEventListener('mouseleave', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

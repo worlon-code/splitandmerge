@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow Pro - File List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#2b292c",
+                    "error-container": "#93000a",
+                    "surface-bright": "#3a393b",
+                    "tertiary-fixed": "#ffdbc9",
+                    "surface-container-highest": "#363436",
+                    "on-tertiary-fixed": "#321200",
+                    "on-primary-fixed-variant": "#005047",
+                    "surface": "#000000",
+                    "secondary-container": "#4d4079",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-high": "#2b292c",
+                    "tertiary-container": "#ffb68c",
+                    "inverse-surface": "#e6e1e4",
+                    "on-primary": "#003731",
+                    "on-surface": "#e6e1e4",
+                    "on-secondary": "#34275e",
+                    "secondary": "#cdbdff",
+                    "background": "#000000",
+                    "surface-dim": "#141315",
+                    "primary": "#9ff2e2",
+                    "surface-container-lowest": "#0f0e10",
+                    "primary-container": "#83d5c6",
+                    "surface-tint": "#83d5c6",
+                    "outline-variant": "#49454f",
+                    "on-tertiary-fixed-variant": "#6c3a19",
+                    "tertiary": "#ffdbc9",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdbdff",
+                    "on-secondary-fixed": "#1f1048",
+                    "outline": "#889390",
+                    "secondary-fixed": "#e8deff",
+                    "on-secondary-fixed-variant": "#4b3e76",
+                    "primary-fixed-dim": "#83d5c6",
+                    "on-secondary-container": "#bfaff0",
+                    "on-tertiary-container": "#7a4524",
+                    "on-surface-variant": "#bec9c5",
+                    "on-primary-container": "#005d52",
+                    "surface-variant": "#363436",
+                    "tertiary-fixed-dim": "#ffb68c",
+                    "on-error": "#690005",
+                    "surface-container-low": "#1c1b1d",
+                    "on-background": "#e6e1e4",
+                    "inverse-primary": "#016b5f",
+                    "primary-fixed": "#9ff2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Roboto Flex"],
+                    "headline-lg": ["Roboto Flex"],
+                    "body-md": ["Roboto Flex"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-sm": ["Roboto Flex"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e6e1e4;
+            font-family: 'Roboto Flex', sans-serif;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .jetbrains-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #49454f;
+            border-radius: 10px;
+        }
+        .custom-checkbox:checked {
+            background-color: #9ff2e2;
+            border-color: #9ff2e2;
+        }
+        .three-pane-layout {
+            display: grid;
+            grid-template-columns: 80px 1fr 340px;
+            height: calc(100vh - 64px); /* TopAppBar height */
+        }
+        @media (max-width: 1024px) {
+            .three-pane-layout {
+                grid-template-columns: 80px 1fr;
+            }
+            .editor-pane {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="dark bg-background">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 h-16 border-b border-outline-variant bg-surface flex justify-between items-center px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">VideoFlow</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<main class="pt-16 pb-20">
+<div class="three-pane-layout">
+<!-- Navigation Rail (Tablet Variant of NavigationDrawer) -->
+<nav class="bg-surface-container-low border-r border-outline-variant flex flex-col items-center py-6 gap-6 z-40">
+<div class="mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">video_settings</span>
+</div>
+<div class="flex flex-col gap-4 w-full items-center">
+<!-- Split -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full w-12 h-12 transition-all duration-200">
+<span class="material-symbols-outlined">content_cut</span>
+</button>
+<!-- Merge -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full w-12 h-12 transition-all duration-200">
+<span class="material-symbols-outlined">call_merge</span>
+</button>
+<!-- Queue - Active -->
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full w-14 h-14 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+</button>
+<!-- Settings -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full w-12 h-12 transition-all duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</nav>
+<!-- File List Pane -->
+<section class="overflow-y-auto bg-surface px-6 py-8">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">Queue Management</h2>
+<p class="font-body-md text-on-surface-variant jetbrains-mono">PATH: /projects/rendering/buffer_v2</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface-variant font-label-md hover:bg-surface-container transition-colors">
+                            SELECT ALL
+                        </button>
+<button class="px-4 py-2 rounded-lg bg-surface-container-highest text-primary font-label-md hover:bg-surface-bright transition-colors">
+                            FILTER
+                        </button>
+</div>
+</div>
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-outline-variant text-on-surface-variant font-label-md uppercase tracking-wider jetbrains-mono mb-2">
+<div class="col-span-1 flex items-center">
+<input class="w-4 h-4 rounded border-outline-variant bg-transparent text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</div>
+<div class="col-span-5">Filename</div>
+<div class="col-span-2 text-center">Status</div>
+<div class="col-span-2 text-right">Size</div>
+<div class="col-span-2 text-right">Duration</div>
+</div>
+<!-- File Items -->
+<div class="space-y-2">
+<!-- Item 1 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-4 bg-surface-container-lowest border border-outline-variant rounded-xl hover:bg-surface-container transition-all group">
+<div class="col-span-1 flex items-center">
+<input checked="" class="w-4 h-4 rounded border-outline-variant bg-transparent text-primary focus:ring-0 focus:ring-offset-0 custom-checkbox" type="checkbox"/>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">movie</span>
+<span class="font-body-lg text-on-surface truncate">RAW_SHOT_01_A.mov</span>
+</div>
+<div class="col-span-2 flex items-center justify-center">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container text-xs font-bold rounded-full jetbrains-mono">READY</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">4.2 GB</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">00:12:45</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-4 bg-surface-container-lowest border border-outline-variant rounded-xl hover:bg-surface-container transition-all group">
+<div class="col-span-1 flex items-center">
+<input class="w-4 h-4 rounded border-outline-variant bg-transparent text-primary focus:ring-0 focus:ring-offset-0 custom-checkbox" type="checkbox"/>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">movie</span>
+<span class="font-body-lg text-on-surface truncate">RAW_SHOT_02_B.mov</span>
+</div>
+<div class="col-span-2 flex items-center justify-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full jetbrains-mono">INDEXING</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">2.8 GB</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">00:08:12</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-4 bg-surface-container-lowest border border-outline-variant rounded-xl hover:bg-surface-container transition-all group border-primary/40 bg-surface-container-high/50">
+<div class="col-span-1 flex items-center">
+<input checked="" class="w-4 h-4 rounded border-outline-variant bg-transparent text-primary focus:ring-0 focus:ring-offset-0 custom-checkbox" type="checkbox"/>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">movie</span>
+<span class="font-body-lg text-on-surface truncate">MASTER_REEL_FINAL.mp4</span>
+</div>
+<div class="col-span-2 flex items-center justify-center">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container text-xs font-bold rounded-full jetbrains-mono">SELECTED</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">1.1 GB</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">00:03:50</span>
+</div>
+</div>
+<!-- Item 4 (Error state) -->
+<div class="grid grid-cols-12 gap-4 px-4 py-4 bg-surface-container-lowest border border-outline-variant rounded-xl hover:bg-surface-container transition-all group">
+<div class="col-span-1 flex items-center">
+<input class="w-4 h-4 rounded border-outline-variant bg-transparent text-primary opacity-50" disabled="" type="checkbox"/>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<span class="material-symbols-outlined text-error">warning</span>
+<span class="font-body-lg text-error/80 truncate">CORRUPTED_CLIP_04.mov</span>
+</div>
+<div class="col-span-2 flex items-center justify-center">
+<span class="px-3 py-1 bg-error-container text-on-error-container text-xs font-bold rounded-full jetbrains-mono">FAILED</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">--</span>
+</div>
+<div class="col-span-2 text-right flex flex-col justify-center">
+<span class="text-on-surface font-body-md jetbrains-mono">--</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Track Editor Pane (Right Sidebar) -->
+<aside class="editor-pane bg-surface-container-low border-l border-outline-variant px-6 py-8 overflow-y-auto">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">edit_square</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Track Editor</h3>
+</div>
+<div class="space-y-6">
+<!-- Metadata Segment -->
+<div>
+<label class="font-label-md text-primary uppercase tracking-widest mb-3 block">Metadata</label>
+<div class="space-y-4">
+<div class="bg-surface border border-outline-variant rounded-lg p-3">
+<span class="text-on-surface-variant font-label-md block mb-1">PROX_ID</span>
+<span class="font-body-md jetbrains-mono text-on-surface">FLOW-7721-AX</span>
+</div>
+<div class="bg-surface border border-outline-variant rounded-lg p-3">
+<span class="text-on-surface-variant font-label-md block mb-1">CODEC</span>
+<span class="font-body-md jetbrains-mono text-on-surface">H.265 / HEVC</span>
+</div>
+</div>
+</div>
+<!-- Bitrate Controls -->
+<div>
+<label class="font-label-md text-primary uppercase tracking-widest mb-3 block">Process Controls</label>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between">
+<span class="font-body-md text-on-surface">Encoding Speed</span>
+<span class="font-body-md jetbrains-mono text-primary">3.5x</span>
+</div>
+<input class="w-full h-1.5 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface border border-outline-variant rounded-lg">
+<span class="font-body-md text-on-surface">Hardware Accel</span>
+<div class="w-10 h-6 bg-primary rounded-full flex items-center px-1">
+<div class="w-4 h-4 bg-on-primary rounded-full translate-x-4"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Feedback (Placeholder for visualization) -->
+<div class="relative h-32 bg-background border border-outline-variant rounded-xl overflow-hidden group">
+
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-label-md text-primary mb-1">REAL-TIME SPECTROGRAM</span>
+<span class="font-body-md jetbrains-mono text-on-surface-variant">MONITORING...</span>
+</div>
+</div>
+<!-- Action List -->
+<div class="space-y-2">
+<button class="w-full flex items-center justify-between p-3 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">subtitles</span>
+<span class="font-body-md text-on-surface">Analyze Captions</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">auto_fix_high</span>
+<span class="font-body-md text-on-surface">Color Correction</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Persistent Bottom Apply Bar -->
+<footer class="fixed bottom-0 w-full z-50 h-20 bg-surface-container-high border-t border-outline-variant px-margin-mobile md:px-margin-desktop flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface-variant jetbrains-mono">SELECTED ITEMS</span>
+<span class="font-headline-sm text-headline-sm text-primary">2 Files (5.3 GB)</span>
+</div>
+<div class="hidden md:flex items-center gap-4 border-l border-outline-variant pl-6">
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface-variant jetbrains-mono">TARGET FORMAT</span>
+<span class="font-body-md text-on-surface">ProRes 422 HQ</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-3 border border-outline-variant text-on-surface rounded-full font-label-md hover:bg-surface-bright transition-colors active:scale-95 duration-100">
+                DISCARD
+            </button>
+<button class="px-10 py-3 bg-primary text-on-primary rounded-full font-label-md font-bold hover:opacity-90 transition-opacity active:scale-95 duration-100 flex items-center gap-2 shadow-lg shadow-primary/10">
+<span>APPLY CHANGES</span>
+<span class="material-symbols-outlined">bolt</span>
+</button>
+</div>
+</footer>
+<script>
+        // Micro-interactions and reactive behaviors
+        document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const row = e.target.closest('.grid');
+                if (e.target.checked) {
+                    row.classList.add('border-primary/40', 'bg-surface-container-high/50');
+                } else {
+                    row.classList.remove('border-primary/40', 'bg-surface-container-high/50');
+                }
+            });
+        });
+
+        // Simulating the apply action
+        const applyBtn = document.querySelector('button.bg-primary');
+        applyBtn.addEventListener('click', () => {
+            applyBtn.innerHTML = '<span>PROCESSING...</span><span class="material-symbols-outlined animate-spin">sync</span>';
+            setTimeout(() => {
+                applyBtn.innerHTML = '<span>APPLY CHANGES</span><span class="material-symbols-outlined">bolt</span>';
+            }, 2000);
+        });
+    </script>
+</body></html>

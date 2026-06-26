@@ -18,9 +18,13 @@
 -dontwarn com.arthenica.**
 -dontwarn com.antonkarpenko.**
 
+# Keep update data models and services to prevent R8 stripping/obfuscation
+-keep class com.splitandmerge.mkvslice.data.update.** { *; }
+
 # Generic safety net: any class with native methods must keep
 # both the class name and the native method names so JNI
 # bindings work after R8 minification.
 -keepclasseswithmembernames class * {
     native <methods>;
 }
+

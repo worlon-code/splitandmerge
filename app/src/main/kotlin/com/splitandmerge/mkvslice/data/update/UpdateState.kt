@@ -1,19 +1,24 @@
 package com.splitandmerge.mkvslice.data.update
 
-data class UpdateState(
-    val phase: Phase = Phase.Idle,
-    val manifest: UpdateManifest? = null,
-    val downloadedBytes: Long = 0,
-    val totalBytes: Long = 0,
-    val errorMessage: String? = null
-)
+sealed interface UpdateState {
+    data object Idle : UpdateState
+    data object Checking : UpdateState
+    data object UpToDate : UpdateState
 
-enum class Phase {
-    Idle, Checking, UpToDate,
-    AvailableButDebug,
-    AvailableReady,
-    Downloading, Verifying,
-    ReadyToInstall,
-    InstallLaunched,
-    Error
+    data class Available(
+        val versionCode: Int,
+        val versionName: String,
+        val changelog: List<String>,
+        val url: String,
+        val sha256: String,
+        val size: Long
+    ) : UpdateState
+
+    data class Downloading(val progress: Float) : UpdateState
+    data object Verifying : UpdateState
+    data object NeedsInstallPermission : UpdateState
+    data object ReadyToInstall : UpdateState
+    data object Installing : UpdateState
+    data object Installed : UpdateState
+    data class Error(val reason: String) : UpdateState
 }

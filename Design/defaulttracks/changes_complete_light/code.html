@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VideoFlow - Defaults Complete</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container": "#2b292c",
+                "error-container": "#93000a",
+                "surface-bright": "#3a393b",
+                "tertiary-fixed": "#ffdbc9",
+                "surface-container-highest": "#363436",
+                "on-tertiary-fixed": "#321200",
+                "on-primary-fixed-variant": "#005047",
+                "surface": "#141315",
+                "secondary-container": "#4d4079",
+                "inverse-on-surface": "#313032",
+                "on-primary-fixed": "#00201c",
+                "surface-container-high": "#2b292c",
+                "tertiary-container": "#ffb68c",
+                "inverse-surface": "#e6e1e4",
+                "on-primary": "#003731",
+                "on-surface": "#e6e1e4",
+                "on-secondary": "#34275e",
+                "secondary": "#cdbdff",
+                "background": "#141315",
+                "surface-dim": "#141315",
+                "primary": "#9ff2e2",
+                "surface-container-lowest": "#0f0e10",
+                "primary-container": "#83d5c6",
+                "surface-tint": "#83d5c6",
+                "outline-variant": "#49454f",
+                "on-tertiary-fixed-variant": "#6c3a19",
+                "tertiary": "#ffdbc9",
+                "on-error-container": "#ffdad6",
+                "secondary-fixed-dim": "#cdbdff",
+                "on-secondary-fixed": "#1f1048",
+                "outline": "#889390",
+                "secondary-fixed": "#e8deff",
+                "on-secondary-fixed-variant": "#4b3e76",
+                "primary-fixed-dim": "#83d5c6",
+                "on-secondary-container": "#bfaff0",
+                "on-tertiary-container": "#7a4524",
+                "on-surface-variant": "#bec9c5",
+                "on-primary-container": "#005d52",
+                "surface-variant": "#363436",
+                "tertiary-fixed-dim": "#ffb68c",
+                "on-error": "#690005",
+                "surface-container-low": "#1c1b1d",
+                "on-background": "#e6e1e4",
+                "inverse-primary": "#016b5f",
+                "primary-fixed": "#9ff2e2",
+                "error": "#ffb4ab",
+                "on-tertiary": "#502405"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "xl": "32px",
+                "margin-desktop": "24px",
+                "xs": "4px",
+                "base": "4px",
+                "lg": "24px",
+                "sm": "8px",
+                "margin-mobile": "16px",
+                "gutter": "16px",
+                "md": "16px"
+            },
+            "fontFamily": {
+                "headline-md": ["Roboto Flex"],
+                "headline-lg": ["Roboto Flex"],
+                "body-md": ["Roboto Flex"],
+                "code-sm": ["JetBrains Mono"],
+                "headline-sm": ["Roboto Flex"],
+                "label-md": ["JetBrains Mono"],
+                "body-lg": ["Roboto Flex"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #141315;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      /* Soft Pulse for the success hero */
+      @keyframes soft-pulse {
+        0% { transform: scale(1); opacity: 0.15; }
+        50% { transform: scale(1.1); opacity: 0.25; }
+        100% { transform: scale(1); opacity: 0.15; }
+      }
+      .success-glow {
+        animation: soft-pulse 4s infinite ease-in-out;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">VideoFlow</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-80">more_vert</button>
+</div>
+</header>
+<!-- Side Navigation (Desktop) -->
+<nav class="hidden md:flex flex-col py-6 gap-2 fixed left-0 top-0 h-full w-72 z-40 bg-surface-container-low border-r border-outline-variant mt-16">
+<div class="px-6 mb-6">
+<span class="font-headline-md text-headline-md text-primary font-bold">VideoFlow Pro</span>
+</div>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-body-lg text-body-lg">Split</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-body-lg text-body-lg">Merge</span>
+</a>
+<a class="text-on-surface-variant mx-3 my-1 px-4 py-3 hover:bg-surface-container-high rounded-full transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-body-lg text-body-lg">Queue</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-3 my-1 px-4 py-3 transition-all duration-200 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</a>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 pb-40 md:ml-72 flex flex-col items-center justify-start px-margin-mobile md:px-margin-desktop">
+<!-- Hero Section -->
+<section class="w-full max-w-2xl py-12 flex flex-col items-center text-center">
+<div class="relative mb-6">
+<div class="absolute inset-0 bg-primary rounded-full success-glow blur-xl"></div>
+<div class="relative w-24 h-24 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md mb-2">27 files updated</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">4 unchanged · 0 failed · 2 skipped</p>
+</section>
+<!-- Results CARD -->
+<section class="w-full max-w-2xl">
+<div class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden">
+<!-- Row 1: Updated -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant hover:bg-surface-bright transition-colors cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-body-lg text-body-lg">Updated</span>
+</div>
+<span class="font-label-md text-label-md bg-primary-container text-on-primary-container px-3 py-1 rounded-full">27</span>
+</div>
+<!-- Row 2: Unchanged -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant hover:bg-surface-bright transition-colors cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">block</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface-variant">Unchanged</span>
+</div>
+<span class="font-label-md text-label-md bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full">4</span>
+</div>
+<!-- Row 3: Skipped (Expandable) -->
+<div class="group flex flex-col border-b border-outline-variant">
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-bright transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">skip_next</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface-variant">Skipped</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-md text-label-md bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full">2</span>
+<span class="material-symbols-outlined arrow transition-transform duration-200">expand_more</span>
+</div>
+</button>
+<!-- Expandable content -->
+<div class="hidden bg-surface-container-lowest px-margin-mobile py-4 border-t border-outline-variant">
+<div class="flex items-start gap-4 mb-3">
+<span class="material-symbols-outlined text-tertiary-container text-sm">info</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-tertiary-container uppercase tracking-wider">Reason</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">No matching audio found for batch ID: 0xFF92</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-3 text-xs opacity-60">
+<span class="material-symbols-outlined text-xs">draft</span>
+<span class="font-code-sm">source_raw_001.mp4</span>
+</div>
+<div class="flex items-center gap-3 text-xs opacity-60">
+<span class="material-symbols-outlined text-xs">draft</span>
+<span class="font-code-sm">source_raw_004.mp4</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Log Preview -->
+<div class="mt-8">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-4 uppercase tracking-widest">Process Summary</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-container p-4 rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-primary block mb-1">Time Elapsed</span>
+<span class="font-code-sm text-code-sm">00:04:12.8</span>
+</div>
+<div class="bg-surface-container p-4 rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-primary block mb-1">Total Size</span>
+<span class="font-code-sm text-code-sm">4.28 GB</span>
+</div>
+<div class="bg-surface-container p-4 rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-primary block mb-1">Threads Used</span>
+<span class="font-code-sm text-code-sm">16 Virtual</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Actions Bar -->
+<div class="fixed bottom-20 md:bottom-0 left-0 md:left-72 right-0 bg-surface/80 backdrop-blur-md px-margin-mobile py-4 flex items-center justify-end gap-3 z-50">
+<button class="px-6 h-10 border border-outline text-primary rounded-full font-label-md text-label-md hover:bg-surface-container-high transition-colors active:scale-95 duration-100 ease-in-out">
+            View details
+        </button>
+<button class="px-8 h-10 bg-primary text-on-primary rounded-full font-label-md text-label-md shadow-lg shadow-primary/10 hover:brightness-110 active:scale-95 duration-100 ease-in-out">
+            Done
+        </button>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container rounded-t-xl border-t border-outline-variant h-20 pb-safe flex justify-around items-center">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="font-label-md text-label-md">Split</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="font-label-md text-label-md">Merge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:bg-surface-bright active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-label-md text-label-md">Queue</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-95 duration-100 ease-in-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction for completion effect
+        window.addEventListener('DOMContentLoaded', () => {
+            const heroIcon = document.querySelector('.relative.w-24.h-24');
+            heroIcon.animate([
+                { transform: 'scale(0.8)', opacity: 0 },
+                { transform: 'scale(1.1)', opacity: 1 },
+                { transform: 'scale(1)', opacity: 1 }
+            ], {
+                duration: 600,
+                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+            });
+        });
+    </script>
+</body></html>

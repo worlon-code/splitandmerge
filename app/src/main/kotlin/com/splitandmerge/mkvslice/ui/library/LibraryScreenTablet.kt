@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CallMerge
 import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -62,6 +63,7 @@ fun LibraryScreenTablet(
     onNavigateToSettings: () -> Unit,
     onStartSplitFlow: (uri: String, filename: String) -> Unit,
     onStartMergeFlow: () -> Unit,
+    onStartDefaultTracksFlow: () -> Unit,
     onNavigateToJobDetail: (String) -> Unit,
     onNavigateToSplitResult: (String) -> Unit,
     onNavigateToMergeResult: (String) -> Unit
@@ -133,6 +135,17 @@ fun LibraryScreenTablet(
             floatingActionButton = {
                 Column(horizontalAlignment = Alignment.End) {
                     FloatingActionButton(
+                        onClick = onStartDefaultTracksFlow,
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Flag, contentDescription = "Set Default Tracks")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Set defaults")
+                        }
+                    }
+                    FloatingActionButton(
                         onClick = onStartMergeFlow,
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -180,6 +193,9 @@ fun LibraryScreenTablet(
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.weight(1f)
                         )
+                        IconButton(onClick = onStartDefaultTracksFlow) {
+                            Icon(Icons.Default.Flag, contentDescription = "Set Default Tracks")
+                        }
                         IconButton(onClick = { splitFilePicker.launch(arrayOf("video/x-matroska", "video/mp4", "video/*")) }) {
                             Icon(Icons.Default.CallSplit, contentDescription = "Split")
                         }

@@ -7,8 +7,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.splitandmerge.mkvslice.data.db.AppDatabase
 import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.data.db.CleanupPatternDao
+import com.splitandmerge.mkvslice.data.db.DefaultTrackFileResultDao
 import com.splitandmerge.mkvslice.data.db.migrations.Migration_3_4
 import com.splitandmerge.mkvslice.data.db.migrations.Migration_4_5
+import com.splitandmerge.mkvslice.data.db.migrations.Migration_5_6
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +30,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "mkvslice_db"
         )
-        .addMigrations(Migration_3_4, Migration_4_5)
+        .addMigrations(Migration_3_4, Migration_4_5, Migration_5_6)
         .addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
@@ -46,5 +48,10 @@ object DatabaseModule {
     @Provides
     fun provideCleanupPatternDao(db: AppDatabase): CleanupPatternDao {
         return db.cleanupPatternDao()
+    }
+
+    @Provides
+    fun provideDefaultTrackFileResultDao(db: AppDatabase): DefaultTrackFileResultDao {
+        return db.defaultTrackFileResultDao()
     }
 }
