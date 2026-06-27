@@ -18,7 +18,7 @@
 foragent.py
 # Project-specific exclusions (AGENTS.md Section 14)
 /logs/
-screenshots/
+logs/screenshots/
 /logs/*.log
 !/logs/.gitkeep
 /AI/plans/*.draft.md
