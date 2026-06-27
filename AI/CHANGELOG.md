@@ -7,6 +7,35 @@
 
 ## [Unreleased]
 
+## [0.0.14] — 2026-06-28
+
+ NEW FEATURES
+- **Batch Rename Videos (Title-Clean)**: New dedicated screen (reachable from Settings) to scan folders or pick multiple files and batch-rename video filenames in-place using the existing cleanup-patterns engine. Supports folder-pick, multi-file-pick, inline preview showing before/after names, per-row checkbox, collision detection, and a results summary sheet.
+- **Title Cleanup Patterns — backup & restore**: Export all patterns to a JSON file via SAF, restore from any previously exported file. Validates schema on import; malformed files are rejected with an error toast.
+- **Cleanup pattern Replace-with field**: Each pattern can now carry an optional replacement string (default: empty = delete match). Existing patterns without a replacement continue to behave as before.
+- **Select-all toggle for cleanup patterns**: A new checkbox in the pattern list header toggles all patterns on/off in a single tap; tapping again deselects all.
+- **In-app Help screen**: A new "How to Use / Help" screen (Settings → How to Use / Help) presents step-by-step guides with auto-captured device screenshots for each major feature.
+- **AMOLED / dark theme mode**: Settings now exposes a Theme Mode selector (System default / Light / Dark / AMOLED). AMOLED mode forces a true-black background, reducing power draw on OLED panels.
+- **Keep-screen-on**: The screen is kept on while an active split, merge, or rename operation is in progress and returns to normal policy once the operation completes or is cancelled.
+- **Default size-cap pre-fill**: The Split Config screen now reads the user's saved default size cap from Settings and pre-fills the field, eliminating repetitive manual entry.
+
+ BUG FIXES
+- **Rename verify-after-rename false failure**: After `DocumentsContract.renameDocument` succeeds, the document URI changes. The follow-up `queryDisplayName` on the old URI was denied and mapped to a failure. Fixed by trusting the non-null new URI returned by `renameDocument` as proof of success; the display-name query is now best-effort only.
+- **Android back on Rename Videos screen**: System back was exiting to Settings instead of returning to the source-picker when a file list was already showing. Fixed by adding `BackHandler` in both phone and tablet variants that intercepts back when state is non-Idle and resets to Idle via `cancelToIdle()`.
+
+ TECHNICAL
+- `RenameVideosViewModel.cancelToIdle()` fully resets all state: cancels scan and rename jobs, clears file list, auto-suffix map, manually-edited IDs, inline-create state, and selected pattern IDs.
+- Screenshot capture infrastructure: instrumented `ScreenshotTest` using `createComposeRule<ComponentActivity>()` (plain host, no Hilt) with explicit mock stubs for all ViewModel state flows to avoid proxy-cast ClassCastExceptions.
+- All screenshots captured at device resolution (1080 × 2264) and committed to `docs/screenshots/`; also registered as `drawable-nodpi` resources for the Help screen.
+- `docs/USAGE.md` step-by-step usage guide added; `README.md` updated with screenshot table and link to usage guide.
+
+ VERIFICATION
+- Samsung M51 (RZ8N90X627R), Android 12, targetSdk 35.
+- `testDebugUnitTest --rerun-tasks` GREEN (all tests pass, 0 failures).
+- `lintDebug` GREEN (0 errors).
+- `assembleRelease` GREEN.
+
+
 ## [0.0.13] — 2026-06-27
 
 🚀 NEW FEATURES

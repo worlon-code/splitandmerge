@@ -9,18 +9,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalView
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.splitandmerge.mkvslice.data.db.JobDao
 import com.splitandmerge.mkvslice.data.settings.SettingsRepository
+import com.splitandmerge.mkvslice.data.settings.ThemeMode
+import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.onboarding.FirstRunChecker
 import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidation
 import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidator
@@ -30,6 +36,7 @@ import com.splitandmerge.mkvslice.ui.components.FolderValidationDialog
 import com.splitandmerge.mkvslice.ui.nav.AppNav
 import com.splitandmerge.mkvslice.ui.nav.Routes
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +57,7 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var settingsRepository: SettingsRepository
     @Inject lateinit var outputFolderValidator: OutputFolderValidator
     @Inject lateinit var firstRunChecker: FirstRunChecker
+    @Inject lateinit var jobDao: JobDao
 
     // Pre-read result of the first-run DataStore check. Null means the read
     // hasn't completed yet; the splash screen is held open while it is null.
@@ -81,7 +89,36 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            VideoSplitterTheme {
+            val settings by settingsRepository.settingsFlow.collectAsState(
+                initial = com.splitandmerge.mkvslice.data.settings.SettingsState()
+            )
+            val darkTheme = when (settings.themeMode) {
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.LIGHT  -> false
+                ThemeMode.DARK   -> true
+            }
+
+            // Keep the screen on when the user has opted in AND a job is running.
+            val anyJobRunning by remember {
+                jobDao.observeAll().map { list ->
+                    list.any { it.status == JobStatus.RUNNING }
+                }
+            }.collectAsState(initial = false)
+
+            val view = LocalView.current
+            DisposableEffect(settings.keepScreenOn, anyJobRunning) {
+                val window = (view.context as android.app.Activity).window
+                if (settings.keepScreenOn && anyJobRunning) {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+                onDispose {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+
+            VideoSplitterTheme(darkTheme = darkTheme) {
                 // Track validation failures from the first-run folder picker.
                 var firstRunValidationError by remember { mutableStateOf<OutputFolderValidation?>(null) }
 

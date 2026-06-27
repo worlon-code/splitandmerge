@@ -16,8 +16,8 @@ android {
         applicationId = "com.splitandmerge.mkvslice"
         minSdk = 26
         targetSdk = 35
-        versionCode = 14
-        versionName = "0.0.13"
+        versionCode = 15
+        versionName = "0.0.14"
 
         testInstrumentationRunner = "com.splitandmerge.mkvslice.HiltTestRunner"
         vectorDrawables {

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -38,17 +39,28 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.filled.MoreVert
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +71,56 @@ fun CleanupPatternsScreenTablet(
     val state by viewModel.state.collectAsState()
     var newRuleLabel by remember { mutableStateOf("") }
     var newRuleRegex by remember { mutableStateOf("") }
+    var newRuleReplacement by remember { mutableStateOf("") }
+    var newRuleRegexError by remember { mutableStateOf<String?>(null) }
+    var editingPattern by remember { mutableStateOf<CleanupPatternEntity?>(null) }
+    var showMenu by remember { mutableStateOf(false) }
     val rightScrollState = rememberScrollState()
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val backupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            try {
+                val outputStream = context.contentResolver.openOutputStream(uri)
+                if (outputStream != null) {
+                    viewModel.exportBackup(outputStream)
+                } else {
+                    scope.launch { snackbarHostState.showSnackbar("Failed to open output stream") }
+                }
+            } catch (e: Exception) {
+                scope.launch { snackbarHostState.showSnackbar("Export failed: ${e.message}") }
+            }
+        }
+    }
+
+    val restoreLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    viewModel.importRestore(inputStream)
+                } else {
+                    scope.launch { snackbarHostState.showSnackbar("Failed to open input stream") }
+                }
+            } catch (e: Exception) {
+                scope.launch { snackbarHostState.showSnackbar("Restore failed: ${e.message}") }
+            }
+        }
+    }
+
+    LaunchedEffect(state.snackbarMessage) {
+        state.snackbarMessage?.let { msg ->
+            snackbarHostState.showSnackbar(msg)
+            viewModel.clearSnackbarMessage()
+        }
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         NavigationRail(
@@ -76,9 +137,36 @@ fun CleanupPatternsScreenTablet(
         }
 
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 TopAppBar(
                     title = { Text("Title Cleanup (Tablet)", fontWeight = FontWeight.Bold) },
+                    actions = {
+                        Box {
+                            IconButton(onClick = { showMenu = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "More Actions")
+                            }
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Backup Patterns") },
+                                    onClick = {
+                                        showMenu = false
+                                        backupLauncher.launch("mkvslice-cleanup-patterns.json")
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Restore Patterns") },
+                                    onClick = {
+                                        showMenu = false
+                                        restoreLauncher.launch(arrayOf("application/json"))
+                                    }
+                                )
+                            }
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
@@ -123,6 +211,12 @@ fun CleanupPatternsScreenTablet(
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(pattern.label, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                                         Text("Regex: ${pattern.regex}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        if (pattern.replacement.isNotEmpty()) {
+                                            Text("Replace with: \"${pattern.replacement}\"", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
+                                    }
+                                    IconButton(onClick = { editingPattern = pattern }) {
+                                        Icon(Icons.Default.Edit, contentDescription = "Edit")
                                     }
                                     Switch(
                                         checked = pattern.enabled,
@@ -158,20 +252,39 @@ fun CleanupPatternsScreenTablet(
                             Spacer(modifier = Modifier.height(8.dp))
                             OutlinedTextField(
                                 value = newRuleRegex,
-                                onValueChange = { newRuleRegex = it },
+                                onValueChange = {
+                                    newRuleRegex = it
+                                    newRuleRegexError = try {
+                                        Regex(it)
+                                        null
+                                    } catch (e: Exception) {
+                                        e.message ?: "Invalid regex"
+                                    }
+                                },
                                 label = { Text("Regular Expression Pattern") },
+                                isError = newRuleRegexError != null,
+                                supportingText = { newRuleRegexError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedTextField(
+                                value = newRuleReplacement,
+                                onValueChange = { newRuleReplacement = it },
+                                label = { Text("Replace with (Optional)") },
+                                placeholder = { Text("Leave empty to delete matched text") },
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Button(
                                 onClick = {
-                                    if (newRuleLabel.isNotEmpty() && newRuleRegex.isNotEmpty()) {
-                                        viewModel.addPattern(newRuleRegex, newRuleLabel)
+                                    if (newRuleLabel.isNotEmpty() && newRuleRegex.isNotEmpty() && newRuleRegexError == null) {
+                                        viewModel.addPattern(newRuleRegex, newRuleLabel, newRuleReplacement)
                                         newRuleLabel = ""
                                         newRuleRegex = ""
+                                        newRuleReplacement = ""
                                     }
                                 },
-                                enabled = newRuleLabel.isNotEmpty() && newRuleRegex.isNotEmpty(),
+                                enabled = newRuleLabel.isNotEmpty() && newRuleRegex.isNotEmpty() && newRuleRegexError == null,
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
@@ -238,6 +351,79 @@ fun CleanupPatternsScreenTablet(
                 }
             }
         }
+    }
+
+    val currentEditing = editingPattern
+    if (currentEditing != null) {
+        var labelText by remember(currentEditing.id) { mutableStateOf<String>(currentEditing.label) }
+        var regexText by remember(currentEditing.id) { mutableStateOf<String>(currentEditing.regex) }
+        var replacementText by remember(currentEditing.id) { mutableStateOf<String>(currentEditing.replacement) }
+        var regexError by remember { mutableStateOf<String?>(null) }
+
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { editingPattern = null },
+            title = { Text("Edit Pattern") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = labelText,
+                        onValueChange = { labelText = it },
+                        label = { Text("Label Description") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = regexText,
+                        onValueChange = {
+                            regexText = it
+                            regexError = try {
+                                Regex(it)
+                                null
+                            } catch (e: Exception) {
+                                e.message ?: "Invalid regex"
+                            }
+                        },
+                        label = { Text("Regex Pattern") },
+                        isError = regexError != null,
+                        supportingText = { regexError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = replacementText,
+                        onValueChange = { replacementText = it },
+                        label = { Text("Replace with (Optional)") },
+                        placeholder = { Text("Leave empty to delete matched text") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(
+                    onClick = {
+                        if (labelText.length > 0 && regexText.length > 0 && regexError == null) {
+                            viewModel.updatePattern(currentEditing.id, regexText, labelText, replacementText)
+                            editingPattern = null
+                        }
+                    },
+                    enabled = labelText.length > 0 && regexText.length > 0 && regexError == null
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = { editingPattern = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    state.restoreOutcome?.let { outcome ->
+        RestoreOutcomeDialog(
+            outcome = outcome,
+            onDismiss = { viewModel.clearRestoreOutcome() }
+        )
     }
 }
 

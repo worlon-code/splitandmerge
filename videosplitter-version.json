@@ -1,4 +1,4 @@
-﻿{
+{
     "changelog":  [
                       "ðŸš€ NEW FEATURES",
                       "- **Set Default Tracks**: A new surgical flow that allows users to analyze, modify, and apply default/forced/enabled flags for audio and subtitle tracks on multiple MKV files in-place without re-encoding.",
@@ -12,9 +12,10 @@
                       "- Room DB migrated v5 â†’ v6: Added `default_track_file_results` table for Default Tracks tracking.",
                       "- Pinned `release-assets.githubusercontent.com` and `objects.githubusercontent.com` to the update download allowed hosts list."
                   ],
-    "versionName":  "0.0.13",
-    "sha256":  "8F86D6C5327062D6EFF94B340A9761192210B6B7829A779322668E37673E532F",
-    "versionCode":  14,
-    "sizeBytes":  17155337,
-    "apkUrl":  "https://github.com/worlon-code/splitandmerge/releases/download/v0.0.13/app-release.apk"
+    "versionName":  "0.0.14",
+    "sha256":  "4A0DE28818138CE4667C5781644B096768E82AAEBB234BE4367F5333FFBC12AE",
+    "versionCode":  15,
+    "sizeBytes":  17996565,
+    "apkUrl":  "https://github.com/worlon-code/splitandmerge/releases/download/v0.0.14/app-release.apk"
+
 }

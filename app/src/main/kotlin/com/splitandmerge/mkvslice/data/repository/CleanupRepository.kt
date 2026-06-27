@@ -19,6 +19,10 @@ class CleanupRepository @Inject constructor(
         dao.upsert(pattern)
     }
 
+    suspend fun addAll(patterns: List<CleanupPatternEntity>) {
+        dao.insertAll(patterns)
+    }
+
     suspend fun delete(id: String) {
         dao.deleteById(id)
     }

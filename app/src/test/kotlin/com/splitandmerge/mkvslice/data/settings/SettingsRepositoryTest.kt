@@ -27,7 +27,7 @@ class SettingsRepositoryTest {
 
         // Default values
         val initial = repository.settingsFlow.first()
-        assertEquals(ThemeMode.DYNAMIC, initial.themeMode)
+        assertEquals(ThemeMode.SYSTEM, initial.themeMode)
         assertEquals(9.0, initial.defaultCapGb, 0.0)
         assertTrue(initial.improveReliability)
 

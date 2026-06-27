@@ -34,6 +34,9 @@ import com.splitandmerge.mkvslice.ui.splitconfirm.SplitConfirmScreen
 import com.splitandmerge.mkvslice.ui.oss.OssNoticesScreen
 import com.splitandmerge.mkvslice.ui.logs.LogViewerScreen
 import com.splitandmerge.mkvslice.ui.logs.LogViewerViewModel
+import com.splitandmerge.mkvslice.ui.rename.RenameVideosScreen
+import com.splitandmerge.mkvslice.ui.rename.RenameVideosViewModel
+import com.splitandmerge.mkvslice.ui.help.HelpScreen
 import com.splitandmerge.mkvslice.domain.model.JobType
 
 @Composable
@@ -259,7 +262,23 @@ fun AppNav(
                 onBack = { navController.popBackStack() },
                 onNavigateToCleanupPatterns = { navController.navigate(Routes.CLEANUP_PATTERNS) },
                 onNavigateToOssNotices = { navController.navigate(Routes.OSS_NOTICES) },
-                onNavigateToLogs = { navController.navigate(Routes.LOGS) }
+                onNavigateToLogs = { navController.navigate(Routes.LOGS) },
+                onNavigateToRenameVideos = { navController.navigate(Routes.RENAME_VIDEOS) },
+                onNavigateToHelp = { navController.navigate(Routes.HELP) }
+            )
+        }
+
+        composable(Routes.HELP) {
+            HelpScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.RENAME_VIDEOS) {
+            val renameViewModel: RenameVideosViewModel = hiltViewModel()
+            RenameVideosScreen(
+                viewModel = renameViewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 

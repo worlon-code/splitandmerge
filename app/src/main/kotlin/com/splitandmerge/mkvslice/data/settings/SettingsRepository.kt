@@ -48,11 +48,20 @@ class DataStoreSettingsRepository @Inject constructor(
             }
         }
         .map { preferences ->
-            val themeModeStr = preferences[PreferencesKeys.THEME_MODE] ?: ThemeMode.DYNAMIC.name
-            val themeMode = try {
-                ThemeMode.valueOf(themeModeStr)
-            } catch (e: IllegalArgumentException) {
-                ThemeMode.DYNAMIC
+            val themeModeStr = preferences[PreferencesKeys.THEME_MODE]
+            val themeMode = when (themeModeStr) {
+                "DYNAMIC" -> ThemeMode.SYSTEM
+                "AMOLED" -> ThemeMode.DARK
+                "LIGHT" -> ThemeMode.LIGHT
+                "DARK" -> ThemeMode.DARK
+                null -> ThemeMode.SYSTEM
+                else -> {
+                    try {
+                        ThemeMode.valueOf(themeModeStr)
+                    } catch (e: IllegalArgumentException) {
+                        ThemeMode.SYSTEM
+                    }
+                }
             }
             SettingsState(
                 themeMode = themeMode,

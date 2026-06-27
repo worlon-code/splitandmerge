@@ -3,12 +3,27 @@
 An Android application (applicationId `com.splitandmerge.mkvslice`) for lossless splitting and merging of large video files (MKV, MP4, AVI, WebM, MOV, TS) at keyframe boundaries.
 
 ## Features
-- **Lossless Cut / Merge**: Dynamically links to LGPL FFmpeg, using stream-copy without re-encoding to preserve 4K/HDR quality.
+- **Lossless Cut / Merge**: Links to LGPL FFmpeg, using stream-copy without re-encoding to preserve 4K/HDR quality.
+- **Set Default Tracks**: Reconfigure default/forced stream flags inside Matroska headers in batch.
+- **Batch Rename Videos (Title-Clean)**: Batch clean media filenames matching custom cleanup patterns.
 - **Multi-Stream & Track Preservation**: Keeps all audio, subtitle (SRT, ASS, PGS, VobSub), chapters, and attachment (font) tracks.
-- **Smart Splitting**: Intelligent time-based planning with a target of 9 GB and a hard 9.5 GB ceiling per part.
-- **Title Cleanup Engine**: Automated and customizable title extraction from complex media release filenames.
+- **Smart Splitting**: Intelligent time-based planning with custom size limits or part quantities.
 - **Foreground Service Processing**: Reliable processing using low-priority background execution to bypass OS restrictions.
-- **Privacy & Security**: Operates completely offline with zero telemetry, and handles all file operations securely through Storage Access Framework (SAF).
+- **Privacy & Security**: Operates completely offline with zero telemetry (no tracking), and handles all file operations securely through Storage Access Framework (SAF).
+- **In-App Updater**: Automatically checks for updates and verifies SHA-256 signatures before updating.
+
+## Screenshots & How to Use
+
+A step-by-step [Usage Guide](docs/USAGE.md) is available. Here are visual previews of the key screens in the application:
+
+| Library Home | Set Default Tracks | Batch Rename Videos |
+| --- | --- | --- |
+| ![Library](docs/screenshots/S2_library_phone.png) | ![Default Tracks](docs/screenshots/S12_set_default_tracks_list.png) | ![Rename Videos](docs/screenshots/S14_rename_preview.png) |
+
+| Track Editor | Title Cleanup Patterns | Settings & Theme |
+| --- | --- | --- |
+| ![Track Editor](docs/screenshots/S12_set_default_tracks_editor.png) | ![Cleanup Patterns](docs/screenshots/S15a_cleanup_patterns_phone.png) | ![Settings](docs/screenshots/S15_settings.png) |
+
 
 ## Development Setup
 

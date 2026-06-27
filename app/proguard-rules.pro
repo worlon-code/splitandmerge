@@ -28,3 +28,6 @@
     native <methods>;
 }
 
+# Keep backup data models to prevent R8 stripping/obfuscation
+-keep class com.splitandmerge.mkvslice.data.cleanup.backup.** { *; }
+

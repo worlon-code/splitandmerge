@@ -24,7 +24,7 @@ import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidator
 import com.splitandmerge.mkvslice.domain.storage.OutputFolderValidation
 
 data class SettingsState(
-    val themeMode: ThemeMode = ThemeMode.DYNAMIC,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val defaultCapGb: Float = 9.0f,
     val defaultOutputFolder: String = "",
     val improveReliability: Boolean = true,

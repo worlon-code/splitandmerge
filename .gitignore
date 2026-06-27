@@ -14,7 +14,8 @@
 .cxx
 /app/build
 /app/release/
-
+.agent_threads/
+foragent.py
 # Project-specific exclusions (AGENTS.md Section 14)
 /logs/
 screenshots/

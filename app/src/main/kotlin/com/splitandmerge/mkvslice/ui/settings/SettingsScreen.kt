@@ -21,6 +21,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -71,7 +73,9 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToCleanupPatterns: () -> Unit,
     onNavigateToOssNotices: () -> Unit,
-    onNavigateToLogs: () -> Unit
+    onNavigateToLogs: () -> Unit,
+    onNavigateToRenameVideos: () -> Unit,
+    onNavigateToHelp: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val validationResult by viewModel.validationResult.collectAsState()
@@ -121,10 +125,9 @@ fun SettingsScreen(
             ) {
                 OutlinedTextField(
                     value = when (state.themeMode) {
+                        ThemeMode.SYSTEM -> "Follow System"
                         ThemeMode.LIGHT -> "Light Theme"
-                        ThemeMode.DARK -> "Dark Theme"
-                        ThemeMode.AMOLED -> "AMOLED Black"
-                        ThemeMode.DYNAMIC -> "Dynamic Material You"
+                        ThemeMode.DARK -> "Dark Theme (AMOLED)"
                     },
                     onValueChange = {},
                     readOnly = true,
@@ -138,15 +141,14 @@ fun SettingsScreen(
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false }
                 ) {
-                    ThemeMode.values().forEach { mode ->
+                    ThemeMode.entries.forEach { mode ->
                         DropdownMenuItem(
                             text = {
                                 Text(
                                     when (mode) {
+                                        ThemeMode.SYSTEM -> "Follow System"
                                         ThemeMode.LIGHT -> "Light Theme"
-                                        ThemeMode.DARK -> "Dark Theme"
-                                        ThemeMode.AMOLED -> "AMOLED Black"
-                                        ThemeMode.DYNAMIC -> "Dynamic Material You"
+                                        ThemeMode.DARK -> "Dark Theme (AMOLED)"
                                     }
                                 )
                             },
@@ -320,7 +322,35 @@ fun SettingsScreen(
                         subtitle = "Review licenses for external libraries",
                         onClick = onNavigateToOssNotices
                     )
+                    Divider()
+                    SettingsNavigationItem(
+                        icon = { Icon(Icons.Default.Help, contentDescription = "Help") },
+                        title = "How to Use / Help",
+                        subtitle = "Step-by-step usage guide with visual previews",
+                        onClick = onNavigateToHelp
+                    )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Divider()
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Beta section
+            Text("Beta", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SettingsNavigationItem(
+                    icon = { Icon(Icons.Default.Edit, contentDescription = "Rename Videos") },
+                    title = "Rename Videos",
+                    subtitle = "Scan folders and clean video titles in batch",
+                    onClick = onNavigateToRenameVideos
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))

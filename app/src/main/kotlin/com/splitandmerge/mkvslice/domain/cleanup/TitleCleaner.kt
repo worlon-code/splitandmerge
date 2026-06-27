@@ -39,3 +39,18 @@ class TitleCleaner @Inject constructor(
         return if (baseName.length >= 2) baseName.trim() else fallback.trim()
     }
 }
+
+fun cleanTitleWith(baseName: String, patterns: List<CleanupPatternEntity>): String {
+    var cleaned = baseName
+    val sortedPatterns = patterns.sortedBy { it.orderIndex }
+
+    for (pattern in sortedPatterns) {
+        try {
+            cleaned = Regex(pattern.regex, RegexOption.IGNORE_CASE).replace(cleaned, pattern.replacement)
+        } catch (e: Exception) {
+            // Keep moving if an invalid custom regex is stored
+        }
+    }
+
+    return if (cleaned.length >= 2) cleaned.trim() else baseName.trim()
+}

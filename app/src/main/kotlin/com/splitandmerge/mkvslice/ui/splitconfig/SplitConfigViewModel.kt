@@ -81,12 +81,22 @@ class SplitConfigViewModel @Inject constructor(
         )
         recalculatePredictions()
 
-        // Keep outputFolder in sync with the single source of truth (DataStore).
-        // When the user updates the folder here, we write to DataStore, which
-        // re-emits here with the new value — the local copy stays consistent.
+        // Seed outputFolder and sizeCapGb from DataStore.
+        // sizeCapGb is seeded only on the FIRST emission so a manual user edit is not
+        // overwritten by a subsequent DataStore re-emission.  outputFolder always stays
+        // in sync because its source of truth is DataStore.
         viewModelScope.launch {
+            var firstEmission = true
             settingsRepository.settingsFlow.collect { settings ->
-                _state.value = _state.value.copy(outputFolder = settings.defaultOutputFolderUri)
+                _state.value = if (firstEmission) {
+                    firstEmission = false
+                    _state.value.copy(
+                        outputFolder = settings.defaultOutputFolderUri,
+                        sizeCapGb    = settings.defaultCapGb.toFloat()
+                    ).also { recalculatePredictions() }
+                } else {
+                    _state.value.copy(outputFolder = settings.defaultOutputFolderUri)
+                }
             }
         }
     }

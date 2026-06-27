@@ -16,6 +16,8 @@ object Routes {
     const val CLEANUP_PATTERNS = "cleanup_patterns"
     const val OSS_NOTICES = "oss_notices"
     const val LOGS = "logs"
+    const val RENAME_VIDEOS = "rename_videos"
+    const val HELP = "help"
 
     fun jobProgress(jobId: String) = "job_progress/$jobId"
     fun splitResult(jobId: String) = "split_result/$jobId"
