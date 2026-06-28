@@ -1,16 +1,11 @@
 {
     "changelog":  [
-                      "ðŸš€ NEW FEATURES",
-                      "- (none for this release)",
-                      "ðŸ”§ BUG FIXES",
-                      "- Fixed a crash when opening file details, merged outputs, or very large / E-AC3 files (ffprobe output is now parsed safely and no longer depends on cache space).",
-                      "- Byte-exact split: the size cap defaults to 9â€¯GB, and switching between MB and GB keeps a consistent cap (9â€¯GB = 9216â€¯MB).",
                       "âš¡ IMPROVEMENTS",
-                      "- Set Default Tracks: the Applying screen shows a perâ€‘file status list, and the notification shows \"File X of N\"."
+                      "- Set Default Tracks: each file now shows its own progress bar and percentage on the Applying screen."
                   ],
-    "versionName":  "0.0.15",
-    "sha256":  "00734C121321FCC4F3025DB1FAF825C0C50F8F5EA44B4F62C7382D5AE2E2CA7F",
-    "versionCode":  16,
-    "sizeBytes":  17996565,
-    "apkUrl":  "https://github.com/worlon-code/splitandmerge/releases/download/v0.0.15/app-release.apk"
+    "versionName":  "0.0.16",
+    "sha256":  "681F49FF96047700E9C257DB1A6DBBCEB4856F453E5795E6E1870764D26C64AB",
+    "versionCode":  17,
+    "sizeBytes":  17996569,
+    "apkUrl":  "https://github.com/worlon-code/splitandmerge/releases/download/v0.0.16/app-release.apk"
 }
