@@ -7,6 +7,19 @@
 
 ## [Unreleased]
 
+## [0.0.15] — 2026-06-29
+
+🚀 NEW FEATURES
+- (none for this release)
+
+🔧 BUG FIXES
+- Fixed a crash when opening file details, merged outputs, or very large / E-AC3 files (ffprobe output is now parsed safely and no longer depends on cache space).
+- Byte-exact split: the size cap defaults to 9 GB, and switching between MB and GB keeps a consistent cap (9 GB = 9216 MB).
+
+⚡ IMPROVEMENTS
+- Set Default Tracks: the Applying screen shows a per‑file status list, and the notification shows "File X of N".
+
+
 ## [0.0.14] — 2026-06-28
 
  NEW FEATURES
