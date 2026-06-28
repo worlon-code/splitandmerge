@@ -16,8 +16,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
-import androidx.lifecycle.SavedStateHandle
 import com.splitandmerge.mkvslice.domain.defaulttracks.RowState
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
 
 @RunWith(AndroidJUnit4::class)
 class DefaultTracksUiTest {
@@ -198,7 +198,14 @@ class DefaultTracksUiTest {
         val mockFileSystem = mockk<com.splitandmerge.mkvslice.platform.io.FileSystem>(relaxed = true)
         val context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
         val savedStateHandle = SavedStateHandle()
-        val realViewModel = DefaultTracksViewModel(mockJobDao, mockResultsDao, mockFileSystem, savedStateHandle, context)
+        val realViewModel = DefaultTracksViewModel(
+            mockJobDao,
+            mockResultsDao,
+            JobProgressTracker(),
+            mockFileSystem,
+            savedStateHandle,
+            context
+        )
 
         // Scenario 1: Untagged single audio applies
         val seedUri = "content://test/seed.mkv"

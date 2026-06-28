@@ -7,6 +7,11 @@
 
 ## [Unreleased]
 
+## [0.0.16] — 2026-06-29
+
+⚡ IMPROVEMENTS
+- Set Default Tracks: each file now shows its own progress bar and percentage on the Applying screen.
+
 ## [0.0.15] — 2026-06-29
 
 🚀 NEW FEATURES

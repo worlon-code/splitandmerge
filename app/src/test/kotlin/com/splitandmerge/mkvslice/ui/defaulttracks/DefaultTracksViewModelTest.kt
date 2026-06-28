@@ -15,6 +15,7 @@ import com.splitandmerge.mkvslice.domain.defaulttracks.AudioChoice
 import com.splitandmerge.mkvslice.domain.defaulttracks.SubChoice
 import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.model.JobType
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
 import com.splitandmerge.mkvslice.platform.io.FileSystem
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,7 @@ class DefaultTracksViewModelTest {
         viewModel = DefaultTracksViewModel(
             jobDao = jobDao,
             defaultTrackFileResultDao = defaultTrackFileResultDao,
+            jobProgressTracker = JobProgressTracker(),
             fileSystem = fileSystem,
             savedStateHandle = savedStateHandle,
             context = context
@@ -151,13 +153,13 @@ class DefaultTracksViewModelTest {
         val capturedUris = mutableListOf<String>()
         val capturedSpecs = mutableListOf<EditSpec>()
         coEvery { 
-            mockEngine.processFile(capture(capturedUris), capture(capturedSpecs), eq(jobId), any()) 
+            mockEngine.processFile(capture(capturedUris), capture(capturedSpecs), eq(jobId), any(), any()) 
         } returns DefaultTracksEngineResult("DONE", "", "IN_PLACE_PATCH")
 
         // Iterate through enqueued rows exactly like JobService does
         captured.forEachIndexed { index, row ->
             val spec = deserializeEditSpec(row.appliedSpecJson)
-            mockEngine.processFile(row.uri, spec, jobId, index)
+            mockEngine.processFile(row.uri, spec, jobId, index, {})
         }
 
         // Assert (b) call count == checked-row count
@@ -198,9 +200,9 @@ class DefaultTracksViewModelTest {
             }
         }
 
-        coVerify(exactly = 1) { mockEngine.processFile(uriA, specA, jobId, 0) }
-        coVerify(exactly = 1) { mockEngine.processFile(uriB, specB, jobId, 1) }
-        coVerify(exactly = 2) { mockEngine.processFile(any(), any(), jobId, any()) }
+        coVerify(exactly = 1) { mockEngine.processFile(uriA, specA, jobId, 0, any()) }
+        coVerify(exactly = 1) { mockEngine.processFile(uriB, specB, jobId, 1, any()) }
+        coVerify(exactly = 2) { mockEngine.processFile(any(), any(), jobId, any(), any()) }
     }
 
     @Test
@@ -220,8 +222,8 @@ class DefaultTracksViewModelTest {
 
         // Simulate JobService processing with CancellationException at second row
         val mockEngine = mockk<DefaultTracksEngine>()
-        coEvery { mockEngine.processFile(uriA, any(), "job123", 0) } returns DefaultTracksEngineResult("DONE", "", "IN_PLACE_PATCH")
-        coEvery { mockEngine.processFile(uriB, any(), "job123", 1) } throws kotlinx.coroutines.CancellationException("Job cancelled")
+        coEvery { mockEngine.processFile(uriA, any(), "job123", 0, any()) } returns DefaultTracksEngineResult("DONE", "", "IN_PLACE_PATCH")
+        coEvery { mockEngine.processFile(uriB, any(), "job123", 1, any()) } throws kotlinx.coroutines.CancellationException("Job cancelled")
 
         var jobStatus = JobStatus.RUNNING
 

@@ -19,6 +19,7 @@ import com.splitandmerge.mkvslice.domain.defaulttracks.model.TrackInfo
 import com.splitandmerge.mkvslice.domain.defaulttracks.*
 import com.splitandmerge.mkvslice.domain.model.JobStatus
 import com.splitandmerge.mkvslice.domain.model.JobType
+import com.splitandmerge.mkvslice.domain.progress.JobProgressTracker
 import com.splitandmerge.mkvslice.platform.io.FileSystem
 import com.splitandmerge.mkvslice.service.JobService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,7 +70,8 @@ data class FileRowState(
     val audioChoice: AudioChoice? = null,
     val subChoice: SubChoice? = null,
     val note: String? = null,
-    val matchState: RowState? = null
+    val matchState: RowState? = null,
+    val applyProgress: Int = 0
 )
 
 data class TrackDraft(
@@ -82,6 +84,7 @@ data class TrackDraft(
 class DefaultTracksViewModel @Inject constructor(
     private val jobDao: JobDao,
     private val defaultTrackFileResultDao: DefaultTrackFileResultDao,
+    private val jobProgressTracker: JobProgressTracker,
     private val fileSystem: FileSystem,
     private val savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
@@ -120,6 +123,7 @@ class DefaultTracksViewModel @Inject constructor(
 
     private var activeJob: CoroutineJob? = null
     private var applyingJobObserver: CoroutineJob? = null
+    private var fileProgressObserver: CoroutineJob? = null
 
     // Restores spec map from SavedStateHandle for process death safety
     fun getSpecsMap(): Map<String, EditSpec> {
@@ -623,6 +627,16 @@ class DefaultTracksViewModel @Inject constructor(
 
     private fun observeApplyingJob(jobId: String) {
         applyingJobObserver?.cancel()
+        fileProgressObserver?.cancel()
+        fileProgressObserver = viewModelScope.launch {
+            jobProgressTracker.fileProgress.collectLatest { prog ->
+                if (prog.isEmpty()) return@collectLatest
+                _filesList.value = _filesList.value.map { row ->
+                    val p = prog[row.uri]
+                    if (p != null && p != row.applyProgress) row.copy(applyProgress = p) else row
+                }
+            }
+        }
         applyingJobObserver = viewModelScope.launch {
             // Observe Job progress
             jobDao.observeById(jobId).collectLatest { job ->
@@ -665,6 +679,7 @@ class DefaultTracksViewModel @Inject constructor(
                 if (job.status == JobStatus.DONE || job.status == JobStatus.FAILED || job.status == JobStatus.CANCELLED) {
                     _uiState.value = DefaultTracksUiState.Results(jobId)
                     applyingJobObserver?.cancel()
+                    fileProgressObserver?.cancel()
                 }
             }
         }
@@ -674,5 +689,6 @@ class DefaultTracksViewModel @Inject constructor(
         super.onCleared()
         activeJob?.cancel()
         applyingJobObserver?.cancel()
+        fileProgressObserver?.cancel()
     }
 }

@@ -21,7 +21,14 @@ class DefaultTracksEngine @Inject constructor(
     private val editor = FlagEditor()
     private val verifier = FlagVerifier()
 
-    fun processFile(uri: String, spec: EditSpec, jobId: String, fileIndex: Int): DefaultTracksEngineResult {
+    fun processFile(
+        uri: String,
+        spec: EditSpec,
+        jobId: String,
+        fileIndex: Int,
+        onProgress: (Int) -> Unit = {}
+    ): DefaultTracksEngineResult {
+        onProgress(5)
         // 1. Analyse phase (read-only)
         val readFd = fileSystem.openFileDescriptor(uri, "r")
             ?: return DefaultTracksEngineResult("SKIPPED", "provider-rejects-r")
@@ -36,6 +43,7 @@ class DefaultTracksEngine @Inject constructor(
             return DefaultTracksEngineResult("SKIPPED", reason)
         }
 
+        onProgress(35)
         // Build EditPlan
         val plan = editor.planEdits(parsed, spec)
         if (plan.writeStrategy == WriteStrategy.SKIPPED) {
@@ -127,6 +135,7 @@ class DefaultTracksEngine @Inject constructor(
                 return DefaultTracksEngineResult("SKIPPED", "content-signature-mismatch", plan.writeStrategy.name)
             }
 
+            onProgress(60)
             // Prepare replacement span bytes
             val out = java.io.ByteArrayOutputStream()
             var lastOrigOffset = firstChangedOffset
@@ -152,6 +161,7 @@ class DefaultTracksEngine @Inject constructor(
             rwFd.seek(firstChangedOffset, 0)
             rwFd.write(replacementSpanBytes, 0, replacementSpanBytes.size)
             rwFd.fdatasync()
+            onProgress(85)
 
             // Verify
             val expectedFlipsCount = if (plan.writeStrategy == WriteStrategy.IN_PLACE_PATCH) plan.fileEdits.size else 0
@@ -167,6 +177,7 @@ class DefaultTracksEngine @Inject constructor(
             )
 
             if (verified) {
+                onProgress(100)
                 journal.deleteJournal()
                 rwFd.close()
                 closed = true

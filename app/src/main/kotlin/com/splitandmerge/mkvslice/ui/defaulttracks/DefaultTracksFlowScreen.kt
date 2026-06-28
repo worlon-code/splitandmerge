@@ -1104,7 +1104,7 @@ private fun ApplyingFileRow(
     val fraction: Float?
     when (file.status) {
         "PENDING" -> {
-            if (isProcessing) { label = "Processing…"; tint = primary; fraction = null }
+            if (isProcessing) { label = "Processing…"; tint = primary; fraction = file.applyProgress.coerceIn(0, 100) / 100f }
             else { label = "Waiting"; tint = onVariant; fraction = 0f }
         }
         "DONE" -> { label = "Updated"; tint = primary; fraction = 1f }

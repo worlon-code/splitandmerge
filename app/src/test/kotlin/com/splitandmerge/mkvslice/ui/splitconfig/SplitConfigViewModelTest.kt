@@ -172,8 +172,8 @@ class SplitConfigViewModelTest {
         assertNull(viewModel.getByteSizeCapError())
 
         // (a) "1.5" + GB -> targetCapBytes == 1610612736
-        viewModel.updateByteSizeCapInput("1.5")
         viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        viewModel.updateByteSizeCapInput("1.5")
         org.junit.Assert.assertTrue(viewModel.isConfigValid())
         assertNull(viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
@@ -181,8 +181,8 @@ class SplitConfigViewModelTest {
         assertEquals(1610612736L, capturedJobs[0].targetCapBytes)
 
         // (b) "0.5" + MB -> targetCapBytes == 524288
-        viewModel.updateByteSizeCapInput("0.5")
         viewModel.updateByteSplitSizeUnit(SizeUnit.MB)
+        viewModel.updateByteSizeCapInput("0.5")
         org.junit.Assert.assertTrue(viewModel.isConfigValid())
         assertNull(viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
@@ -190,8 +190,8 @@ class SplitConfigViewModelTest {
         assertEquals(524288L, capturedJobs[1].targetCapBytes)
 
         // (c) FLOOR DISCRIMINATOR — "0.7" + GB -> targetCapBytes == 751619276
-        viewModel.updateByteSizeCapInput("0.7")
         viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        viewModel.updateByteSizeCapInput("0.7")
         org.junit.Assert.assertTrue(viewModel.isConfigValid())
         assertNull(viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
@@ -199,8 +199,8 @@ class SplitConfigViewModelTest {
         assertEquals(751619276L, capturedJobs[2].targetCapBytes)
 
         // (d) "2." + GB -> targetCapBytes == 2147483648
-        viewModel.updateByteSizeCapInput("2.")
         viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        viewModel.updateByteSizeCapInput("2.")
         org.junit.Assert.assertTrue(viewModel.isConfigValid())
         assertNull(viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
@@ -208,8 +208,8 @@ class SplitConfigViewModelTest {
         assertEquals(2147483648L, capturedJobs[3].targetCapBytes)
 
         // (e) leading-dot ".5" + GB -> targetCapBytes == 536870912
-        viewModel.updateByteSizeCapInput(".5")
         viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        viewModel.updateByteSizeCapInput(".5")
         org.junit.Assert.assertTrue(viewModel.isConfigValid())
         assertNull(viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
@@ -237,16 +237,16 @@ class SplitConfigViewModelTest {
         assertEquals(3, vm2.state.value.predictedPartCount)
 
         // (g) FLOOR-TO-ZERO — "0.0000001" + MB (floors to 0) -> action DISABLED / invalid, not committed
-        viewModel.updateByteSizeCapInput("0.0000001")
         viewModel.updateByteSplitSizeUnit(SizeUnit.MB)
+        viewModel.updateByteSizeCapInput("0.0000001")
         org.junit.Assert.assertFalse(viewModel.isConfigValid())
         assertEquals("Size must be greater than 0", viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)
         assertEquals(5, capturedJobs.size) // still 5, not committed
 
         // (h) OVERFLOW — "99999999999" + GB -> action DISABLED / invalid, not committed
-        viewModel.updateByteSizeCapInput("99999999999")
         viewModel.updateByteSplitSizeUnit(SizeUnit.GB)
+        viewModel.updateByteSizeCapInput("99999999999")
         org.junit.Assert.assertFalse(viewModel.isConfigValid())
         assertEquals("Value is too large (overflows)", viewModel.getByteSizeCapError())
         viewModel.startSplitJob(context)

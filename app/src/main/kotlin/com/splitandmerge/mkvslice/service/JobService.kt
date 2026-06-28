@@ -161,7 +161,11 @@ class JobService : Service() {
 
                 val spec = deserializeEditSpec(row.appliedSpecJson)
 
-                val result = defaultTracksEngine.processFile(row.uri, spec, jobId, index)
+                jobProgressTracker.setFileProgress(row.uri, 0)
+                val result = defaultTracksEngine.processFile(row.uri, spec, jobId, index) { pct ->
+                    jobProgressTracker.setFileProgress(row.uri, pct)
+                }
+                jobProgressTracker.setFileProgress(row.uri, 100)
 
                 val updatedRow = row.copy(
                     status = result.status,
@@ -172,6 +176,7 @@ class JobService : Service() {
             }
 
             jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.DONE, 100, null, null, totalRows, System.currentTimeMillis())
+            jobProgressTracker.clearFileProgress()
         } catch (e: CancellationException) {
             withContext(NonCancellable) {
                 val remainingRows = defaultTrackFileResultDao.getResultsForJob(jobId)
@@ -184,10 +189,12 @@ class JobService : Service() {
                 }
                 defaultTrackFileResultDao.insertAll(updatedRows)
                 jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.CANCELLED, 100, null, null, totalRows, System.currentTimeMillis())
+                jobProgressTracker.clearFileProgress()
             }
         } catch (e: Exception) {
             Timber.e(e, "Error running default tracks job")
             jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.FAILED, 100, null, null, totalRows, System.currentTimeMillis())
+            jobProgressTracker.clearFileProgress()
         }
     }
 
