@@ -33,8 +33,8 @@ data class SplitConfigState(
     val mode: SplitMode = SplitMode.BOTH,
     val partsCount: Int = 3,
     val sizeCapGb: Float = 9.0f,
-    val byteSizeCapInput: String = "100",
-    val byteSplitSizeUnit: SizeUnit = SizeUnit.MB,
+    val byteSizeCapInput: String = "9",
+    val byteSplitSizeUnit: SizeUnit = SizeUnit.GB,
     val baseName: String = "",
     val outputFolder: String = "",
     val fileSizeBytes: Long = 0L,
@@ -75,16 +75,12 @@ class SplitConfigViewModel @Inject constructor(
             uri = uri,
             filename = filename,
             baseName = baseName,
-            outputFolder = "", // DataStore flow seeds this immediately below
+            outputFolder = "",
             fileSizeBytes = sizeBytes,
             fileDurationSec = durationSec
         )
         recalculatePredictions()
 
-        // Seed outputFolder and sizeCapGb from DataStore.
-        // sizeCapGb is seeded only on the FIRST emission so a manual user edit is not
-        // overwritten by a subsequent DataStore re-emission.  outputFolder always stays
-        // in sync because its source of truth is DataStore.
         viewModelScope.launch {
             var firstEmission = true
             settingsRepository.settingsFlow.collect { settings ->
@@ -130,10 +126,7 @@ class SplitConfigViewModel @Inject constructor(
                 val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 context.contentResolver.takePersistableUriPermission(uri, flags)
             } catch (e: Exception) {
-                // ignore — permission take may fail for some URIs; validation already passed
             }
-            // Update local state immediately for responsive UI; DataStore write
-            // will re-emit the same value through the collector above.
             _state.value = _state.value.copy(outputFolder = folder)
             viewModelScope.launch {
                 settingsRepository.setDefaultOutputFolderUri(folder)
@@ -173,7 +166,7 @@ class SplitConfigViewModel @Inject constructor(
                         predSize = sizeGbBd.toFloat()
                     }
                 }
-                else -> { // SIZE_CAP_ONLY
+                else -> {
                     val capBytes = parseTargetCapBytes(currentState.byteSizeCapInput, currentState.byteSplitSizeUnit)
                     if (capBytes != null && capBytes > 0L) {
                         val capBytesBd = java.math.BigDecimal(capBytes)
@@ -190,7 +183,7 @@ class SplitConfigViewModel @Inject constructor(
             }
         } else {
             val totalSizeGb = fileSizeBytes.toFloat() / (1024f * 1024f * 1024f)
-            val actualSizeGb = if (totalSizeGb > 0f) totalSizeGb else 0.1f // prevent div by zero
+            val actualSizeGb = if (totalSizeGb > 0f) totalSizeGb else 0.1f
             when (currentMode) {
                 SplitMode.EXACT_PARTS -> {
                     predCount = parts
@@ -235,7 +228,18 @@ class SplitConfigViewModel @Inject constructor(
     }
 
     fun updateByteSplitSizeUnit(unit: SizeUnit) {
-        _state.value = _state.value.copy(byteSplitSizeUnit = unit)
+        val current = _state.value
+        if (unit == current.byteSplitSizeUnit) return
+        // Snap to a 9 GB cap expressed in the selected unit: switching to GB lands on the
+        // app's default 9 GB cap (shown as "9"); switching to MB shows the same cap ("9216").
+        val snapped = when (unit) {
+            SizeUnit.GB -> "9"
+            SizeUnit.MB -> "9216"
+        }
+        _state.value = current.copy(
+            byteSplitSizeUnit = unit,
+            byteSizeCapInput = snapped
+        )
         recalculatePredictions()
     }
 
@@ -402,7 +406,6 @@ class SplitConfigViewModel @Inject constructor(
             )
             jobDao.upsert(jobEntity)
 
-            // Start Foreground Service
             val intent = Intent(context, JobService::class.java)
             context.startForegroundService(intent)
         }

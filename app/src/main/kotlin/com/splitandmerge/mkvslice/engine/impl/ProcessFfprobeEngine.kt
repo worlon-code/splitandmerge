@@ -9,13 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.double
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.longOrNull
 import timber.log.Timber
+
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,8 +27,6 @@ class ProcessFfprobeEngine @Inject constructor(
     @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
 ) : FfprobeEngine {
 
-    private val json = Json { ignoreUnknownKeys = true }
-
     private fun resolveUri(uri: String): String {
         return if (uri.startsWith("content://")) {
             FFmpegKitConfig.getSafParameterForRead(context, Uri.parse(uri)) ?: uri
@@ -40,17 +37,32 @@ class ProcessFfprobeEngine @Inject constructor(
 
     override suspend fun probe(uri: String): ProbeResult = withContext(Dispatchers.IO) {
         val resolvedUri = resolveUri(uri)
-        val args = "-v error -hide_banner -show_format -show_streams -of json \"$resolvedUri\""
+        // Read ffprobe's JSON straight from the session output. We deliberately do NOT use
+        // "-o <file>": that needs free space in cacheDir, which can be exhausted after a large
+        // split job, making the write silently fail and yield no JSON. parseFfprobeJson()
+        // strips any interleaved libav log lines (e.g. "[eac3 @ 0x...]"), so reading the
+        // possibly log-polluted session output is sufficient and no disk dependency.
+        val args = "-v error -hide_banner -show_format -show_streams -print_format json \"${resolvedUri}\""
         Timber.tag("ENGINE").d("ffprobe probe: %s (resolved: %s)", uri, resolvedUri)
         val session = FFprobeKit.execute(args)
-        // getOutput() captures stdout (actual probe data); allLogsAsString captures stderr (log messages)
         val output = session.output?.trim()?.ifEmpty { null }
             ?: session.allLogsAsString?.trim()?.ifEmpty { null }
             ?: error("ffprobe returned no output for $uri")
-        parseProbeOutput(output)
+        try {
+            parseFfprobeJson(output)
+        } catch (e: IllegalArgumentException) {
+            // No JSON in the output usually means ffprobe could not read the file. Log the
+            // real ffprobe return code + output head so the underlying cause is visible.
+            Timber.tag("ENGINE").e(
+                "ffprobe produced no JSON for %s (rc=%s). Output head: %s",
+                uri, session.returnCode, session.allLogsAsString?.take(800)?.trim()
+            )
+            throw e
+        }
     }
 
-    override suspend fun keyframes(uri: String): List<Double> = withContext(Dispatchers.IO) {
+    override suspend fun keyframes(uri: String): List<Double> =
+            withContext(Dispatchers.IO) {
         val resolvedUri = resolveUri(uri)
         // Use -show_packets instead of -show_frames -skip_frame nokey.
         // -show_frames requires full frame decoding which hangs on large files (4.5GB+).
@@ -63,64 +75,97 @@ class ProcessFfprobeEngine @Inject constructor(
         Timber.tag("ENGINE").d("ffprobe keyframes: %s", uri)
         val session = FFprobeKit.execute(args)
         val output = session.output?.trim()?.ifEmpty { null }
-            ?: session.allLogsAsString?.trim()?.ifEmpty { null }
+                ?: session.allLogsAsString?.trim()?.ifEmpty { null }
         if (output.isNullOrBlank()) {
             Timber.tag("ENGINE").e("ffprobe keyframes returned empty output for %s", uri)
             return@withContext emptyList()
         }
-        // Filter for keyframe packets (flags contain 'K') and extract timestamps
+        // Filter for keyframe packets (flags contain 'K') and extract timestamps.
+        // Log-line noise can't match the ",K" CSV shape, so it is ignored here.
         val keyframes = output.lineSequence()
-            .filter { it.contains(",K") }
-            .mapNotNull { it.split(",").firstOrNull()?.trim()?.toDoubleOrNull() }
-            .sorted()
-            .toList()
+                .filter { it.contains(",K") }
+                .mapNotNull {
+                    it.split(",").firstOrNull()?.trim()?.toDoubleOrNull()
+                }
+                .sorted()
+                .toList()
         Timber.tag("ENGINE").d("ffprobe found %d keyframes for %s", keyframes.size, uri)
         keyframes
     }
+}
 
-    // ─── JSON parsing ─────────────────────────────────────────────────────────
+// ??? JSON parsing (pure, no Android deps — unit-testable)
+/////////////////
 
-    private fun parseProbeOutput(raw: String): ProbeResult {
-        // ffprobe outputs JSON but may have preamble log lines; find first '{'
-        val jsonStart = raw.indexOf('{')
-        val jsonStr = if (jsonStart >= 0) raw.substring(jsonStart) else raw
-        val root = json.parseToJsonElement(jsonStr).jsonObject
+private val probeJson = Json { ignoreUnknownKeys = true }
 
-        val fmt = root["format"]?.jsonObject
+/**
+ * Matches a single ffmpeg/libav log line, e.g.
+ *   "[eac3 @ 0xb400007193dd5800] incomplete frame"
+ *   "[matroska,webm @ 0xb400007219e000] Could not find codec parameters"
+ * The line must START with '[' (after optional whitespace) and contain "@
+0x<hex>]",
+ * so it never matches a real ffprobe JSON line (those start with '"' or '{').
+ */
+private val FFMPEG_LOG_LINE = Regex("""^\s*\[.*@\s*0x[0-9a-fA-F]+].*$""")
+
+/**
+ * Parses ffprobe `-print_format json` output into a [ProbeResult].
+ *
+ * Defensive against log-line pollution: ffmpeg-kit can interleave libav log lines into
+ * the captured output (this was the root cause of "Failed to probe file" / "Failed to
+ * load merge result" crashes on files with E-AC3 audio or large Matroska files). Any such
+ * line is stripped before parsing. The primary defense is writing JSON to a file via `-o`;
+ * this is the belt-and-suspenders second layer.
+ *
+ * @throws IllegalArgumentException if no JSON object is present after stripping log lines.
+ */
+internal fun parseFfprobeJson(raw: String): ProbeResult {
+    val cleaned = raw.lineSequence()
+            .filterNot { FFMPEG_LOG_LINE.matches(it) }
+            .joinToString("\n")
+    val start = cleaned.indexOf('{')
+    require(start >= 0) { "No JSON object found in ffprobe output" }
+    val jsonStr = cleaned.substring(start)
+
+    val root = probeJson.parseToJsonElement(jsonStr).jsonObject
+    val fmt = root["format"]?.jsonObject
             ?: error("No 'format' key in ffprobe output")
-        val streams = root["streams"]?.jsonArray?.map { parseStream(it.jsonObject) }
-            ?: emptyList()
+    val streams = root["streams"]?.jsonArray?.map {
+        parseStream(it.jsonObject)
+    } ?: emptyList()
 
-        val format = FormatInfo(
-            filename    = fmt["filename"]?.jsonPrimitive?.content ?: "",
-            nbStreams   = fmt["nb_streams"]?.jsonPrimitive?.int ?: 0,
-            formatName  = fmt["format_name"]?.jsonPrimitive?.content ?: "",
-            durationSeconds = fmt["duration"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: 0.0,
-            sizeBytes   = fmt["size"]?.jsonPrimitive?.content?.toLongOrNull() ?: 0L,
-            bitRate     = fmt["bit_rate"]?.jsonPrimitive?.content?.toLongOrNull() ?: 0L
-        )
-        return ProbeResult(format = format, streams = streams)
-    }
+    val format = FormatInfo(
+        filename    = fmt["filename"]?.jsonPrimitive?.content ?: "",
+        nbStreams   = fmt["nb_streams"]?.jsonPrimitive?.int ?: 0,
+        formatName  = fmt["format_name"]?.jsonPrimitive?.content ?: "",
+        durationSeconds =
+                fmt["duration"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: 0.0,
+        sizeBytes   = fmt["size"]?.jsonPrimitive?.content?.toLongOrNull() ?: 0L,
+        bitRate     =
+                fmt["bit_rate"]?.jsonPrimitive?.content?.toLongOrNull() ?: 0L
+    )
+    return ProbeResult(format = format, streams = streams)
+}
 
-    private fun parseStream(s: JsonObject): StreamInfo {
-        val disposition = s["disposition"]?.jsonObject
+private fun parseStream(s: JsonObject): StreamInfo {
+    val disposition = s["disposition"]?.jsonObject
             ?.entries
             ?.associate { (k, v) -> k to (v.jsonPrimitive.content.toIntOrNull() ?: 0) }
             ?: emptyMap()
 
-        val tags = s["tags"]?.jsonObject
-        return StreamInfo(
-            index      = s["index"]?.jsonPrimitive?.int ?: 0,
-            codecType  = s["codec_type"]?.jsonPrimitive?.content ?: "",
-            codecName  = s["codec_name"]?.jsonPrimitive?.content ?: "",
-            profile    = s["profile"]?.jsonPrimitive?.content,
-            width      = s["width"]?.jsonPrimitive?.content?.toIntOrNull(),
-            height     = s["height"]?.jsonPrimitive?.content?.toIntOrNull(),
-            channels   = s["channels"]?.jsonPrimitive?.content?.toIntOrNull(),
-            sampleRate = s["sample_rate"]?.jsonPrimitive?.content,
-            language   = tags?.get("language")?.jsonPrimitive?.content,
-            title      = tags?.get("title")?.jsonPrimitive?.content,
-            disposition = disposition
-        )
-    }
+    val tags = s["tags"]?.jsonObject
+    return StreamInfo(
+        index      = s["index"]?.jsonPrimitive?.int ?: 0,
+        codecType  = s["codec_type"]?.jsonPrimitive?.content ?: "",
+        codecName  = s["codec_name"]?.jsonPrimitive?.content ?: "",
+        profile    = s["profile"]?.jsonPrimitive?.content,
+        width      = s["width"]?.jsonPrimitive?.content?.toIntOrNull(),
+        height     = s["height"]?.jsonPrimitive?.content?.toIntOrNull(),
+        channels   = s["channels"]?.jsonPrimitive?.content?.toIntOrNull(),
+        sampleRate = s["sample_rate"]?.jsonPrimitive?.content,
+        language   = tags?.get("language")?.jsonPrimitive?.content,
+        title      = tags?.get("title")?.jsonPrimitive?.content,
+        disposition = disposition
+    )
 }

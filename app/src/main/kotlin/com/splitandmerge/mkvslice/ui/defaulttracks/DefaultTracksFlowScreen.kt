@@ -220,6 +220,7 @@ fun DefaultTracksFlowScreen(
                     ApplyingContent(
                         progressText = state.progressText,
                         progressPct = state.progressPct,
+                        files = filesList,
                         onCancel = {
                             // Cancel sends cancel intent to service
                             val cancelIntent = Intent(context, JobService::class.java).apply {
@@ -1028,35 +1029,56 @@ fun TabletBatchEditor(
 fun ApplyingContent(
     progressText: String,
     progressPct: Float,
+    files: List<FileRowState>,
     onCancel: () -> Unit
 ) {
+    val batch = files.filter { it.isMkv && it.isChecked }
+    val processingUri = batch.firstOrNull { it.status == "PENDING" }?.uri
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val pctValue = (progressPct * 100).toInt()
+        Spacer(modifier = Modifier.height(8.dp))
         CircularProgressIndicator(
             progress = { progressPct },
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier.size(72.dp),
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Applying Flag Changes...",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "$progressText ($pctValue%)",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             lineHeight = 20.sp
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        if (batch.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) {
+                items(batch, key = { it.uri }) { file ->
+                    ApplyingFileRow(
+                        file = file,
+                        isProcessing = file.uri == processingUri
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        } else {
+            Spacer(modifier = Modifier.weight(1f))
+        }
         OutlinedButton(
             onClick = onCancel,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
@@ -1065,6 +1087,82 @@ fun ApplyingContent(
         }
     }
 }
+
+@Composable
+
+private fun ApplyingFileRow(
+    file: FileRowState,
+    isProcessing: Boolean
+) {
+    val onVariant = MaterialTheme.colorScheme.onSurfaceVariant
+    val primary = MaterialTheme.colorScheme.primary
+    val error = MaterialTheme.colorScheme.error
+    val track = MaterialTheme.colorScheme.surfaceVariant
+
+    val label: String
+    val tint: Color
+    val fraction: Float?
+    when (file.status) {
+        "PENDING" -> {
+            if (isProcessing) { label = "Processing…"; tint = primary; fraction = null }
+            else { label = "Waiting"; tint = onVariant; fraction = 0f }
+        }
+        "DONE" -> { label = "Updated"; tint = primary; fraction = 1f }
+        "UNCHANGED" -> { label = "No change"; tint = onVariant; fraction = 1f }
+        "SKIPPED" -> { label = "Skipped"; tint = onVariant; fraction = 1f }
+        "FAILED" -> { label = "Failed"; tint = error; fraction = 1f }
+        "PARTIAL" -> { label = "Partial"; tint = error; fraction = 1f }
+        "NEEDS_MANUAL_REVIEW" -> { label = "Needs review"; tint = error; fraction = 1f }
+        else -> { label = file.status; tint = onVariant; fraction = 0f }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = file.displayName,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = label, color = tint, fontSize = 12.sp)
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (fraction == null) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(6.dp),
+                    color = primary,
+                    trackColor = track
+                )
+            } else {
+                LinearProgressIndicator(
+                    progress = { fraction },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(6.dp),
+                    color = if (fraction >= 1f) tint else onVariant,
+                    trackColor = track
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (fraction == null) "…" else "${(fraction * 100).toInt()}%",
+                color = onVariant,
+                fontSize = 12.sp,
+                modifier = Modifier.widthIn(min = 36.dp)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun ResultsContent(

@@ -157,7 +157,7 @@ class JobService : Service() {
 
                 val progressPct = (index * 100) / totalRows
                 jobDao.updateProgress(jobId, com.splitandmerge.mkvslice.domain.model.JobStatus.RUNNING, progressPct, null, null, totalRows, System.currentTimeMillis())
-                updateNotification("Setting defaults: ${row.displayName}", progressPct)
+                updateNotification("File ${index + 1} of $totalRows: ${row.displayName}", progressPct)
 
                 val spec = deserializeEditSpec(row.appliedSpecJson)
 

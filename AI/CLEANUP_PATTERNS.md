@@ -9,9 +9,9 @@
 Real input filenames look like:
 
 ```
-www.5MovieRulz.graphics - Kantara.Chapter.1.2024.4K.WEB-DL.x265.mkv
-Baahubali The Epic 2025 2160p NEWEB-DL DUAL DTS HD MA DDP5.1 H.265.mkv
-Devara.2024.2160p.HDR.HEVC.Friday4KPopc.mkv
+www.example-site.com - Sample Movie One (2024).mkv
+Sample Movie Two (2025).mkv
+Sample Movie Three (2024).mkv
 ```
 
 We want output:
